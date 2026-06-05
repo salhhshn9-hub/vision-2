@@ -91,6 +91,9 @@
         .btn-reset-system:hover { background: rgba(255, 23, 68, 0.1); }
 
         .bill-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-top: 4px; }
+        
+        /* سجل دفعات الفاتورة */
+        .bill-log-item { background: rgba(255,255,255,0.02); border-right: 3px solid var(--neon-green); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 6px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
@@ -123,7 +126,7 @@
         <!-- 📑 NAVIGATION TABS ON TOP -->
         <div class="nav-tabs" style="margin-top: 20px;">
             <button class="tab-btn active" id="tab-dash" onclick="switchMainTab('dash')"><i class="fa-solid fa-house"></i> الرئيسية</button>
-            <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-receipt"></i> دفتر الفواتير والدَّين</button>
+            <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-receipt"></i> دفتر الفواتير والديون</button>
         </div>
 
         <!-- 🏠 PAGE 1: DASHBOARD -->
@@ -188,7 +191,7 @@
             </div>
         </div>
 
-        <!-- 🛒 PAGE 2: GENERAL DEBT HUB (UPDATED TO GENERAL BILLS) -->
+        <!-- 🛒 PAGE 2: GENERAL DEBT HUB -->
         <div id="page-grocery" class="app-page">
             <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center;">
                 <i class="fa-solid fa-file-invoice-dollar" style="font-size: 2rem; color: var(--neon-yellow); margin-bottom: 8px;"></i>
@@ -203,7 +206,7 @@
             </div>
 
             <div style="padding:0 16px 30px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> الفواتير القائمة (اضغط لتسديد جزء أو الكل)</h3>
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> الفواتير القائمة (اضغط لتسديد أي مبلغ أو عرض كشفها)</h3>
                 <div id="grocery-items-list-target"></div>
             </div>
         </div>
@@ -243,7 +246,7 @@
         <div class="modal-content">
             <h3 style="color: var(--neon-yellow); margin-bottom:15px;"><i class="fa-solid fa-cart-plus"></i> إضافة فاتورة / دين جديد</h3>
             <div class="form-group">
-                <label>نوع الدين / الجهة (مثال: بقالة، فاتورة نت، كهرباء، سلف شخصي)</label>
+                <label>نوع الدين / الجهة</label>
                 <select id="g-item-type" class="form-control">
                     <option value="بقالة">🛒 دين بقالة</option>
                     <option value="نت">🌐 فاتورة إنترنت</option>
@@ -263,26 +266,40 @@
         </div>
     </div>
 
-    <!-- 💳 MODAL PARTIAL PAYMENT (NEW) -->
+    <!-- 💳 MODAL DETAILED PARTIAL PAYMENT & LEDGER (UPDATED) -->
     <div id="modal-pay-part" class="modal" onclick="closeModalOnOuterClick(event, 'modal-pay-part')">
-        <div class="modal-content">
-            <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-money-bill-wave"></i> تسديد جزء أو كامل الفاتورة</h3>
-            <div class="glass-card" style="margin: 0 0 15px 0; background: rgba(255,255,255,0.01);">
-                <p id="pay-modal-bill-title" style="font-weight: bold;"></p>
-                <p id="pay-modal-bill-remaining" style="color: var(--neon-yellow); margin-top: 5px; font-family: 'Plus Jakarta Sans';"></p>
+        <div class="modal-content" style="max-height: 90vh;">
+            <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-receipt"></i> تفاصيل الفاتورة وتسديد الدفعات</h3>
+            
+            <div class="glass-card" style="margin: 0 0 15px 0; background: rgba(255,255,255,0.02); padding:15px;">
+                <p id="pay-modal-bill-title" style="font-weight: bold; font-size:1.1rem; color:#fff;"></p>
+                <p id="pay-modal-bill-date" style="color:var(--text-secondary); font-size:0.75rem; margin-top:4px;"></p>
+                <p id="pay-modal-bill-original" style="color: var(--neon-blue); margin-top: 8px; font-weight: bold;"></p>
+                <p id="pay-modal-bill-remaining" style="color: var(--neon-yellow); margin-top: 4px; font-weight: 900; font-size:1.2rem; font-family:'Plus Jakarta Sans';"></p>
             </div>
+            
             <input type="hidden" id="pay-modal-bill-id">
-            <div class="form-group">
-                <label>المبلغ المراد تسديده الآن (ر.س) - مثلاً: 100 أو 200 حسب مقدرتك</label>
-                <input type="number" id="pay-part-amount" class="form-control" placeholder="0.00">
+            
+            <!-- حقل إدخال أي مبلغ للتسديد -->
+            <div class="form-group" style="background: rgba(0,230,118,0.03); padding: 12px; border-radius: 14px; border: 1px dashed rgba(0,230,118,0.2);">
+                <label style="color:#fff; font-weight: bold;">💸 اكتب المبلغ الذي تريد تسديده الآن (مفتوح):</label>
+                <input type="number" id="pay-part-amount" class="form-control" placeholder="اكتب 50، 100، 200... حسب مقدرتك" style="margin-top:5px;">
+                <button class="btn-submit" style="background: var(--neon-green); color: #000; margin-top:10px; padding:12px; font-size:0.95rem;" onclick="executeSubmitPartialPayment()">تأكيد سداد هذا المبلغ فوراً</button>
             </div>
-            <button class="btn-submit" style="background: var(--neon-green); color: #000;" onclick="executeSubmitPartialPayment()">تأكيد خصم الدفعة والتسديد</button>
+
+            <!-- سجل الحركات والعمليات الخاصة بهذه الفاتورة فقط -->
+            <div style="margin-top: 20px;">
+                <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;"><i class="fa-solid fa-history"></i> ماذا حدث في هذه الفاتورة؟ (سجل الدفعات)</h4>
+                <div id="bill-individual-logs-target" style="max-height: 180px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+            
+            <button class="btn-back" style="margin: 20px 0 0 0; width:100%;" onclick="closeModal('modal-pay-part')">إغلاق النافذة</button>
         </div>
     </div>
 
     <div id="modal-add-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-person')">
         <div class="modal-content">
-            <h3 style="margin-bottom:15px;"><i class="fa-solid fa-user-plus"></i> إضافة شخص جديد في القائمة الجانبية</h3>
+            <h3><i class="fa-solid fa-user-plus"></i> إضافة شخص جديد في القائمة الجانبية</h3>
             <div class="form-group">
                 <label>اسم الشخص</label>
                 <input type="text" id="p-name-input" class="form-control" placeholder="اكتب الاسم هنا...">
@@ -322,7 +339,7 @@
                 myAccount: { id: 'my_own_core_account', name: 'حسابي الشخصي (أنا)', balance: 0, history: [] },
                 people: [], 
                 globalLogs: [],
-                groceryDebtList: [] // مصفوفة الفواتير العامة
+                groceryDebtList: [] 
             },
             activePersonId: null
         };
@@ -363,7 +380,6 @@
             renderAllComponents();
         }
 
-        // 🔄 TAB SWITCHER
         function switchMainTab(tab) {
             document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -379,7 +395,6 @@
             }
         }
 
-        // 📊 ACCOUNTING CORE ENGINE
         function calculateSystemMetrics() {
             let sumTrusts = 0, sumLoansToThem = 0, sumLoansOnMe = 0;
 
@@ -389,8 +404,7 @@
                 sumLoansOnMe += ((p.borrowed_from_him || 0) - (p.repaid_to_him || 0));
             });
 
-            // حساب المتبقي من الفواتير المفتوحة فقط
-            let totalGroceryDebt = state.db.groceryDebtList.reduce((acc, curr) => acc + (curr.remaining !== undefined ? curr.remaining : curr.price), 0);
+            let totalGroceryDebt = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.remaining, 0);
 
             let myOwnBalance = state.db.myAccount.balance || 0;
             let totalLiquidity = myOwnBalance + sumTrusts + sumLoansOnMe - sumLoansToThem;
@@ -445,7 +459,7 @@
             }
         }
 
-        // 🛒 BILLS & DEBT HUB LOGIC (UPDATED WITH PARTIAL PAYMENT)
+        // 🛒 BILLS LOGIC
         function executeSaveGroceryItem() {
             const type = document.getElementById('g-item-type').value;
             const name = document.getElementById('g-item-name').value.trim();
@@ -459,7 +473,8 @@
                 type: type,
                 name: name,
                 price: price,
-                remaining: price, // القيمة المتبقية تبدأ بكامل السعر
+                remaining: price,
+                paymentsRegistry: [], // كشف حساب داخلي خاص بكل فاتورة لحالها
                 date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             });
 
@@ -474,7 +489,6 @@
             if(!container) return;
             container.innerHTML = '';
 
-            // حساب المجموع المتبقي الفعلي للفواتير غير المدفوعة
             let totalRemaining = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.remaining, 0);
             document.getElementById('grocery-total-bill').innerText = totalRemaining.toFixed(2) + " ر.س";
 
@@ -489,7 +503,6 @@
                 div.className = "list-item";
                 div.style.borderRight = "4px solid var(--neon-yellow)";
                 div.style.cursor = "pointer";
-                // عند الضغط على الكرت يفتح نافذة الدفع الجزئي
                 div.setAttribute('onclick', `openPartialPaymentModal('${item.id}')`);
 
                 let typeIcon = "📑";
@@ -501,37 +514,58 @@
                     <div style="max-width: 65%;">
                         <h4 style="font-size:0.95rem; color:#fff;">${typeIcon} [${item.type}] - ${item.name}</h4>
                         <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${item.date}</small>
-                        <span class="bill-badge" style="background: rgba(255,145,0,0.15); color: var(--neon-orange);">الفاتورة الأصلية: ${item.price.toFixed(2)} ر.س</span>
+                        <span class="bill-badge" style="background: rgba(0,176,255,0.1); color: var(--neon-blue);">الفاتورة الأصلية: ${item.price.toFixed(2)} ر.س</span>
                     </div>
                     <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;" onclick="event.stopPropagation();">
-                        <span style="font-size:0.75rem; color:var(--text-secondary);">المتبقي للدفع:</span>
+                        <span style="font-size:0.75rem; color:var(--text-secondary);">المتبقي الحالي:</span>
                         <span style="font-weight:900; color:var(--neon-yellow); font-family:'Plus Jakarta Sans'; font-size: 1.1rem;">${item.remaining.toFixed(2)} ر.س</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> حذف</button>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> إلغاء الفاتورة</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // فتح مودال التسديد الجزئي
+        // فتح مودال تفاصيل الفاتورة وعرض كشف حسابها ودفعاتها
         function openPartialPaymentModal(id) {
             const item = state.db.groceryDebtList.find(x => x.id === id);
             if(!item) return;
 
             document.getElementById('pay-modal-bill-id').value = id;
             document.getElementById('pay-modal-bill-title').innerText = `فاتورة [${item.type}] - ${item.name}`;
-            document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي الحالي: ${item.remaining.toFixed(2)} ر.س`;
+            document.getElementById('pay-modal-bill-date').innerText = `تاريخ الإنشاء: ${item.date}`;
+            document.getElementById('pay-modal-bill-original').innerText = `قيمة الدَّين الأصلي الكلي: ${item.price.toFixed(2)} ر.س`;
+            document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي للـسداد حالياً: ${item.remaining.toFixed(2)} ر.س`;
             document.getElementById('pay-part-amount').value = '';
             
+            // رندر كشف الحساب الخاص بالفاتورة دي لحالها
+            const logsContainer = document.getElementById('bill-individual-logs-target');
+            logsContainer.innerHTML = '';
+
+            if(!item.paymentsRegistry || item.paymentsRegistry.length === 0) {
+                logsContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.8rem; text-align:center; padding:10px;">لم يتم دفع أي دفعات لهذه الفاتورة بعد (جديدة).</p>`;
+            } else {
+                item.paymentsRegistry.forEach(p => {
+                    const logDiv = document.createElement('div');
+                    logDiv.className = "bill-log-item";
+                    logDiv.innerHTML = `
+                        <span>💵 تم تسديد دفعة</span>
+                        <strong style="color:var(--neon-green); font-family:'Plus Jakarta Sans';">${p.amount.toFixed(2)} ر.س</strong>
+                        <span style="font-size:0.7rem; color:var(--text-secondary);">${p.time}</span>
+                    `;
+                    logsContainer.appendChild(logDiv);
+                });
+            }
+
             openModal('modal-pay-part');
         }
 
-        // تنفيذ تسديد جزء من الفاتورة
+        // تنفيذ تسديد أي مبلغ (مفتوح جزئي أو كلي)
         function executeSubmitPartialPayment() {
             const id = document.getElementById('pay-modal-bill-id').value;
             const payAmount = parseFloat(document.getElementById('pay-part-amount').value);
 
-            if(isNaN(payAmount) || payAmount <= 0) return alert("الرجاء إدخال مبلغ دفع صحيح.");
+            if(isNaN(payAmount) || payAmount <= 0) return alert("الرجاء إدخال مبلغ صحيح للتسديد.");
 
             let itemIndex = state.db.groceryDebtList.findIndex(x => x.id === id);
             if(itemIndex === -1) return;
@@ -539,21 +573,29 @@
             let item = state.db.groceryDebtList[itemIndex];
 
             if(payAmount > item.remaining) {
-                return alert(`المبلغ المدخل أكبر من المتبقي في الفاتورة! المتبقي هو فقط: ${item.remaining.toFixed(2)} ر.س`);
+                return alert(`المبلغ أكبر من المتبقي! المتبقي المطلوب هو فقط: ${item.remaining.toFixed(2)} ر.س`);
             }
 
-            // تطبيق الخصم الجزئي
+            // تخصيم المبلغ من المتبقي
             item.remaining -= payAmount;
             
-            // خصم الدفعة من محفظتك الشخصية
+            // توثيق الحركة بكشف الحساب الخاص بالفاتورة نفسها لحالها
+            if(!item.paymentsRegistry) item.paymentsRegistry = [];
+            const timestamp = new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
+            item.paymentsRegistry.push({
+                amount: payAmount,
+                time: timestamp
+            });
+            
+            // خصم الدفعة من محفظتك الحرة الشخصية تلقائياً
             state.db.myAccount.balance -= payAmount;
 
-            // توثيق في سجل المحفظة
+            // توثيق في سجل المحفظة الرئيسي
             state.db.myAccount.history.push({
                 type: 'my_expense',
                 amt: payAmount,
-                reason: `💸 تسديد دفعة جزئية من فاتورة [${item.type}: ${item.name}]`,
-                displayDate: new Date().toLocaleString()
+                reason: `💸 تسديد دفعة من فاتورة [${item.type}: ${item.name}]`,
+                displayDate: timestamp
             });
 
             // توثيق في السجل العام للرئيسية
@@ -561,28 +603,30 @@
                 name: `فاتورة ${item.type}`,
                 type: 'my_expense',
                 amt: payAmount,
-                reason: `دفعة سداد بقيمة ${payAmount} ر.س من فاتورة: ${item.name}`
+                reason: `تسديد دفعة بقيمة ${payAmount} ر.س من فاتورة: ${item.name}`
             });
 
-            // إذا أصبحت الفاتورة مسددة بالكامل (0)، يتم إزالتها من الديون النشطة
+            // لو تسددت بالكامل (باقي 0) تقفل الفاتورة وتختفي بنجاح
             if(item.remaining <= 0) {
-                alert(`تم سداد الفاتورة بالكامل بنجاح! 🎉`);
+                alert(`تم سداد الفاتورة بالكامل وقفلها بنجاح! 🎉`);
                 state.db.groceryDebtList.splice(itemIndex, 1);
+                closeModal('modal-pay-part');
             } else {
-                alert(`تم تسجيل دفعة السداد (${payAmount.toFixed(2)} ر.س) بنجاح. المتبقي بالفاتورة: ${item.remaining.toFixed(2)} ر.س ✅`);
+                alert(`تم تسجيل دفعة السداد بقيمة (${payAmount.toFixed(2)} ر.س) بنجاح داخل كشف الفاتورة ✅`);
+                // إنعاش بيانات المودال المفتوح عشان تشوف التحديث والجدول مباشرة
+                openPartialPaymentModal(id);
             }
 
-            closeModal('modal-pay-part');
             commit();
         }
 
         function executeDeleteGroceryItem(index) {
-            if(!confirm("هل أنت متأكد من حذف هذه الفاتورة تماماً من النظام؟")) return;
+            if(!confirm("هل تريد إلغاء وحذف هذه الفاتورة تماماً من النظام؟")) return;
             state.db.groceryDebtList.splice(index, 1);
             commit();
         }
 
-        // 👥 HAMBURGER PEOPLE LIST IMPLEMENTATION
+        // 👥 PEOPLE CORE
         function executeSaveNewPerson() {
             const name = document.getElementById('p-name-input').value.trim();
             if(!name) return alert("فضلاً اكتب اسم العضو أولاً.");
@@ -653,7 +697,6 @@
             renderAllComponents();
         }
 
-        // 🗂️ RENDER INDIVIDUAL EXCLUSIVE PAGE
         function renderExclusivePersonProfilePage(personId) {
             const balancesBox = document.getElementById('profile-box-balances-list');
             const ledgerContainer = document.getElementById('profile-exclusive-ledger-target');
@@ -759,7 +802,6 @@
             });
         }
 
-        // 💳 RECORD NEW TRANSACTION FOR ACTIVE PERSON
         function openTransactionModalForActivePerson() {
             const select = document.getElementById('adjust-action-type');
             select.innerHTML = '';
@@ -824,7 +866,7 @@
         }
 
         function executeDeleteMyOwnTransaction(index) {
-            if(!confirm("هل أنت متأكد من حذف هذه الحركة من محفظتك؟")) return;
+            if(!confirm("هل أنت متأكد من حذف هذه الحركة؟")) return;
             let h = state.db.myAccount.history[index];
             if(h.type === 'my_income') state.db.myAccount.balance -= h.amt;
             else state.db.myAccount.balance += h.amt;
@@ -850,7 +892,7 @@
         }
 
         function executeDeleteEntirePerson(id) {
-            if(!confirm("⚠️ تحذير: هل أنت متأكد من حذف هذا الشخص وكافة سجلاته المالية نهائياً؟ لا يمكن التراجع.")) return;
+            if(!confirm("⚠️ تحذير: هل أنت متأكد من حذف هذا الشخص وكافة سجلاته المالية نهائياً؟")) return;
             state.db.people = state.db.people.filter(p => p.id !== id);
             navigateToDashboard();
         }
@@ -880,10 +922,8 @@
         }
 
         function executeSystemReset() {
-            const confirm1 = confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من رغبتك في مسح وإعادة ضبط التطبيق؟ سيتم حذف جميع الأسماء، وفواتير الديون، والعمليات التاريخية نهائياً!");
-            if(confirm1) {
-                const confirm2 = confirm("🛑 تأكيد أخير:\nاضغط موافق لتأكيد الحذف الكامل والبدء من جديد الآن.");
-                if(confirm2) {
+            if(confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من مسح وإعادة ضبط التطبيق؟")) {
+                if(confirm("🛑 تأكيد أخير:\nاضغط موافق لتأكيد الحذف الكامل والبدء من جديد الآن.")) {
                     localStorage.removeItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA');
                     location.reload();
                 }
