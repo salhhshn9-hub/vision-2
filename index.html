@@ -1,247 +1,193 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Finance OS Pro Max</title>
+<title>Finance OS Pro Max</title>
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0b1220">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{
+margin:0;
+font-family:'Cairo';
+background:#0b1220;
+color:white;
+}
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+.top{
+padding:15px;
+background:rgba(255,255,255,0.05);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:rgba(255,255,255,0.06);
-      --stroke:rgba(255,255,255,0.08);
-      --text:#fff;
-      --muted:#9ca3af;
-      --green:#22c55e;
-      --red:#ef4444;
-      --blue:#3b82f6;
-      --radius:18px;
-    }
+.tab{display:none;padding:15px;}
+.tab.active{display:block;}
 
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
-    body{background:var(--bg);color:var(--text);}
+.card{
+background:rgba(255,255,255,0.05);
+padding:15px;
+margin:10px;
+border-radius:15px;
+}
 
-    #app{padding-bottom:80px;}
+input,select{
+width:100%;
+padding:10px;
+margin:5px 0;
+border-radius:10px;
+border:none;
+background:#111827;
+color:white;
+}
 
-    /* TOP */
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      padding:15px;
-      background:rgba(255,255,255,0.03);
-      border-bottom:1px solid var(--stroke);
-      backdrop-filter:blur(12px);
-      position:sticky;
-      top:0;
-    }
+button{
+padding:10px;
+width:100%;
+margin-top:8px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+font-weight:bold;
+}
 
-    /* CARD */
-    .card{
-      background:var(--card);
-      border:1px solid var(--stroke);
-      padding:15px;
-      margin:12px;
-      border-radius:var(--radius);
-      backdrop-filter:blur(12px);
-    }
+.nav{
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+justify-content:space-around;
+padding:10px;
+background:#0b1220;
+border-top:1px solid #333;
+}
 
-    /* GRID */
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:10px;
-      margin:12px;
-    }
-
-    .mini{
-      background:var(--card);
-      padding:12px;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-    }
-
-    /* NAV */
-    .nav{
-      position:fixed;
-      bottom:0;
-      width:100%;
-      background:rgba(0,0,0,0.6);
-      backdrop-filter:blur(20px);
-      display:flex;
-      justify-content:space-around;
-      padding:12px;
-      border-top:1px solid var(--stroke);
-    }
-
-    .nav button{
-      background:none;
-      border:none;
-      color:var(--muted);
-      font-size:18px;
-    }
-
-    .nav button.active{color:var(--blue);}
-
-    /* TABS */
-    .tab{display:none;}
-    .tab.active{display:block;}
-
-    input,select{
-      width:100%;
-      padding:12px;
-      margin-top:8px;
-      border-radius:12px;
-      border:1px solid var(--stroke);
-      background:rgba(0,0,0,0.2);
-      color:white;
-    }
-
-    button.action{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border:none;
-      border-radius:12px;
-      background:var(--blue);
-      color:white;
-      font-weight:bold;
-    }
-  </style>
+.nav button{
+background:none;
+font-size:18px;
+}
+</style>
 </head>
 
 <body>
 
-<div id="app">
+<div class="top">
+<b>🏦 Finance OS</b>
+<button onclick="show('tx')">＋</button>
+</div>
 
-  <!-- TOP -->
-  <div class="topbar">
-    <b>🏦 Finance OS</b>
-    <button onclick="addTx()">＋</button>
-  </div>
+<!-- DASHBOARD -->
+<div id="home" class="tab active">
 
-  <!-- DASHBOARD -->
-  <div id="home" class="tab active">
+<div class="card">
+<h3>الرصيد</h3>
+<h1 id="balance">0</h1>
+</div>
 
-    <div class="card">
-      <h3>الرصيد الكلي</h3>
-      <h1 id="balance">0</h1>
-    </div>
+<div class="card">
+دخل: <span id="inc">0</span><br>
+مصروف: <span id="exp">0</span><br>
+دين: <span id="debt">0</span>
+</div>
 
-    <div class="grid">
-      <div class="mini">دخل<br><b id="income">0</b></div>
-      <div class="mini">مصروف<br><b id="expense">0</b></div>
-      <div class="mini">صافي<br><b id="net">0</b></div>
-      <div class="mini">ديون<br><b id="debt">0</b></div>
-    </div>
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
 
-    <div class="card">
-      <canvas id="chart"></canvas>
-    </div>
+</div>
 
-  </div>
+<!-- TX -->
+<div id="tx" class="tab">
 
-  <!-- TRANSACTIONS -->
-  <div id="tx" class="tab">
+<div class="card">
+<select id="type">
+<option value="income">دخل</option>
+<option value="expense">مصروف</option>
+<option value="debt">دين</option>
+</select>
 
-    <div class="card">
-      <h3>إضافة عملية</h3>
+<input id="amount" placeholder="المبلغ" type="number">
+<input id="note" placeholder="ملاحظة">
 
-      <select id="type">
-        <option value="income">دخل</option>
-        <option value="expense">مصروف</option>
-        <option value="debt">دين</option>
-      </select>
+<button onclick="add()">حفظ</button>
+</div>
 
-      <input id="amount" placeholder="المبلغ" type="number">
-      <input id="note" placeholder="ملاحظة">
-
-      <button class="action" onclick="saveTx()">حفظ</button>
-    </div>
-
-    <div id="list"></div>
-
-  </div>
+<div id="list"></div>
 
 </div>
 
 <!-- NAV -->
 <div class="nav">
-  <button onclick="show('home')" class="active">🏠</button>
-  <button onclick="show('tx')">💰</button>
+<button onclick="show('home')">🏠</button>
+<button onclick="show('tx')">💰</button>
 </div>
 
 <script>
-let db = JSON.parse(localStorage.getItem("fin_os") || '{"tx":[]}');
+
+let db = JSON.parse(localStorage.getItem("db")||'{"tx":[]}');
 
 function save(){
-  localStorage.setItem("fin_os", JSON.stringify(db));
-  render();
+localStorage.setItem("db",JSON.stringify(db));
+render();
 }
 
-function addTx(){ show('tx'); }
-
-function saveTx(){
-  db.tx.push({
-    type: type.value,
-    amount: +amount.value,
-    note: note.value,
-    date: new Date().toLocaleString()
-  });
-  save();
+function add(){
+db.tx.push({
+type:type.value,
+amount:+amount.value,
+note:note.value,
+date:new Date().toLocaleString()
+});
+save();
 }
 
 function calc(){
-  let inc=0,exp=0,debt=0;
+let i=0,e=0,d=0;
 
-  db.tx.forEach(t=>{
-    if(t.type==="income") inc+=t.amount;
-    if(t.type==="expense") exp+=t.amount;
-    if(t.type==="debt") debt+=t.amount;
-  });
+db.tx.forEach(t=>{
+if(t.type=="income") i+=t.amount;
+if(t.type=="expense") e+=t.amount;
+if(t.type=="debt") d+=t.amount;
+});
 
-  return {
-    inc,exp,debt,
-    net: inc-exp
-  };
+return {i,e,d,n:i-e};
 }
 
 function render(){
-  let f=calc();
 
-  balance.innerText = f.net;
-  income.innerText = f.inc;
-  expense.innerText = f.exp;
-  net.innerText = f.net;
-  debt.innerText = f.debt;
+let f=calc();
 
-  list.innerHTML = "";
+balance.innerText=f.n;
+inc.innerText=f.i;
+exp.innerText=f.e;
+debt.innerText=f.d;
 
-  db.tx.slice().reverse().forEach(t=>{
-    list.innerHTML += `
-      <div class="card">
-        <b>${t.type}</b><br>
-        ${t.amount} - ${t.note}<br>
-        <small>${t.date}</small>
-      </div>
-    `;
-  });
+list.innerHTML="";
+
+db.tx.slice().reverse().forEach(t=>{
+list.innerHTML+=`
+<div class="card">
+<b>${t.type}</b><br>
+${t.amount}<br>
+${t.note}<br>
+<small>${t.date}</small>
+</div>`;
+});
 }
 
 function show(id){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
 render();
+
 </script>
 
 </body>
