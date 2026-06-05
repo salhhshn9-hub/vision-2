@@ -62,7 +62,7 @@
         .total-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
         .total-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; margin-top: 4px; }
 
-        /* Navigation Bottom Tabs Style for Grocery Quick Access */
+        /* Navigation Bottom Tabs Style */
         .nav-tabs { display: flex; gap: 10px; padding: 0 16px; margin-bottom: 10px; }
         .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
         .tab-btn.active { background: rgba(0, 176, 255, 0.1); border-color: var(--neon-blue); color: #fff; }
@@ -89,6 +89,8 @@
         
         .btn-reset-system { background: transparent; border: 1px dashed var(--neon-red); color: var(--neon-red); padding: 10px; border-radius: 12px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; transition: var(--transition); }
         .btn-reset-system:hover { background: rgba(255, 23, 68, 0.1); }
+
+        .bill-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -121,7 +123,7 @@
         <!-- 📑 NAVIGATION TABS ON TOP -->
         <div class="nav-tabs" style="margin-top: 20px;">
             <button class="tab-btn active" id="tab-dash" onclick="switchMainTab('dash')"><i class="fa-solid fa-house"></i> الرئيسية</button>
-            <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-shop"></i> فواتير البقالة دَين</button>
+            <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-receipt"></i> دفتر الفواتير والدَّين</button>
         </div>
 
         <!-- 🏠 PAGE 1: DASHBOARD -->
@@ -166,10 +168,10 @@
                     <i class="fa-solid fa-comment-dollar" style="font-size:1.4rem; color:var(--neon-red); opacity:0.4;"></i>
                 </div>
 
-                <!-- 🛒 كرت إجمالي دين البقالة المستحق بالرئيسية -->
+                <!-- 🛒 كرت إجمالي دين الفواتير العام المتبقي -->
                 <div class="total-box" style="border-right: 5px solid var(--neon-yellow); cursor: pointer;" onclick="switchMainTab('grocery')">
                     <div>
-                        <p style="color:var(--text-secondary); font-size:0.85rem;">🛒 إجمالي دين البقالة الحالي المطلوب منك</p>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">⏳ إجمالي الفواتير والدين المتبقي عليك (بقالة، نت...)</p>
                         <h4 id="global-grocery-debt" style="color:var(--neon-yellow);">0.00 ر.س</h4>
                     </div>
                     <i class="fa-solid fa-basket-shopping" style="font-size:1.4rem; color:var(--neon-yellow); opacity:0.4;"></i>
@@ -186,25 +188,22 @@
             </div>
         </div>
 
-        <!-- 🛒 PAGE 2: GROCERY HUB (NEW FEATURE) -->
+        <!-- 🛒 PAGE 2: GENERAL DEBT HUB (UPDATED TO GENERAL BILLS) -->
         <div id="page-grocery" class="app-page">
             <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center;">
-                <i class="fa-solid fa-store" style="font-size: 2rem; color: var(--neon-yellow); margin-bottom: 8px;"></i>
-                <p style="color: var(--text-secondary); font-size: 0.85rem;">🛒 دفتر حساب المشتريات والدَّين اليومي للبقالة</p>
+                <i class="fa-solid fa-file-invoice-dollar" style="font-size: 2rem; color: var(--neon-yellow); margin-bottom: 8px;"></i>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">📑 دفتر فواتير الدَّين المستحقة (بقالة، نت، كهرباء...)</p>
                 <h1 style="font-size: 2.3rem; margin: 6px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
                 
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn-submit" style="background: var(--neon-yellow); color: #000; flex: 1; padding: 12px; font-size: 0.9rem;" onclick="openModal('modal-add-grocery')">
-                        <i class="fa-solid fa-plus"></i> تسجيل غرض دَين
-                    </button>
-                    <button class="btn-submit" style="background: var(--neon-green); color: #000; flex: 1; padding: 12px; font-size: 0.9rem;" onclick="executePayAllGroceryBill()">
-                        <i class="fa-solid fa-check-double"></i> تسديد الحساب كاش
+                <div style="margin-top: 15px;">
+                    <button class="btn-submit" style="background: var(--neon-yellow); color: #000; padding: 12px; font-size: 0.95rem;" onclick="openModal('modal-add-grocery')">
+                        <i class="fa-solid fa-plus"></i> إضافة فاتورة دين جديدة
                     </button>
                 </div>
             </div>
 
             <div style="padding:0 16px 30px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> قائمة السلع والأغراض غير المدفوعة</h3>
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> الفواتير القائمة (اضغط لتسديد جزء أو الكل)</h3>
                 <div id="grocery-items-list-target"></div>
             </div>
         </div>
@@ -239,19 +238,45 @@
 
     </div>
 
-    <!-- 🛍️ MODAL ADD GROCERY ITEM -->
+    <!-- 🛍️ MODAL ADD BILL ITEM -->
     <div id="modal-add-grocery" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-grocery')">
         <div class="modal-content">
-            <h3 style="color: var(--neon-yellow); margin-bottom:15px;"><i class="fa-solid fa-cart-plus"></i> تسجيل شراء غرض بالدَّين</h3>
+            <h3 style="color: var(--neon-yellow); margin-bottom:15px;"><i class="fa-solid fa-cart-plus"></i> إضافة فاتورة / دين جديد</h3>
             <div class="form-group">
-                <label>اسم الغرض / البيان (مثال: خبز وألبان، أغراض الغداء)</label>
-                <input type="text" id="g-item-name" class="form-control" placeholder="اكتب المشتريات...">
+                <label>نوع الدين / الجهة (مثال: بقالة، فاتورة نت، كهرباء، سلف شخصي)</label>
+                <select id="g-item-type" class="form-control">
+                    <option value="بقالة">🛒 دين بقالة</option>
+                    <option value="نت">🌐 فاتورة إنترنت</option>
+                    <option value="كهرباء">⚡ فاتورة كهرباء / خدمات</option>
+                    <option value="أخرى">📝 دين / فاتورة أخرى</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>سعر التكلفة الإجمالي (ر.س)</label>
+                <label>البيان أو الوصف (مثال: أغراض العشاء، اشتراك شهر يونيو)</label>
+                <input type="text" id="g-item-name" class="form-control" placeholder="اكتب التفاصيل...">
+            </div>
+            <div class="form-group">
+                <label>قيمة الفاتورة أو الدين الإجمالي (ر.س)</label>
                 <input type="number" id="g-item-price" class="form-control" placeholder="0.00">
             </div>
-            <button class="btn-submit" style="background: var(--neon-yellow); color: #000;" onclick="executeSaveGroceryItem()">إضافة الحساب للدين اليومي</button>
+            <button class="btn-submit" style="background: var(--neon-yellow); color: #000;" onclick="executeSaveGroceryItem()">إضافة إلى دفتر الديون</button>
+        </div>
+    </div>
+
+    <!-- 💳 MODAL PARTIAL PAYMENT (NEW) -->
+    <div id="modal-pay-part" class="modal" onclick="closeModalOnOuterClick(event, 'modal-pay-part')">
+        <div class="modal-content">
+            <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-money-bill-wave"></i> تسديد جزء أو كامل الفاتورة</h3>
+            <div class="glass-card" style="margin: 0 0 15px 0; background: rgba(255,255,255,0.01);">
+                <p id="pay-modal-bill-title" style="font-weight: bold;"></p>
+                <p id="pay-modal-bill-remaining" style="color: var(--neon-yellow); margin-top: 5px; font-family: 'Plus Jakarta Sans';"></p>
+            </div>
+            <input type="hidden" id="pay-modal-bill-id">
+            <div class="form-group">
+                <label>المبلغ المراد تسديده الآن (ر.س) - مثلاً: 100 أو 200 حسب مقدرتك</label>
+                <input type="number" id="pay-part-amount" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn-submit" style="background: var(--neon-green); color: #000;" onclick="executeSubmitPartialPayment()">تأكيد خصم الدفعة والتسديد</button>
         </div>
     </div>
 
@@ -297,7 +322,7 @@
                 myAccount: { id: 'my_own_core_account', name: 'حسابي الشخصي (أنا)', balance: 0, history: [] },
                 people: [], 
                 globalLogs: [],
-                groceryDebtList: [] // 🛒 مصفوفة تخزين فواتير البقالة
+                groceryDebtList: [] // مصفوفة الفواتير العامة
             },
             activePersonId: null
         };
@@ -354,7 +379,7 @@
             }
         }
 
-        // 📊 ACCOUNTING CORE ENGINE (UPDATED TO INTEGRATE GROCERY DEBT)
+        // 📊 ACCOUNTING CORE ENGINE
         function calculateSystemMetrics() {
             let sumTrusts = 0, sumLoansToThem = 0, sumLoansOnMe = 0;
 
@@ -364,11 +389,10 @@
                 sumLoansOnMe += ((p.borrowed_from_him || 0) - (p.repaid_to_him || 0));
             });
 
-            // حساب مجموع فواتير البقالة المعلقة
-            let totalGroceryDebt = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.price, 0);
+            // حساب المتبقي من الفواتير المفتوحة فقط
+            let totalGroceryDebt = state.db.groceryDebtList.reduce((acc, curr) => acc + (curr.remaining !== undefined ? curr.remaining : curr.price), 0);
 
             let myOwnBalance = state.db.myAccount.balance || 0;
-            // فواتير البقالة تعتبر ديوناً عليك للآخرين، وتخصم من ثروتك الصافية الحقيقية
             let totalLiquidity = myOwnBalance + sumTrusts + sumLoansOnMe - sumLoansToThem;
             let myRealMoney = myOwnBalance + sumLoansToThem - sumLoansOnMe - totalGroceryDebt;
 
@@ -421,18 +445,21 @@
             }
         }
 
-        // 🛒 GROCERY LOGIC FUNCTIONS
+        // 🛒 BILLS & DEBT HUB LOGIC (UPDATED WITH PARTIAL PAYMENT)
         function executeSaveGroceryItem() {
+            const type = document.getElementById('g-item-type').value;
             const name = document.getElementById('g-item-name').value.trim();
             const price = parseFloat(document.getElementById('g-item-price').value);
 
-            if(!name) return alert("الرجاء كتابة اسم الأغراض.");
-            if(isNaN(price) || price <= 0) return alert("الرجاء إدخال سعر صحيح.");
+            if(!name) return alert("الرجاء كتابة البيان أو الوصف.");
+            if(isNaN(price) || price <= 0) return alert("الرجاء إدخال مبلغ صحيح.");
 
             state.db.groceryDebtList.push({
-                id: 'g_' + Date.now(),
+                id: 'bill_' + Date.now(),
+                type: type,
                 name: name,
                 price: price,
+                remaining: price, // القيمة المتبقية تبدأ بكامل السعر
                 date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             });
 
@@ -447,11 +474,12 @@
             if(!container) return;
             container.innerHTML = '';
 
-            let total = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.price, 0);
-            document.getElementById('grocery-total-bill').innerText = total.toFixed(2) + " ر.س";
+            // حساب المجموع المتبقي الفعلي للفواتير غير المدفوعة
+            let totalRemaining = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.remaining, 0);
+            document.getElementById('grocery-total-bill').innerText = totalRemaining.toFixed(2) + " ر.س";
 
             if(state.db.groceryDebtList.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">الحساب مصفّر! لا توجد فواتير دَين معلقة للبقالة 🎉</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">دفتر الديون نظيف ولا توجد فواتير معلقة 🎉</p>`;
                 return;
             }
 
@@ -460,55 +488,98 @@
                 const div = document.createElement('div');
                 div.className = "list-item";
                 div.style.borderRight = "4px solid var(--neon-yellow)";
+                div.style.cursor = "pointer";
+                // عند الضغط على الكرت يفتح نافذة الدفع الجزئي
+                div.setAttribute('onclick', `openPartialPaymentModal('${item.id}')`);
+
+                let typeIcon = "📑";
+                if(item.type === "بقالة") typeIcon = "🛒";
+                if(item.type === "نت") typeIcon = "🌐";
+                if(item.type === "كهرباء") typeIcon = "⚡";
+
                 div.innerHTML = `
-                    <div>
-                        <h4 style="font-size:0.95rem; color:#fff;">${item.name}</h4>
+                    <div style="max-width: 65%;">
+                        <h4 style="font-size:0.95rem; color:#fff;">${typeIcon} [${item.type}] - ${item.name}</h4>
                         <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${item.date}</small>
+                        <span class="bill-badge" style="background: rgba(255,145,0,0.15); color: var(--neon-orange);">الفاتورة الأصلية: ${item.price.toFixed(2)} ر.س</span>
                     </div>
-                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                        <span style="font-weight:700; color:var(--neon-yellow); font-family:'Plus Jakarta Sans';">${item.price.toFixed(2)} ر.س</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
+                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;" onclick="event.stopPropagation();">
+                        <span style="font-size:0.75rem; color:var(--text-secondary);">المتبقي للدفع:</span>
+                        <span style="font-weight:900; color:var(--neon-yellow); font-family:'Plus Jakarta Sans'; font-size: 1.1rem;">${item.remaining.toFixed(2)} ر.س</span>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> حذف</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function executeDeleteGroceryItem(index) {
-            if(!confirm("هل أنت متأكد من حذف هذا الغرض من قائمة الفاتورة؟")) return;
-            state.db.groceryDebtList.splice(index, 1);
+        // فتح مودال التسديد الجزئي
+        function openPartialPaymentModal(id) {
+            const item = state.db.groceryDebtList.find(x => x.id === id);
+            if(!item) return;
+
+            document.getElementById('pay-modal-bill-id').value = id;
+            document.getElementById('pay-modal-bill-title').innerText = `فاتورة [${item.type}] - ${item.name}`;
+            document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي الحالي: ${item.remaining.toFixed(2)} ر.س`;
+            document.getElementById('pay-part-amount').value = '';
+            
+            openModal('modal-pay-part');
+        }
+
+        // تنفيذ تسديد جزء من الفاتورة
+        function executeSubmitPartialPayment() {
+            const id = document.getElementById('pay-modal-bill-id').value;
+            const payAmount = parseFloat(document.getElementById('pay-part-amount').value);
+
+            if(isNaN(payAmount) || payAmount <= 0) return alert("الرجاء إدخال مبلغ دفع صحيح.");
+
+            let itemIndex = state.db.groceryDebtList.findIndex(x => x.id === id);
+            if(itemIndex === -1) return;
+
+            let item = state.db.groceryDebtList[itemIndex];
+
+            if(payAmount > item.remaining) {
+                return alert(`المبلغ المدخل أكبر من المتبقي في الفاتورة! المتبقي هو فقط: ${item.remaining.toFixed(2)} ر.س`);
+            }
+
+            // تطبيق الخصم الجزئي
+            item.remaining -= payAmount;
+            
+            // خصم الدفعة من محفظتك الشخصية
+            state.db.myAccount.balance -= payAmount;
+
+            // توثيق في سجل المحفظة
+            state.db.myAccount.history.push({
+                type: 'my_expense',
+                amt: payAmount,
+                reason: `💸 تسديد دفعة جزئية من فاتورة [${item.type}: ${item.name}]`,
+                displayDate: new Date().toLocaleString()
+            });
+
+            // توثيق في السجل العام للرئيسية
+            state.db.globalLogs.push({
+                name: `فاتورة ${item.type}`,
+                type: 'my_expense',
+                amt: payAmount,
+                reason: `دفعة سداد بقيمة ${payAmount} ر.س من فاتورة: ${item.name}`
+            });
+
+            // إذا أصبحت الفاتورة مسددة بالكامل (0)، يتم إزالتها من الديون النشطة
+            if(item.remaining <= 0) {
+                alert(`تم سداد الفاتورة بالكامل بنجاح! 🎉`);
+                state.db.groceryDebtList.splice(itemIndex, 1);
+            } else {
+                alert(`تم تسجيل دفعة السداد (${payAmount.toFixed(2)} ر.س) بنجاح. المتبقي بالفاتورة: ${item.remaining.toFixed(2)} ر.س ✅`);
+            }
+
+            closeModal('modal-pay-part');
             commit();
         }
 
-        function executePayAllGroceryBill() {
-            let total = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.price, 0);
-            if(total === 0) return alert("لا يوجد مبالغ معلقة لتسديدها.");
-
-            if(confirm(`هل تريد تسديد كامل حساب البقالة البالغ (${total.toFixed(2)} ر.س) وخصمه من محفظتك الشخصية؟`)) {
-                // خصم المبلغ من الحساب الشخصي
-                state.db.myAccount.balance -= total;
-                
-                // توثيق الحركة في سجل المحفظة الشخصية
-                state.db.myAccount.history.push({
-                    type: 'my_expense',
-                    amt: total,
-                    reason: `🧾 تسديد كامل فاتورة حساب البقالة المجمع`,
-                    displayDate: new Date().toLocaleString()
-                });
-
-                // توثيق في السجل العام للرئيسية
-                state.db.globalLogs.push({
-                    name: "البقالة (تسديد كامل)",
-                    type: 'my_expense',
-                    amt: total,
-                    reason: `تسديد فواتير الدَّين المجمعة للبقالة`
-                });
-
-                // تصفير مصفوفة فواتير البقالة
-                state.db.groceryDebtList = [];
-                commit();
-                alert("تم تسديد الحساب بنجاح وخصمه من محفظتك الشخصية 🛒✅");
-            }
+        function executeDeleteGroceryItem(index) {
+            if(!confirm("هل أنت متأكد من حذف هذه الفاتورة تماماً من النظام؟")) return;
+            state.db.groceryDebtList.splice(index, 1);
+            commit();
         }
 
         // 👥 HAMBURGER PEOPLE LIST IMPLEMENTATION
@@ -809,7 +880,7 @@
         }
 
         function executeSystemReset() {
-            const confirm1 = confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من رغبتك في مسح وإعادة ضبط التطبيق؟ سيتم حذف جميع الأسماء، وفواتير البقالة، والعمليات التاريخية نهائياً!");
+            const confirm1 = confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من رغبتك في مسح وإعادة ضبط التطبيق؟ سيتم حذف جميع الأسماء، وفواتير الديون، والعمليات التاريخية نهائياً!");
             if(confirm1) {
                 const confirm2 = confirm("🛑 تأكيد أخير:\nاضغط موافق لتأكيد الحذف الكامل والبدء من جديد الآن.");
                 if(confirm2) {
