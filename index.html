@@ -7,10 +7,12 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0d0e15">
     <link rel="apple-touch-icon" href="icon.png">
+    <!-- Google Fonts & FontAwesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js Engine -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -111,6 +113,7 @@
 </head>
 <body>
 
+    <!-- 🔐 SECURITY LOG IN GATE -->
     <div id="lockscreen">
         <i class="fa-solid fa-shield-halved" style="font-size: 3.5rem; color: var(--neon-blue); text-shadow: 0 0 25px rgba(0,176,255,0.4);"></i>
         <h2 id="lbl-lock-title" style="margin-top: 20px; font-weight: 500;">أدخل رمز التحقق الأمني</h2>
@@ -130,6 +133,7 @@
         </div>
     </div>
 
+    <!-- 📱 APPLICATION WRAPPER CONTAINER -->
     <div class="app-container">
         <header>
             <div class="profile-section">
@@ -142,6 +146,7 @@
             <button class="lang-btn" onclick="toggleLanguageSystem()" id="lang-toggle-btn">EN</button>
         </header>
 
+        <!-- 📊 VIEW 1: DASHBOARD AND CHARTS -->
         <div id="view-dashboard" class="view-section active">
             <div class="glass-card main-balance-card">
                 <p style="color: var(--text-secondary); font-size: 0.85rem;" id="lbl-total-cash-title">السيولة النقدية المتاحة الإجمالية</p>
@@ -182,9 +187,10 @@
             </div>
         </div>
 
+        <!-- 👥 VIEW 2: PEOPLE & DEEP DEBT MATRIX -->
         <div id="view-people" class="view-section">
             <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; padding:15px 20px;">
-                <h3 style="font-size:1rem;" id="lbl-sec-people">إدارة الأعضاء والعهود المالية الدقيقة</h3>
+                <h3 style="font-size:1rem;" id="lbl-sec-people">الحسابات الجارية وأمانات الأشخاص والديون</h3>
                 <button class="lang-btn" style="background:var(--neon-blue); color:#000; border:none;" onclick="openModal('modal-add-person')"><i class="fa-solid fa-user-plus"></i></button>
             </div>
             <div style="margin: 0 16px 10px 16px;">
@@ -193,6 +199,7 @@
             <div id="people-render-target"></div>
         </div>
 
+        <!-- 📜 VIEW 3: LEDGER WITH TRASH BIN SYSTEM -->
         <div id="view-ledger" class="view-section">
             <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; padding:15px 20px;">
                 <h3 style="font-size:1rem;" id="lbl-sec-ledger">شجرة السجلات والتوثيق المالي العام</h3>
@@ -206,7 +213,7 @@
                 <div class="filter-chip active" id="f-all" onclick="setLedgerFilter('all')">الكل</div>
                 <div class="filter-chip" id="f-income" onclick="setLedgerFilter('income')">الدخل</div>
                 <div class="filter-chip" id="f-expense" onclick="setLedgerFilter('expense')">المصاريف</div>
-                <div class="filter-chip" id="f-debt" onclick="setLedgerFilter('debt')">الديون</div>
+                <div class="filter-chip" id="f-debt" onclick="setLedgerFilter('debt')">الديون والعهود</div>
             </div>
 
             <div style="margin: 0 16px 12px 16px; display:flex; gap:8px;">
@@ -220,6 +227,7 @@
             <div id="ledger-render-target" style="padding:0 16px;"></div>
         </div>
 
+        <!-- 🎯 VIEW 4: SAVINGS GOALS & PROGRESS SYSTEM -->
         <div id="view-savings" class="view-section">
             <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; padding:15px 20px;">
                 <h3 style="font-size:1rem;" id="lbl-sec-goals">حصالة الأهداف الاستراتيجية والادخار</h3>
@@ -228,6 +236,7 @@
             <div id="goals-render-target"></div>
         </div>
 
+        <!-- ⚙️ VIEW 5: SECURITY DATA HUB & EXPORTS -->
         <div id="view-settings" class="view-section">
             <div class="glass-card">
                 <h3 style="margin-bottom:15px; font-size:1rem;" id="lbl-sec-backup">مركز تصدير واستيراد النسخ الاحتياطية</h3>
@@ -245,40 +254,47 @@
             </div>
         </div>
 
+        <!-- 🏦 BOTTTOM SYSTEM NAVIGATION TOOLBAR -->
         <nav class="bottom-nav">
             <div class="nav-item active" id="nav-dash" onclick="switchViewSection('dashboard')"><i class="fa-solid fa-chart-pie"></i><span id="nv-1">الرئيسية</span></div>
-            <div class="nav-item" id="nav-ppl" onclick="switchViewSection('people')"><i class="fa-solid fa-users"></i><span id="nv-2">العهود</span></div>
+            <div class="nav-item" id="nav-ppl" onclick="switchViewSection('people')"><i class="fa-solid fa-users"></i><span id="nv-2">الأشخاص</span></div>
             <div class="nav-item" id="nav-ledg" onclick="switchViewSection('ledger')"><i class="fa-solid fa-receipt"></i><span id="nv-3">السجلات</span></div>
             <div class="nav-item" id="nav-save" onclick="switchViewSection('savings')"><i class="fa-solid fa-bullseye"></i><span id="nv-4">الادخار</span></div>
             <div class="nav-item" id="nav-sett" onclick="switchViewSection('settings')"><i class="fa-solid fa-sliders"></i><span id="nv-5">الأدوات</span></div>
         </nav>
     </div>
 
+    <!-- 📥 MODAL 1: ADD NEW MEMBER -->
     <div id="modal-add-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-person')">
         <div class="modal-content">
-            <h3 style="margin-bottom:15px;" id="lbl-m1-title">إضافة عضو جديد لشجرة العهود</h3>
-            <div class="form-group"><label id="lbl-m1-name">اسم العضو بالكامل</label><input type="text" id="p-name-input" class="form-control"></div>
+            <h3 style="margin-bottom:15px;" id="lbl-m1-title">إضافة شخص جديد في النظام</h3>
+            <div class="form-group"><label id="lbl-m1-name">اسم الشخص بالكامل</label><input type="text" id="p-name-input" class="form-control" placeholder="مثال: محمد، أبو أحمد..."></div>
             <button class="btn-submit" onclick="executeSaveNewPerson()">تثبيت العضو فوراً</button>
         </div>
     </div>
 
+    <!-- 💳 MODAL 2: ADVANCED WALLET TRANSACTION ENGINE (تاريخ يدوي وملاحظات متقدمة) -->
     <div id="modal-adjust-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-adjust-person')">
         <div class="modal-content">
-            <h3 id="adjust-modal-title" style="color:var(--neon-blue); margin-bottom:15px;">إدارة عهود الشخص</h3>
+            <h3 id="adjust-modal-title" style="color:var(--neon-blue); margin-bottom:15px;">إدارة حركة الأموال</h3>
             <input type="hidden" id="adjust-person-id">
             <div class="form-group">
-                <label id="lbl-m2-type">نوع الحركة المالية المباشرة</label>
+                <label>طبيعة الحركة المالية</label>
                 <select id="adjust-action-type" class="form-control">
-                    <option value="borrowed">أخذ عهدة / سلفة جديدة (دين عليه) (+)</option>
-                    <option value="repaid">أرجع / سدد جزء من المبالغ (تسديد منه) (-)</option>
+                    <option value="deposit_trust">📥 أخذت منه أمانة / يجمع عندي فلوسه (+)</option>
+                    <option value="withdraw_trust">💸 سحب من أمانته / اشترى بفلوسه شيئاً (-)</option>
+                    <option value="give_loan">📤 أنا سلفته / أعطيته دين عليه (+)</option>
+                    <option value="receive_loan_repay">💰 هو سددني ورجع لي سلفته (-)</option>
                 </select>
             </div>
-            <div class="form-group"><label id="lbl-m2-amt">قيمة المبلغ (ر.س)</label><input type="number" id="adjust-amount" class="form-control" placeholder="0.00"></div>
-            <div class="form-group"><label id="lbl-m2-desc">البيان والسبب التفصيلي للموثوقية</label><input type="text" id="adjust-reason" class="form-control" placeholder="مثال: شراء أغراض البقالة"></div>
-            <button class="btn-submit" onclick="executePersonDebtAdjustment()">توثيق الحركة في دفتر العهود</button>
+            <div class="form-group"><label>قيمة المبلغ (ر.س)</label><input type="number" id="adjust-amount" class="form-control" placeholder="0.00"></div>
+            <div class="form-group"><label>تحديد التاريخ يدويًا</label><input type="datetime-local" id="adjust-date" class="form-control"></div>
+            <div class="form-group"><label>الملاحظة والبيان (مثال: اشترى بـ 5 ريال بيبسي)</label><input type="text" id="adjust-reason" class="form-control" placeholder="اكتب التفاصيل هنا..."></div>
+            <button class="btn-submit" onclick="executePersonDebtAdjustment()">توثيق الحركة فوراً</button>
         </div>
     </div>
 
+    <!-- 💸 MODAL 3: ADD GENERAL INCOME / EXPENSE TRANSACTION -->
     <div id="modal-add-tx" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-tx')">
         <div class="modal-content">
             <h3 style="margin-bottom:15px;" id="lbl-m3-title">تسجيل تدفق مالي عام</h3>
@@ -289,15 +305,17 @@
                 </select>
             </div>
             <div class="form-group"><label id="lbl-m3-amt">المبلغ (ر.س)</label><input type="number" id="tx-amount" class="form-control"></div>
+            <div class="form-group"><label>التاريخ والوقت يدوياً</label><input type="datetime-local" id="tx-date-input" class="form-control"></div>
             <div class="form-group">
                 <label id="lbl-m3-cat">التصنيف الهيكلي للعملية</label>
                 <select id="tx-category-select" class="form-control"></select>
             </div>
-            <div class="form-group"><label id="lbl-m3-desc">البيان</label><input type="text" id="tx-desc-input" class="form-control"></div>
+            <div class="form-group"><label id="lbl-m3-desc">الملاحظة / البيان</label><input type="text" id="tx-desc-input" class="form-control"></div>
             <button class="btn-submit" onclick="executeSaveGeneralTransaction()">تسجيل فوري في الدفتر</button>
         </div>
     </div>
 
+    <!-- 🎯 MODAL 4: ADD STRATEGIC SAVINGS GOAL -->
     <div id="modal-add-goal" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-goal')">
         <div class="modal-content">
             <h3 style="margin-bottom:15px;" id="lbl-m4-title">إنشاء هدف ادخاري طويل الأجل</h3>
@@ -307,6 +325,7 @@
         </div>
     </div>
 
+    <!-- 🧯 MODAL 5: RECONCILE GOAL (FUND IT) -->
     <div id="modal-fund-goal" class="modal" onclick="closeModalOnOuterClick(event, 'modal-fund-goal')">
         <div class="modal-content">
             <h3 id="fund-goal-title" style="margin-bottom:15px; color:var(--neon-purple);">تمويل حصالة الادخار</h3>
@@ -316,6 +335,7 @@
         </div>
     </div>
 
+    <!-- 🗑️ MODAL 6: TRASH BIN RECOVERY CENTER -->
     <div id="modal-trash-bin" class="modal" onclick="closeModalOnOuterClick(event, 'modal-trash-bin')">
         <div class="modal-content" style="max-height:80vh;">
             <h3 style="color:var(--neon-red); margin-bottom:15px;"><i class="fa-solid fa-trash-can"></i> سلة المحذوفات للتأمين والاسترجاع</h3>
@@ -329,13 +349,12 @@
             db: { people: [], transactions: [], goals: [], trash: [] },
             currentFilter: 'all',
             lang: 'ar',
-            securityPin: '1234', // الرمز السري الافتراضي للمحاكاة
+            securityPin: '1234',
             tempPin: ''
         };
 
         let systemChart = null;
 
-        // التصنيفات الافتراضية الصارمة المطلوبة في خطة العمل
         const catMap = {
             income: ['راتب / Salary', 'مكافأة / Bonus', 'عمل حر / Freelance', 'تحويل / Transfer', 'هدية / Gift', 'أخرى / Other'],
             expense: ['أكل / Food', 'قهوة / Coffee', 'مواصلات / Transport', 'سيارة / Car', 'تسوق / Shopping', 'اشتراكات / Subs', 'سفر / Travel', 'أخرى / Other']
@@ -345,20 +364,26 @@
             ar: {
                 sys_title: "النظام البنكي العائلي الفائق", sys_sub: "لوحة الإدارة والسيولة والعهود", lock_title: "أدخل رمز التحقق الأمني",
                 total_cash: "السيولة النقدية المتاحة الإجمالية", net_bal: "الرصيد الصافي الحر:", risk_idx: "مؤشر الاستهلاك العام:",
-                m_inc: " إجمالي الدخل", m_exp: " إجمالي المصاريف", m_debt: " عهود وأمانات قائمة", m_save: " إجمالي الادخار المدفوع",
-                nv1: "الرئيسية", nv2: "العهود", nv3: "السجلات", nv4: "الادخار", nv5: "الأدوات"
+                m_inc: " إجمالي الدخل", m_exp: " إجمالي المصاريف", m_debt: " إجمالي العهود والودائع", m_save: " إجمالي الادخار المدفوع",
+                nv1: "الرئيسية", nv2: "الأشخاص", nv3: "السجلات", nv4: "الادخار", nv5: "الأدوات"
             },
             en: {
                 sys_title: "Family Banking Core System", sys_sub: "Liquidity & Debt Ledger Core", lock_title: "Enter Security PIN Code",
                 total_cash: "Total Available System Liquidity", net_bal: "Net Free Capital Balance:", risk_idx: "Consumption Index Rate:",
-                m_inc: " Total Income", m_exp: " Total Expenses", m_debt: " Active Family Debts", m_save: " Total Savings Funded",
-                nv1: "Dashboard", nv2: "Debts", nv3: "Ledger", nv4: "Savings", nv5: "Tools"
+                m_inc: " Total Income", m_exp: " Total Expenses", m_debt: " Active Trust Pools", m_save: " Total Savings Funded",
+                nv1: "Dashboard", nv2: "Members", nv3: "Ledger", nv4: "Savings", nv5: "Tools"
             }
         };
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedData = localStorage.getItem('FAMILY_FINANCE_PRO_ULTRA_DATA');
             if(savedData) state.db = JSON.parse(savedData);
+            
+            // التأكد من ملء التواريخ التلقائية في الخانات لتسهيل الاستخدام
+            const nowIso = new Date().toISOString().slice(0, 16);
+            if(document.getElementById('adjust-date')) document.getElementById('adjust-date').value = nowIso;
+            if(document.getElementById('tx-date-input')) document.getElementById('tx-date-input').value = nowIso;
+
             populateCategoriesSelect();
             initChartEngine();
             renderAllComponents();
@@ -396,20 +421,25 @@
         }
 
         function calculateCoreMetrics() {
-            let totalIncome = 0, totalExpenses = 0, totalActiveDebts = 0, totalSavingsFunded = 0;
+            let totalIncome = 0, totalExpenses = 0, totalActiveTrusts = 0, totalSavingsFunded = 0;
             
             state.db.transactions.forEach(t => {
                 if(t.type === 'income') totalIncome += parseFloat(t.amount);
                 if(t.type === 'expense') totalExpenses += parseFloat(t.amount);
             });
-            state.db.people.forEach(p => { totalActiveDebts += (p.borrowed - p.repaid); });
+            
+            state.db.people.forEach(p => { 
+                totalActiveTrusts += ((p.trust_deposited || 0) - (p.trust_withdrawn || 0));
+                totalActiveTrusts += ((p.loan_given || 0) - (p.loan_repaid || 0));
+            });
+            
             state.db.goals.forEach(g => { totalSavingsFunded += parseFloat(g.current || 0); });
 
-            let totalLiquidity = totalIncome - totalExpenses + totalActiveDebts - totalSavingsFunded;
+            let totalLiquidity = totalIncome - totalExpenses + totalActiveTrusts - totalSavingsFunded;
             let netFreeCapital = totalLiquidity - totalSavingsFunded;
             let consumptionRate = totalIncome > 0 ? Math.round((totalExpenses / totalIncome) * 100) : 0;
 
-            return { totalLiquidity, netFreeCapital, totalIncome, totalExpenses, totalActiveDebts, totalSavingsFunded, consumptionRate };
+            return { totalLiquidity, netFreeCapital, totalIncome, totalExpenses, totalActiveTrusts, totalSavingsFunded, consumptionRate };
         }
 
         function renderAllComponents() {
@@ -420,11 +450,10 @@
             document.getElementById('val-total-cash').innerText = m.totalLiquidity.toFixed(2) + suffix;
             document.getElementById('val-net-balance').innerText = m.netFreeCapital.toFixed(2) + suffix;
             document.getElementById('val-risk-indicator').innerText = m.consumptionRate + "%";
-            document.getElementById('val-risk-indicator').style.color = m.consumptionRate > 75 ? 'var(--neon-red)' : 'var(--neon-orange)';
             
             document.getElementById('val-m-income').innerText = m.totalIncome.toFixed(2) + suffix;
             document.getElementById('val-m-expense').innerText = m.totalExpenses.toFixed(2) + suffix;
-            document.getElementById('val-m-trusts').innerText = m.totalActiveDebts.toFixed(2) + suffix;
+            document.getElementById('val-m-trusts').innerText = m.totalActiveTrusts.toFixed(2) + suffix;
             document.getElementById('val-m-savings').innerText = m.totalSavingsFunded.toFixed(2) + suffix;
 
             renderPeople();
@@ -434,11 +463,19 @@
             updateChartEngine(m);
         }
 
-        // 👥 DEEP DEBT ACCOUNT SYSTEM (محمد أخذ وسدد)
+        // 👥 ADVANCED MULTI-ACCOUNTING PEOPLE SYSTEM
         function executeSaveNewPerson() {
             const name = document.getElementById('p-name-input').value.trim();
             if(!name) return;
-            state.db.people.push({ id: 'p_' + Date.now(), name, borrowed: 0, repaid: 0, history: [] });
+            state.db.people.push({ 
+                id: 'p_' + Date.now(), 
+                name, 
+                trust_deposited: 0, 
+                trust_withdrawn: 0,
+                loan_given: 0,
+                loan_repaid: 0,
+                history: [] 
+            });
             document.getElementById('p-name-input').value = '';
             closeModal('modal-add-person'); commit();
         }
@@ -450,24 +487,41 @@
 
             state.db.people.forEach(p => {
                 if(searchVal && !p.name.toLowerCase().includes(searchVal)) return;
-                const remainingDebt = p.borrowed - p.repaid;
+                
+                const netTrust = (p.trust_deposited || 0) - (p.trust_withdrawn || 0); // فلوسه اللي مجمعها عندك
+                const netLoan = (p.loan_given || 0) - (p.loan_repaid || 0); // دينه اللي لسه ما رجعه لك
+
+                // توليد كشف الحساب المصغر لكل شخص داخل بطاقته
+                let historyHtml = '';
+                if(p.history && p.history.length > 0) {
+                    historyHtml = `<div style="margin-top:10px; background:rgba(0,0,0,0.2); padding:8px; border-radius:10px; font-size:0.75rem;">
+                        <span style="color:var(--text-secondary); display:block; margin-bottom:4px; font-weight:bold;">آخر حركات كشف الحساب:</span>`;
+                    p.history.slice(-3).reverse().forEach(h => {
+                        historyHtml += `<div style="border-bottom:1px solid rgba(255,255,255,0.02); padding:3px 0; display:flex; justify-content:space-between;">
+                            <span style="color:#fff;">• ${h.reason} (${h.date.split('T')[0]})</span>
+                            <span style="color:var(--neon-blue); font-weight:bold;">${h.amt} ر.س</span>
+                        </div>`;
+                    });
+                    historyHtml += `</div>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = "glass-card";
                 card.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                         <div>
                             <h3 style="font-size:1.1rem; color:#fff;">${p.name}</h3>
-                            <span class="badge" style="background:rgba(0,176,255,0.15); color:var(--neon-blue); margin-top:4px; display:inline-block;">المتبقي بذمته: ${remainingDebt.toFixed(2)} ر.س</span>
+                            <div style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap;">
+                                <span class="badge" style="background:rgba(0,230,118,0.15); color:var(--neon-green);">جمع عندي (أمانة): ${netTrust.toFixed(2)} ر.س</span>
+                                <span class="badge" style="background:rgba(255,23,68,0.15); color:var(--neon-red);">دين عليه (تسلف): ${netLoan.toFixed(2)} ر.س</span>
+                            </div>
                         </div>
                         <div style="display:flex; gap:6px;">
-                            <button class="lang-btn" style="background:var(--glass-accent);" onclick="openAdjustDebtModal('${p.id}', '${p.name}')">🔒 العهود</button>
+                            <button class="lang-btn" style="background:var(--neon-blue); color:#000; font-weight:bold;" onclick="openAdjustDebtModal('${p.id}', '${p.name}')">💸 إجراء حركة</button>
                             <button class="lang-btn" style="background:rgba(255,17,68,0.1); color:var(--neon-red); border:none;" onclick="executeDeletePerson('${p.id}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <div style="font-size:0.75rem; color:var(--text-secondary); display:grid; grid-template-columns:1fr 1fr; gap:10px; border-top:1px solid rgba(255,255,255,0.03); padding-top:10px;">
-                        <div>إجمالي ما استلفه: <b style="color:#fff; font-family:var(--font-en);">${p.borrowed.toFixed(2)}</b></div>
-                        <div>إجمالي ما سدده: <b style="color:#fff; font-family:var(--font-en);">${p.repaid.toFixed(2)}</b></div>
-                    </div>
+                    ${historyHtml}
                 `;
                 container.appendChild(card);
             });
@@ -475,7 +529,8 @@
 
         function openAdjustDebtModal(id, name) {
             document.getElementById('adjust-person-id').value = id;
-            document.getElementById('adjust-modal-title').innerText = `سجل عهود وحركات: ${name}`;
+            document.getElementById('adjust-modal-title').innerText = `إدارة حساب: ${name}`;
+            document.getElementById('adjust-date').value = new Date().toISOString().slice(0, 16);
             openModal('modal-adjust-person');
         }
 
@@ -483,24 +538,67 @@
             const id = document.getElementById('adjust-person-id').value;
             const action = document.getElementById('adjust-action-type').value;
             const amount = parseFloat(document.getElementById('adjust-amount').value);
+            const userDate = document.getElementById('adjust-date').value;
             const reason = document.getElementById('adjust-reason').value.trim();
 
-            if(!amount || amount <= 0 || !reason) return alert("فضلاً، املأ كامل الحقول البرمجية لتأمين القيد المالي!");
+            if(!amount || amount <= 0 || !reason || !userDate) return alert("فضلاً، املأ كامل الحقول البرمجية لتأمين القيد المالي والتاريخ!");
 
             const person = state.db.people.find(p => p.id === id);
             if(!person) return;
 
-            const timestamp = new Date().toLocaleString('ar-SA');
+            // تهيئة الحقول في حال لم تكن موجودة في البيانات القديمة الكاش
+            if(person.trust_deposited === undefined) person.trust_deposited = 0;
+            if(person.trust_withdrawn === undefined) person.trust_withdrawn = 0;
+            if(person.loan_given === undefined) person.loan_given = 0;
+            if(person.loan_repaid === undefined) person.loan_repaid = 0;
+            if(!person.history) person.history = [];
+
+            const displayDate = new Date(userDate).toLocaleString('ar-SA');
             const txId = 'tx_' + Date.now();
 
-            if(action === 'borrowed') {
-                person.borrowed += amount;
-                state.db.transactions.push({ id: txId, type: 'income', refPersonId: id, amount, category: 'عهود عائلية', description: `عهدة/سلفة مستلمة من [${person.name}] - السبب: ${reason}`, date: timestamp });
-            } else {
-                if(amount > (person.borrowed - person.repaid)) return alert("خطأ أمني: المبلغ المسدد أكبر من الدين المتبقي المستحق عليه!");
-                person.repaid += amount;
-                state.db.transactions.push({ id: txId, type: 'expense', refPersonId: id, amount, category: 'عهود عائلية', description: `سداد جزئي/كلي من عهدة [${person.name}] - البيان: ${reason}`, date: timestamp });
+            let logDesc = "";
+            let coreType = "income";
+
+            if(action === 'deposit_trust') {
+                person.trust_deposited += amount;
+                logDesc = `إيداع أمانة وتجميع من [${person.name}] - الملاحظة: ${reason}`;
+                coreType = "income";
+            } 
+            else if(action === 'withdraw_trust') {
+                const currentTrust = person.trust_deposited - person.trust_withdrawn;
+                if(amount > currentTrust) return alert("خطأ: المبلغ المراد سحبه أكبر من إجمالي أمانته المجمعة لديك حالياً!");
+                person.customExpenseCount = (person.customExpenseCount || 0) + amount;
+                person.trust_withdrawn += amount;
+                logDesc = `سحب ومصروف من أمانة [${person.name}] - الملاحظة: ${reason}`;
+                coreType = "expense";
+            } 
+            else if(action === 'give_loan') {
+                person.loan_given += amount;
+                logDesc = `سلفة/دين صادر من محفظتك إلى [${person.name}] - الملاحظة: ${reason}`;
+                coreType = "expense";
+            } 
+            else if(action === 'receive_loan_repay') {
+                const currentLoan = person.loan_given - person.loan_repaid;
+                if(amount > currentLoan) return alert("خطأ: سداد الدين أكبر من قيمة الدين المستحق عليه اصلاً!");
+                person.loan_repaid += amount;
+                logDesc = `استلام تسديد دين وسلفة من [${person.name}] - الملاحظة: ${reason}`;
+                coreType = "income";
             }
+
+            // حقن الحركة في كشف الحساب الخاص بالشخص
+            person.history.push({ date: userDate, type: action, amt: amount, reason: reason });
+
+            // حقن الحركة في شجرة الدفتر المالي العام الموحد للتطبيق
+            state.db.transactions.push({ 
+                id: txId, 
+                type: coreType, 
+                refPersonId: id, 
+                amount, 
+                category: 'حسابات الأشخاص والأمانات', 
+                description: logDesc, 
+                date: displayDate, 
+                rawDate: new Date(userDate).toISOString() 
+            });
 
             document.getElementById('adjust-amount').value = '';
             document.getElementById('adjust-reason').value = '';
@@ -510,12 +608,14 @@
         function executeDeletePerson(id) {
             const person = state.db.people.find(p => p.id === id);
             if(!person) return;
-            if((person.borrowed - person.repaid) !== 0) return alert("لا يمكن حذف هذا العضو؛ لأن رصيد عهوده لم يصفر بعد (بذمته مبالغ لم تسدد)!");
+            const netTrust = (person.trust_deposited || 0) - (person.trust_withdrawn || 0);
+            const netLoan = (person.loan_given || 0) - (person.loan_repaid || 0);
+            if(netTrust !== 0 || netLoan !== 0) return alert("لا يمكنك حذف الحساب! يجب تصفير حساب الأمانات والديون الخاصة به بالكامل أولاً.");
             state.db.people = state.db.people.filter(p => p.id !== id);
             commit();
         }
 
-        // 📜 GENERAL LEDGER ENGINE & FILTERS & TRASH
+        // 📜 GENERAL LEDGER ENGINE (تسجيل يدوي للتاريخ والملاحظات للكل)
         function populateCategoriesSelect() {
             const type = document.getElementById('tx-type').value;
             const select = document.getElementById('tx-category-select');
@@ -526,13 +626,20 @@
         function executeSaveGeneralTransaction() {
             const type = document.getElementById('tx-type').value;
             const amount = parseFloat(document.getElementById('tx-amount').value);
+            const userDate = document.getElementById('tx-date-input').value;
             const category = document.getElementById('tx-category-select').value;
             const desc = document.getElementById('tx-desc-input').value.trim();
 
-            if(!amount || amount <= 0 || !desc) return alert("يرجى ملء كافة الخانات لبناء القيد المحاسبي بشكل صحيح.");
+            if(!amount || amount <= 0 || !desc || !userDate) return alert("يرجى ملء كافة الخانات وتحديد التاريخ لبناء القيد المحاسبي.");
 
             state.db.transactions.push({
-                id: 'tx_' + Date.now(), type, amount, category, description: desc, date: new Date().toLocaleString('ar-SA'), rawDate: new Date().toISOString()
+                id: 'tx_' + Date.now(), 
+                type, 
+                amount, 
+                category, 
+                description: desc, 
+                date: new Date(userDate).toLocaleString('ar-SA'), 
+                rawDate: new Date(userDate).toISOString()
             });
 
             document.getElementById('tx-amount').value = '';
@@ -552,21 +659,17 @@
             const searchVal = document.getElementById('search-ledger-input').value.toLowerCase();
             const timeVal = document.getElementById('filter-time-select').value;
             container.innerHTML = '';
-
             const now = new Date();
 
             state.db.transactions.slice().reverse().forEach(t => {
-                // فلتر نوع العملية
                 if(state.currentFilter !== 'all') {
                     if(state.currentFilter === 'income' && t.type !== 'income') return;
                     if(state.currentFilter === 'expense' && t.type !== 'expense') return;
                     if(state.currentFilter === 'debt' && !t.refPersonId) return;
                 }
 
-                // فلتر البحث بالنص
                 if(searchVal && !t.description.toLowerCase().includes(searchVal)) return;
 
-                // فلتر الوقت والمجال الزمني (يومي، أسبوعي، شهري، سنوي)
                 if(timeVal !== 'all' && t.rawDate) {
                     const txDate = new Date(t.rawDate);
                     const diffTime = Math.abs(now - txDate);
@@ -587,7 +690,7 @@
                         <h4 style="font-size:0.95rem; color:#fff;">${t.description}</h4>
                         <div style="display:flex; gap:6px; align-items:center; margin-top:4px;">
                             <span class="badge" style="background:rgba(255,255,255,0.05); color:var(--text-secondary);">${t.category}</span>
-                            <span class="time-badge"><i class="fa-regular fa-clock"></i> ${t.date.split(' ')[0]}</span>
+                            <span class="time-badge"><i class="fa-regular fa-clock"></i> ${t.date}</span>
                         </div>
                     </div>
                     <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
@@ -604,12 +707,18 @@
             if(txIndex === -1) return;
             const tx = state.db.transactions[txIndex];
             
-            // إذا كانت العملية مرتبطة بعهدة عضو، يتم تسوية حسابه عكسياً قبل الحذف التأميني
+            // تسوية وعكس الحساب للشخص عند الحذف والتنظيف للحماية
             if(tx.refPersonId) {
                 const p = state.db.people.find(person => person.id === tx.refPersonId);
                 if(p) {
-                    if(tx.description.includes('سلفة جديدة')) p.borrowed -= tx.amount;
-                    else p.repaid -= tx.amount;
+                    if(tx.description.includes('إيداع أمانة')) p.trust_deposited -= tx.amount;
+                    else if(tx.description.includes('سحب ومصروف')) p.trust_withdrawn -= tx.amount;
+                    else if(tx.description.includes('سلفة/دين صادر')) p.loan_given -= tx.amount;
+                    else if(tx.description.includes('استلام تسديد')) p.loan_repaid -= tx.amount;
+                    
+                    if(p.history) {
+                        p.history = p.history.filter(h => h.reason !== tx.description.split(' - ')[1]);
+                    }
                 }
             }
 
@@ -629,10 +738,10 @@
                 const row = document.createElement('div');
                 row.className = "list-item";
                 row.innerHTML = `
-                    <div style="max-width:65%;"><h5>${t.description}</h5><small>${t.amount} ر.س</small></div>
+                    <div style="max-width:65%;"><h5>${t.description}</h5><small>${t.amount} ر.س - ${t.date}</small></div>
                     <div>
                         <button class="lang-btn" style="background:var(--neon-green); color:#000; border:none; font-size:0.75rem; margin-left:4px;" onclick="recoverTxFromTrash(${index})">استرجاع</button>
-                        <button class="lang-btn" style="background:var(--neon-red); color:#fff; border:none; font-size:0.75rem;" onclick="hardDeleteTx(${index})">حذف نهائي</button>
+                        <button class="lang-btn" style="background:var(--neon-red); color:#fff; border:none; font-size:0.75rem;" onclick="hardDeleteTx(${index})">حذف</button>
                     </div>
                 `;
                 container.appendChild(row);
@@ -650,11 +759,10 @@
             commit(); closeModal('modal-trash-bin');
         }
 
-        // 🎯 SAVINGS GOALS & PROGRESS PROGRESSIVE MATRIX
+        // 🎯 SAVINGS GOALS SYSTEM
         function executeSaveNewGoal() {
             const title = document.getElementById('goal-title-input').value.trim();
             const target = parseFloat(document.getElementById('goal-target-input').value);
-
             if(!title || !target || target <= 0) return;
             state.db.goals.push({ id: 'g_' + Date.now(), title, target, current: 0 });
             document.getElementById('goal-title-input').value = '';
@@ -665,7 +773,6 @@
         function renderGoals() {
             const container = document.getElementById('goals-render-target');
             container.innerHTML = '';
-
             state.db.goals.forEach(g => {
                 const pct = Math.min(100, Math.round((g.current / g.target) * 100));
                 const card = document.createElement('div');
@@ -698,7 +805,6 @@
             const id = document.getElementById('fund-goal-id').value;
             const amount = parseFloat(document.getElementById('fund-goal-amount').value);
             if(!amount || amount <= 0) return;
-
             const goal = state.db.goals.find(g => g.id === id);
             if(goal) {
                 goal.current += amount;
@@ -708,7 +814,7 @@
         }
         function executeDeleteGoal(id) { state.db.goals = state.db.goals.filter(g => g.id !== id); commit(); }
 
-        // 📤 BACKUP UTILITIES DATA HUBS (JSON & CSV EXPORTS)
+        // 📤 BACKUP UTILITIES DATA HUBS
         function exportToJSONFile() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.db));
             const downloadAnchor = document.createElement('a');
@@ -734,20 +840,20 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     if(parsed.people && parsed.transactions) {
-                        state.db = parsed; commit(); alert("تم استيراد قاعدة البيانات وفحص القيود وبناؤها بنجاح! 💾");
-                    } else alert("بنية الملف غير متوافقة مع هذا النظام المالي!");
+                        state.db = parsed; commit(); alert("تم استيراد الملف وتحديث الحركات والتواريخ بنجاح! 💾");
+                    } else alert("بنية الملف غير متوافقة!");
                 } catch(err) { alert("فشل في قراءة محتوى الملف!"); }
             };
             reader.readAsText(event.target.files[0]);
         }
 
         function wipeEverythingSystem() {
-            if(confirm("🚨 تحذير أمني صارم: هل أنت متأكد من تصفير وحذف كافة السجلات؟ لا يمكن التراجع عن هذا الإجراء.")) {
+            if(confirm("🚨 تحذير: حذف وتصفير كافة الحسابات؟")) {
                 state.db = { people: [], transactions: [], goals: [], trash: [] }; commit(); location.reload();
             }
         }
 
-        // 🌍 LOCALIZATION ENGINE SWITCH SYSTEM
+        // 🌍 LOCALIZATION
         function toggleLanguageSystem() {
             state.lang = state.lang === 'ar' ? 'en' : 'ar';
             document.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
@@ -769,13 +875,13 @@
             renderAllComponents();
         }
 
-        // 📈 HIGH-PERFORMANCE CHART ENGINE
+        // 📈 CHART ENGINE
         function initChartEngine() {
             const ctx = document.getElementById('dashboardChart').getContext('2d');
             systemChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: state.lang === 'ar' ? ['الدخل', 'المصروفات', 'الادخار'] : ['Income', 'Expenses', 'Savings'],
+                    labels: state.lang === 'ar' ? ['الدخل', 'المصروفات', 'الادخار والأمانات'] : ['Income', 'Expenses', 'Savings/Trusts'],
                     datasets: [{ data: [0, 0, 0], backgroundColor: ['#00e676', '#ff1744', '#00b0ff'], borderWidth: 0, hoverOffset: 4 }]
                 },
                 options: {
@@ -787,28 +893,32 @@
 
         function updateChartEngine(metrics) {
             if(!systemChart) return;
-            systemChart.data.labels = state.lang === 'ar' ? ['الدخل', 'المصروفات', 'الادخار'] : ['Income', 'Expenses', 'Savings'];
-            systemChart.data.datasets[0].data = [metrics.totalIncome, metrics.totalExpenses, metrics.totalSavingsFunded];
+            systemChart.data.labels = state.lang === 'ar' ? ['الدخل', 'المصروفات', 'العهود والأمانات'] : ['Income', 'Expenses', 'Trusts'];
+            systemChart.data.datasets[0].data = [metrics.totalIncome, metrics.totalExpenses, metrics.totalActiveTrusts];
             systemChart.update();
         }
 
-        // ⚙️ CONTROLLER UI UTILITIES
+        // ⚙️ UI UTILITIES CONTROLLER
         function switchViewSection(viewId) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
-            document.getElementById(`nav-${viewId === 'savings' ? 'save' : viewId.slice(0,4)}`).classList.add('active');
+            
+            let navTarget = viewId.slice(0,4);
+            if(viewId === 'savings') navTarget = 'save';
+            if(viewId === 'people') navTarget = 'ppl';
+            document.getElementById(`nav-${navTarget}`).classList.add('active');
         }
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function closeModalOnOuterClick(e, id) { if(e.target.id === id) closeModal(id); }
     </script>
     <script>
-        // 📡 SERVICE WORKER REGISTRATION (OFFLINE ENGINE)
+        // 📡 SERVICE WORKER REGISTRATION (OFFLINE)
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-            .then(() => console.log("PWA Banking Shield: Service Worker Fully Armed."))
-            .catch(err => console.error("SW Registration Failed: ", err));
+            .then(() => console.log("PWA Banking Shield Armed."))
+            .catch(err => console.error(err));
         }
     </script>
 </body>
