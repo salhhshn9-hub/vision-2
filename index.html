@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#0d0e15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght@400;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -175,8 +175,7 @@
 
             <div class="glass-card" id="profile-main-card-frame" style="background: rgba(213,0,249,0.02); border-color: rgba(213,0,249,0.15);">
                 <h2 id="profile-box-name" style="color:#fff; margin-bottom:12px; font-weight: 700;">اسم العضو</h2>
-                <div style="display:flex; flex-direction:column; gap:8px;" id="profile-box-balances-list">
-                    </div>
+                <div style="display:flex; flex-direction:column; gap:8px;" id="profile-box-balances-list"></div>
                 <div style="margin-top:20px;">
                     <button class="btn-submit" onclick="openTransactionModalForActivePerson()"><i class="fa-solid fa-plus"></i> تسجيل حركة مالية جديدة وتوثيقها</button>
                 </div>
@@ -207,8 +206,7 @@
             
             <div class="form-group">
                 <label>نوع ونوعية العملية</label>
-                <select id="adjust-action-type" class="form-control">
-                    </select>
+                <select id="adjust-action-type" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label>قيمة المبلغ (ر.س)</label>
@@ -227,10 +225,10 @@
     </div>
 
     <script>
-        // 💾 SYSTEM STORAGE STATE (حقن الحساب الشخصي كجزء ثابت وأصيل في الكور)
+        // 💾 SYSTEM STORAGE STATE
         let state = {
             db: { 
-                myAccount: { // الحساب الشخصي المقفل الخاص بك أنت
+                myAccount: {
                     id: 'my_own_core_account',
                     name: 'حسابي الشخصي (أنا)',
                     balance: 0,
@@ -247,10 +245,10 @@
             const saved = localStorage.getItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA');
             if(saved) {
                 state.db = JSON.parse(saved);
-                // تأكيد وجود الحساب في السيف داتا
                 if(!state.db.myAccount) {
                     state.db.myAccount = { id: 'my_own_core_account', name: 'حسابي الشخصي (أنا)', balance: 0, history: [] };
                 }
+                if(!state.db.globalLogs) state.db.globalLogs = [];
             }
             
             initChartEngine();
@@ -262,56 +260,78 @@
             document.getElementById('drawer-overlay').classList.toggle('open', open);
         }
 
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function closeModalOnOuterClick(e, id) {
+            if(e.target.id === id) closeModal(id);
+        }
+
         function commit() {
             localStorage.setItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA', JSON.stringify(state.db));
             renderAllComponents();
         }
 
-        // 📊 ACCOUNTING CORE ENGINE (المعادلات المحاسبية الدقيقة)
+        // 📊 ACCOUNTING CORE ENGINE
         function calculateSystemMetrics() {
             let sumTrusts = 0, sumLoansToThem = 0, sumLoansOnMe = 0;
 
-            // حساب مجاميع الآخرين
             state.db.people.forEach(p => {
                 sumTrusts += ((p.trust_deposited || 0) - (p.trust_withdrawn || 0));
                 sumLoansToThem += ((p.loan_given || 0) - (p.loan_repaid || 0));
                 sumLoansOnMe += ((p.borrowed_from_him || 0) - (p.repaid_to_him || 0));
             });
 
-            // السيولة المتاحة الإجمالية = فلوس حسابك الشخصي + أمانات الناس وسلفياتك منهم - الديون اللي برا
             let myOwnBalance = state.db.myAccount.balance || 0;
             let totalLiquidity = myOwnBalance + sumTrusts + sumLoansOnMe - sumLoansToThem;
-
-            // 💸 فلوسي الحقيقية = رصيد حسابك الشخصي + الديون اللي لك برّا - الديون اللي عليك للناس
             let myRealMoney = myOwnBalance + sumLoansToThem - sumLoansOnMe;
 
             return { totalLiquidity, sumTrusts, sumLoansToThem, sumLoansOnMe, myRealMoney };
         }
 
+        function initChartEngine() {
+            const ctx = document.getElementById('globalDashboardChart').getContext('2d');
+            globalChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أمانات الناس عندك', 'ديون لك برّا', 'ديون عليك للناس'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: ['#00b0ff', '#ff9100', '#ff1744'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Tajawal' } } }
+                    }
+                }
+            });
+        }
+
         function renderAllComponents() {
             const m = calculateSystemMetrics();
 
-            // تحديث شاشة الإجماليات الرئيسية المطلقة
             document.getElementById('global-total-liquidity').innerText = m.totalLiquidity.toFixed(2) + " ر.س";
             document.getElementById('global-sum-trusts').innerText = m.sumTrusts.toFixed(2) + " ر.س";
             document.getElementById('global-sum-loans-to-them').innerText = m.sumLoansToThem.toFixed(2) + " ر.س";
             document.getElementById('global-sum-loans-on-me').innerText = m.sumLoansOnMe.toFixed(2) + " ر.س";
 
-            // تحديث قيمة "فلوسي الحقيقية" في الهمبرغر الجانبي
-            document.getElementById('drawer-my-real-money').innerText = m.myRealMoney.toFixed(2) + " ر.س";
+            document.getElementById('drawer-my-real-money').innerText = m.myRealMoney.toFixed(2) + " ر.s";
 
-            // بناء وحقن قائمة الأسماء في الهمبرغر الجانبي (حسابك الشخصي أولاً دائماً)
             renderHamburgerPeopleList();
-
-            // ملء السجل العام المصغر بالرئيسية
             renderGlobalRecentLogs();
 
-            // لو كانت شاشة الشخص المفتوحة نشطة نقوم بتحديث بياناتها الداخلية حصرياً
             if(state.activePersonId) {
                 renderExclusivePersonProfilePage(state.activePersonId);
             }
 
-            // تحديث مؤشر الدائرة للرئيسية
             if(globalChart) {
                 globalChart.data.datasets[0].data = [m.sumTrusts, m.sumLoansToThem, m.sumLoansOnMe];
                 globalChart.update();
@@ -341,7 +361,6 @@
             const container = document.getElementById('drawer-people-target');
             container.innerHTML = '';
 
-            // 1️⃣ حقن "الحساب الشخصي الثابت (أنا)" أولاً وبشكل مميز
             const myItem = document.createElement('div');
             myItem.className = "person-menu-item my-own";
             myItem.onclick = () => {
@@ -357,7 +376,6 @@
             `;
             container.appendChild(myItem);
 
-            // 2️⃣ حقن بقية الأسماء والاشخاص المضافين تالياً
             state.db.people.forEach(p => {
                 const item = document.createElement('div');
                 item.className = "person-menu-item";
@@ -376,7 +394,6 @@
             });
         }
 
-        // 🔄 STRICT SYSTEM ROUTER (نظام الانتقال والتبديل الصارم بين الشاشتين الكاملتين)
         function navigateToPersonProfilePage(personId) {
             state.activePersonId = personId;
             document.getElementById('page-dashboard').classList.remove('active');
@@ -399,7 +416,6 @@
             
             ledgerContainer.innerHTML = '';
 
-            // 🛑 الحالة أ: الملف المفتوح هو "حسابي الشخصي أنا"
             if(personId === 'my_own_core_account') {
                 const me = state.db.myAccount;
                 document.getElementById('profile-page-header-title').innerText = me.name;
@@ -412,7 +428,6 @@
                         <span style="color:var(--text-secondary); font-size:0.95rem;">💵 رصيد أموالي الحرة الحالية داخل محفظتي:</span>
                         <span style="color:var(--neon-green); font-weight:900; font-size:1.2rem;">${(me.balance || 0).toFixed(2)} ر.س</span>
                     </div>
-                    <p style="font-size:0.75rem; color:var(--text-secondary); text-align:center; margin-top:5px;">سجل هنا راتبك الشخصي ومصاريفك ومدخراتك الشخصية المنفصلة</p>
                 `;
 
                 if(!me.history || me.history.length === 0) {
@@ -420,7 +435,8 @@
                     return;
                 }
 
-                me.history.slice().reverse().forEach((h, revIdx) => {
+                me.history.slice().reverse().forEach((h, index) => {
+                    const realIndex = me.history.length - 1 - index;
                     const item = document.createElement('div');
                     item.className = "list-item";
                     let col = h.type === 'my_income' ? "var(--neon-green)" : "var(--neon-red)";
@@ -432,7 +448,7 @@
                         </div>
                         <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
                             <span style="font-weight:700; color:${col}; font-family:'Plus Jakarta Sans';">${h.type==='my_income'?'+':'-'} ${h.amt.toFixed(2)}</span>
-                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteMyOwnTransaction(${revIdx})"><i class="fa-solid fa-trash-can"></i></button>
+                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteMyOwnTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     `;
                     ledgerContainer.appendChild(item);
@@ -440,7 +456,6 @@
                 return;
             }
 
-            // 👥 الحالة ب: الملف المفتوح هو "شخص آخر من العائلة"
             const person = state.db.people.find(p => p.id === personId);
             if(!person) return navigateToDashboard();
 
@@ -476,7 +491,8 @@
                 return;
             }
 
-            person.history.slice().reverse().forEach((h, revIdx) => {
+            person.history.slice().reverse().forEach((h, index) => {
+                const realIndex = person.history.length - 1 - index;
                 const item = document.createElement('div');
                 item.className = "list-item";
                 let accentColor = "var(--neon-blue)";
@@ -491,27 +507,25 @@
                     </div>
                     <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
                         <span style="font-weight:700; color:${accentColor}; font-family:'Plus Jakarta Sans';">${h.amt.toFixed(2)}</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${revIdx})"><i class="fa-solid fa-trash-can"></i></button>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 ledgerContainer.appendChild(item);
             });
         }
 
-        // 💳 RECORD NEW TRANSACTION FOR ACTIVE PERSON (مع حماية نوع الحساب المفتوح)
+        // 💳 RECORD NEW TRANSACTION FOR ACTIVE PERSON
         function openTransactionModalForActivePerson() {
             const select = document.getElementById('adjust-action-type');
             select.innerHTML = '';
 
             if(state.activePersonId === 'my_own_core_account') {
-                // خيارات تخص محفظتك الشخصية فقط
                 document.getElementById('transaction-modal-title').innerText = "تسجيل في محفظتي الشخصية";
                 select.innerHTML = `
                     <option value="my_income">📥 إيداع دخل / راتب شخصي لي (+)</option>
                     <option value="my_expense">💸 سحب كاش / مصروفات شخصية ومشتريات (-)</option>
                 `;
             } else {
-                // خيارات تخص الأشخاص الآخرين
                 document.getElementById('transaction-modal-title').innerText = "قيد حركة مالية على اسم الشخص";
                 select.innerHTML = `
                     <option value="deposit_trust">📥 هو وضع عندي أمانة / يجمع رواتبه (+)</option>
@@ -530,137 +544,94 @@
         }
 
         function executePersonDebtAdjustment() {
-            const action = document.getElementById('adjust-action-type').value;
-            const amount = parseFloat(document.getElementById('adjust-amount').value);
-            const userDate = document.getElementById('adjust-date').value;
-            const reason = document.getElementById('adjust-reason').value.trim();
+            const type = document.getElementById('adjust-action-type').value;
+            const amt = parseFloat(document.getElementById('adjust-amount').value);
+            const reason = document.getElementById('adjust-reason').value.trim() || "بدون بيان";
+            const dateInput = document.getElementById('adjust-date').value;
+            const displayDate = dateInput ? dateInput.replace('T', ' ') : new Date().toLocaleString();
 
-            if(!amount || amount <= 0 || !reason || !userDate) return alert("الرجاء إدخال تفاصيل الحركة كاملة وبدقة.");
-            const formattedDate = new Date(userDate).toLocaleString('ar-SA');
+            if(isNaN(amt) || amt <= 0) return alert("فضلاً أدخل مبلغاً صحيحاً أكبر من الصفر.");
 
-            // تنفيذ القيد للحساب الشخصي
+            const logEntry = { type, amt, reason, displayDate };
+
             if(state.activePersonId === 'my_own_core_account') {
-                const me = state.db.myAccount;
-                me.history.push({ type: action, amt: amount, date: userDate, displayDate: formattedDate, reason: reason });
-                
-                if(action === 'my_income') me.balance = (me.balance || 0) + amount;
-                if(action === 'my_expense') me.balance = (me.balance || 0) - amount;
+                if(type === 'my_income') state.db.myAccount.balance += amt;
+                else state.db.myAccount.balance -= amt;
+                state.db.myAccount.history.push(logEntry);
+                state.db.globalLogs.push({ name: "محفظتي الشخصية", ...logEntry });
+            } else {
+                let p = state.db.people.find(x => x.id === state.activePersonId);
+                if(!p) return;
 
-                state.db.globalLogs.push({
-                    id: 'log_' + Date.now(), text: `محفظتي الشخصية: ${reason}`, amount: amount,
-                    type: action === 'my_income' ? 'plus' : 'minus', date: formattedDate
-                });
-                closeModal('modal-adjust-person');
-                commit();
-                return;
+                if(type === 'deposit_trust') p.trust_deposited += amt;
+                else if(type === 'withdraw_trust') p.trust_withdrawn += amt;
+                else if(type === 'give_loan') p.loan_given += amt;
+                else if(type === 'receive_loan_repay') p.loan_repaid += amt;
+                else if(type === 'borrow_from_him') p.borrowed_from_him += amt;
+                else if(type === 'pay_him_back') p.repaid_to_him += amt;
+
+                p.history.push(logEntry);
+                state.db.globalLogs.push({ name: p.name, ...logEntry });
             }
-
-            // تنفيذ القيد لبقية الأشخاص
-            const person = state.db.people.find(p => p.id === state.activePersonId);
-            if(!person) return;
-
-            person.history.push({ type: action, amt: amount, date: userDate, displayDate: formattedDate, reason: reason });
-
-            if(action === 'deposit_trust') person.trust_deposited += amount;
-            if(action === 'withdraw_trust') person.trust_withdrawn += amount;
-            if(action === 'give_loan') person.loan_given += amount;
-            if(action === 'receive_loan_repay') person.loan_repaid += amount;
-            if(action === 'borrow_from_him') person.borrowed_from_him += amount;
-            if(action === 'pay_him_back') person.repaid_to_him += amount;
-
-            state.db.globalLogs.push({
-                id: 'log_' + Date.now(), text: `حساب [${person.name}]: ${reason}`, amount: amount,
-                type: (action.includes('deposit') || action.includes('repay') || action.includes('borrow')) ? 'plus' : 'minus', date: formattedDate
-            });
 
             closeModal('modal-adjust-person');
             commit();
         }
 
-        // 🗑️ DELETION LOGIC
-        function executeDeleteMyOwnTransaction(reversedIndex) {
-            const me = state.db.myAccount;
-            const realIdx = me.history.length - 1 - reversedIndex;
-            const tx = me.history[realIdx];
-
-            if(confirm(`هل تريد حذف تعديل حركة محفظتك: (${tx.reason})؟`)) {
-                if(tx.type === 'my_income') me.balance -= tx.amt;
-                if(tx.type === 'my_expense') me.balance += tx.amt;
-                me.history.splice(realIdx, 1);
-                commit();
-            }
+        function executeDeleteMyOwnTransaction(index) {
+            if(!confirm("هل أنت متأكد من حذف هذه الحركة من محفظتك؟")) return;
+            let h = state.db.myAccount.history[index];
+            if(h.type === 'my_income') state.db.myAccount.balance -= h.amt;
+            else state.db.myAccount.balance += h.amt;
+            state.db.myAccount.history.splice(index, 1);
+            commit();
         }
 
-        function executeDeleteSingleTransaction(reversedIndex) {
-            const person = state.db.people.find(p => p.id === state.activePersonId);
-            if(!person) return;
-            
-            const realIdx = person.history.length - 1 - reversedIndex;
-            const tx = person.history[realIdx];
+        function executeDeleteSingleTransaction(index) {
+            if(!confirm("هل أنت متأكد من حذف هذا القيد المالي؟")) return;
+            let p = state.db.people.find(x => x.id === state.activePersonId);
+            if(!p) return;
 
-            if(confirm(`هل تريد حذف وتعديل حركة: (${tx.reason})؟`)) {
-                if(tx.type === 'deposit_trust') person.trust_deposited -= tx.amt;
-                if(tx.type === 'withdraw_trust') person.trust_withdrawn -= tx.amt;
-                if(tx.type === 'give_loan') person.loan_given -= tx.amt;
-                if(tx.type === 'receive_loan_repay') person.loan_repaid -= tx.amt;
-                if(tx.type === 'borrow_from_him') person.borrowed_from_him -= tx.amt;
-                if(tx.type === 'pay_him_back') person.repaid_to_him -= tx.amt;
+            let h = p.history[index];
+            if(h.type === 'deposit_trust') p.trust_deposited -= h.amt;
+            else if(h.type === 'withdraw_trust') p.trust_withdrawn -= h.amt;
+            else if(h.type === 'give_loan') p.loan_given -= h.amt;
+            else if(h.type === 'receive_loan_repay') p.loan_repaid -= h.amt;
+            else if(h.type === 'borrow_from_him') p.borrowed_from_him -= h.amt;
+            else if(h.type === 'pay_him_back') p.repaid_to_him -= h.amt;
 
-                person.history.splice(realIdx, 1);
-                commit();
-            }
+            p.history.splice(index, 1);
+            commit();
         }
 
-        function executeDeleteEntirePerson(personId) {
-            const person = state.db.people.find(p => p.id === personId);
-            if(!person) return;
-            if(confirm(`🚨 هل تريد مسح ملف ${person.name} كلياً؟`)) {
-                state.db.people = state.db.people.filter(p => p.id !== personId);
-                navigateToDashboard();
-                commit();
-            }
+        function executeDeleteEntirePerson(id) {
+            if(!confirm("⚠️ تحذير: هل أنت متأكد من حذف هذا الشخص وكافة سجلاته المالية نهائياً؟ لا يمكن التراجع.")) return;
+            state.db.people = state.db.people.filter(p => p.id !== id);
+            navigateToDashboard();
         }
 
         function renderGlobalRecentLogs() {
             const container = document.getElementById('global-recent-log-target');
             container.innerHTML = '';
+            
             if(!state.db.globalLogs || state.db.globalLogs.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.8rem; text-align:center; padding:10px;">لا يوجد تحركات حتى الآن.</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا يوجد تحركات مسجلة بالسيستم بعد.</p>`;
                 return;
             }
-            state.db.globalLogs.slice(-4).reverse().forEach(l => {
+
+            state.db.globalLogs.slice().reverse().slice(0, 5).forEach(l => {
                 const item = document.createElement('div');
                 item.className = "list-item";
-                item.style.padding = "10px 14px";
                 item.innerHTML = `
                     <div>
-                        <h5 style="font-size:0.85rem; color:#fff; font-weight:500;">${l.text}</h5>
-                        <small style="color:var(--text-secondary); font-size:0.65rem;">${l.date}</small>
+                        <strong style="color:var(--neon-blue); font-size:0.9rem;">${l.name}</strong>
+                        <p style="font-size:0.85rem; color:#fff; margin-top:2px;">${l.reason}</p>
                     </div>
-                    <span style="font-size:0.9rem; font-weight:700; color:${l.type==='plus'?'var(--neon-green)':'var(--neon-red)'}">${l.type==='plus'?'+':'-'} ${l.amount.toFixed(2)}</span>
+                    <span style="font-family:'Plus Jakarta Sans'; font-weight:700; color:var(--text-secondary);">${l.amt.toFixed(2)} ر.س</span>
                 `;
                 container.appendChild(item);
             });
         }
-
-        function initChartEngine() {
-            const ctx = document.getElementById('globalDashboardChart').getContext('2d');
-            globalChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['الأمانات', 'ديون لك برّا', 'سلفيات عليك'],
-                    datasets: [{ data: [0, 0, 0], backgroundColor: ['#00b0ff', '#ff9100', '#ff1744'], borderWidth: 0 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'left', labels: { color: '#94a3b8', font: { family: 'Tajawal', size: 10 } } } }
-                }
-            });
-        }
-
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function closeModalOnOuterClick(e, id) { if(e.target.id === id) closeModal(id); }
     </script>
 </body>
 </html>
