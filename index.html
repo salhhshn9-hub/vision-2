@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Finance Hub Pro</title>
+    <title>Family Finance Ultra Hub</title>
     <meta name="theme-color" content="#0d0e15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -19,9 +19,8 @@
             --glass-accent: rgba(255, 255, 255, 0.08);
             --neon-green: #00e676;
             --neon-blue: #00b0ff;
-            --neon-purple: #d500f9;
-            --neon-red: #ff1744;
             --neon-orange: #ff9100;
+            --neon-red: #ff1744;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --font-ar: 'Tajawal', sans-serif;
@@ -31,15 +30,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); color: var(--text-primary); font-family: var(--font-ar); min-height: 100vh; overflow-x: hidden; display: flex; justify-content: center; }
         
-        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.95); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .menu-hamburger { font-size: 1.6rem; color: var(--neon-blue); cursor: pointer; padding: 4px; transition: var(--transition); }
         .menu-hamburger:hover { transform: scale(1.1); }
 
-        /* 🍔 HAMBURGER DRAWER (مستودع الأسماء وإدارتهم) */
+        /* 🍔 HAMBURGER DRAWER */
         .side-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: #090a10; border-left: 1px solid var(--glass-border); z-index: 10000; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px 20px; display: flex; flex-direction: column; }
         .side-drawer.open { right: 0; }
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: none; backdrop-filter: blur(4px); }
@@ -48,19 +47,20 @@
         .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); }
         .people-list-menu { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         
-        .person-menu-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 12px; border-radius: 14px; cursor: pointer; transition: var(--transition); }
+        .person-menu-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; cursor: pointer; transition: var(--transition); }
         .person-menu-item:hover { background: rgba(0,176,255,0.08); border-color: var(--neon-blue); }
 
-        /* Dashboard Global Metrics */
-        .grid-totals { display: grid; grid-template-columns: repeat(1, 1fr); gap: 12px; padding: 0 16px; margin-top: 10px; }
+        /* Dashboard Totals Boxes */
+        .grid-totals { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; margin-top: 5px; }
         .total-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
-        .total-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; }
+        .total-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; margin-top: 4px; }
 
-        /* Views management */
-        .view-section { display: none; padding-bottom: 30px; }
-        .view-section.active { display: block; }
+        /* Pages System (Hidden by default) */
+        .app-page { display: none; width: 100%; animation: fadeIn 0.3s ease; }
+        .app-page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Modals */
+        /* Modals Configuration */
         .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 99999; display: none; justify-content: center; align-items: flex-end; }
         .modal.active { display: flex; }
         .modal-content { width: 100%; max-width: 480px; background: #0f111a; border-top-left-radius: 32px; border-top-right-radius: 32px; border-top: 1px solid var(--glass-border); padding: 30px 24px; max-height: 85vh; overflow-y: auto; }
@@ -71,128 +71,156 @@
         .form-control:focus { outline: none; border-color: var(--neon-blue); }
         
         .btn-submit { width: 100%; padding: 15px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-back { background: var(--glass-accent); border: 1px solid var(--glass-border); color: #fff; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 15px; }
+        .btn-back { background: var(--glass-accent); border: 1px solid var(--glass-border); color: #fff; padding: 10px 16px; border-radius: 14px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; margin: 15px 16px 5px 16px; width: calc(100% - 32px); justify-content: center; font-weight: bold; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.01); border-radius: 14px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.03); }
-        .badge { padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.01); border-radius: 14px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.03); }
     </style>
 </head>
 <body>
 
+    <!-- 🍔 HAMBURGER OVERLAY & DRAWER MENU -->
     <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer(false)"></div>
     <div class="side-drawer" id="side-drawer">
         <div class="drawer-header">
-            <h3>👥 دليل وأسماء الأشخاص</h3>
+            <h3>👥 قائمة ودليل الأشخاص</h3>
             <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.3rem;" onclick="toggleDrawer(false)"></i>
         </div>
         
+        <!-- مستودع حقن الأسماء -->
         <div class="people-list-menu" id="drawer-people-target"></div>
         
-        <button class="btn-submit" style="background: var(--neon-blue); color:#000;" onclick="openModal('modal-add-person')">
+        <!-- زر إضافة عضو جديد -->
+        <button class="btn-submit" style="background: var(--neon-blue); color:#000; font-weight: bold;" onclick="openModal('modal-add-person')">
             <i class="fa-solid fa-user-plus"></i> إضافة شخص جديد
         </button>
     </div>
 
+    <!-- 📱 MAIN APP FRAME -->
     <div class="app-container">
         
-        <header>
-            <div style="display:flex; align-items:center; gap:14px;">
-                <i class="fa-solid fa-bars menu-hamburger" onclick="toggleDrawer(true)"></i>
-                <div>
-                    <h3 id="app-header-title" style="font-size: 1.15rem; color: #fff;">الرئيسية: الإجماليات العامة</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">اضغط على القائمة الجانبية لإدارة الأشخاص</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-wallet" style="font-size: 1.4rem; color: var(--neon-purple);"></i>
-        </header>
-
-        <div id="view-dashboard" class="view-section active">
-            <div class="glass-card" style="background: linear-gradient(135deg, #121324 0%, #0b0c16 100%); text-align:center;">
-                <p style="color: var(--text-secondary); font-size: 0.85rem;">💰 السيولة النقدية الحرة الإجمالية المتاحة</p>
-                <h1 style="font-size: 2.4rem; margin: 8px 0; color: var(--neon-green);" id="global-total-liquidity">0.00 ر.س</h1>
-            </div>
-
-            <div class="grid-totals">
-                <div class="total-box" style="border-left: 5px solid var(--neon-blue);">
+        <!-- ---------------- PAGE 1: GLOBAL DASHBOARD (الرئيسية للإجماليات فقط) ---------------- -->
+        <div id="page-dashboard" class="app-page active">
+            <header>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <i class="fa-solid fa-bars menu-hamburger" onclick="toggleDrawer(true)"></i>
                     <div>
-                        <p style="color:var(--text-secondary); font-size:0.85rem;">📥 إجمالي أمانات الناس ورواتبهم عندك</p>
-                        <h4 id="global-sum-trusts" style="color:var(--neon-blue); margin-top:4px;">0.00 ر.س</h4>
+                        <h3 style="font-size: 1.2rem; color: #fff;">الرئيسية: الإجماليات العامة</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">افتح القائمة الجانبية ☰ لتصفح الأشخاص</p>
                     </div>
-                    <i class="fa-solid fa-vault" style="font-size:1.5rem; color:var(--neon-blue); opacity:0.5;"></i>
+                </div>
+                <i class="fa-solid fa-chart-line" style="font-size: 1.4rem; color: var(--neon-blue);"></i>
+            </header>
+
+            <!-- بطاقة السيولة الحرة الإجمالية المتوفرة كاش -->
+            <div class="glass-card" style="background: linear-gradient(135deg, #121324 0%, #0b0c16 100%); text-align:center; border-color: rgba(0,230,118,0.15);">
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">💰 رصيد السيولة النقدية الحرة المتوفرة حالياً</p>
+                <h1 style="font-size: 2.5rem; margin: 8px 0; color: var(--neon-green); font-family: 'Plus Jakarta Sans';" id="global-total-liquidity">0.00 ر.س</h1>
+            </div>
+
+            <!-- شبكة مربعات المجاميع الكبيرة الموحدة -->
+            <div class="grid-totals">
+                <div class="total-box" style="border-right: 5px solid var(--neon-blue);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">📥 مجموع أمانات ورواتب الناس عندك</p>
+                        <h4 id="global-sum-trusts" style="color:var(--neon-blue);">0.00 ر.س</h4>
+                    </div>
+                    <i class="fa-solid fa-vault" style="font-size:1.4rem; color:var(--neon-blue); opacity:0.4;"></i>
                 </div>
                 
-                <div class="total-box" style="border-left: 5px solid var(--neon-orange);">
+                <div class="total-box" style="border-right: 5px solid var(--neon-orange);">
                     <div>
-                        <p style="color:var(--text-secondary); font-size:0.85rem;">📤 إجمالي ديون وسلفيات لك برّا عند الآخرين</p>
-                        <h4 id="global-sum-loans-to-them" style="color:var(--neon-orange); margin-top:4px;">0.00 ر.س</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">📤 مجموع ديون وسلفيات لك برّا عند الآخرين</p>
+                        <h4 id="global-sum-loans-to-them" style="color:var(--neon-orange);">0.00 ر.س</h4>
                     </div>
-                    <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.5rem; color:var(--neon-orange); opacity:0.5;"></i>
+                    <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.4rem; color:var(--neon-orange); opacity:0.4;"></i>
                 </div>
 
-                <div class="total-box" style="border-left: 5px solid var(--neon-red);">
+                <div class="total-box" style="border-right: 5px solid var(--neon-red);">
                     <div>
-                        <p style="color:var(--text-secondary); font-size:0.85rem;">🫳 إجمالي سلفيات عليك للناس (أنت مستلفها)</p>
-                        <h4 id="global-sum-loans-on-me" style="color:var(--neon-red); margin-top:4px;">0.00 ر.س</h4>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">🫳 مجموع سلفيات عليك للناس (أنت تسلفتها)</p>
+                        <h4 id="global-sum-loans-on-me" style="color:var(--neon-red);">0.00 ر.س</h4>
                     </div>
-                    <i class="fa-solid fa-comment-dollar" style="font-size:1.5rem; color:var(--neon-red); opacity:0.5;"></i>
+                    <i class="fa-solid fa-comment-dollar" style="font-size:1.4rem; color:var(--neon-red); opacity:0.4;"></i>
                 </div>
             </div>
 
-            <div class="glass-card" style="margin-top:20px;">
-                <p style="color:var(--text-secondary); font-size:0.8rem; margin-bottom:10px; text-align:center;">التوزيع الهيكلي لكتل رأس المال والأمانات</p>
-                <canvas id="globalDashboardChart" style="max-height: 160px; width: 100%;"></canvas>
+            <!-- الرسم البياني الدائري للإجماليات -->
+            <div class="glass-card" style="margin-top:15px;">
+                <canvas id="globalDashboardChart" style="max-height: 150px; width: 100%;"></canvas>
+            </div>
+
+            <!-- سجل تدفق عام ملخص لآخر العمليات في النظام لتتبع الحركة -->
+            <div style="padding:0 16px 20px 16px;">
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-history"></i> آخر التحركات النقدية العامة بالسيستم</h3>
+                <div id="global-recent-log-target"></div>
             </div>
         </div>
 
-        <div id="view-person-profile" class="view-section">
-            <div style="padding: 15px 16px 0 16px;">
-                <button class="btn-back" onclick="goBackToDashboard()"><i class="fa-solid fa-arrow-right"></i> العودة للإجماليات الرئيسية</button>
-            </div>
 
-            <div class="glass-card" style="background: rgba(0,176,255,0.03); border-color: rgba(0,176,255,0.15);">
-                <h2 id="profile-person-name" style="color:#fff; margin-bottom:8px;">إسم الشخص</h2>
-                <div style="display:flex; flex-direction:column; gap:6px; margin-top:10px;" id="profile-person-balances">
+        <!-- ---------------- PAGE 2: INDIVIDUAL PERSON PAGE (صفحة الشخص المستقلة تماماً) ---------------- -->
+        <div id="page-person-profile" class="app-page">
+            <header>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <i class="fa-solid fa-user-gear" style="font-size: 1.4rem; color: var(--neon-purple);"></i>
+                    <div>
+                        <h3 id="profile-page-header-title" style="font-size: 1.2rem; color: #fff;">حساب الشخص</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">صفحة الإجراءات وكشف الحساب المنفصل</p>
                     </div>
-                <div style="margin-top:15px;">
-                    <button class="btn-submit" onclick="openAdjustCurrentPersonModal()"><i class="fa-solid fa-cash-register"></i> تسجيل حركة مالية جديدة لهذا الشخص</button>
+                </div>
+            </header>
+
+            <!-- زر العودة الصارم يمسح الشاشة ويعود للرئيسية -->
+            <button class="btn-back" onclick="navigateToDashboard()"><i class="fa-solid fa-arrow-right"></i> إغلاق صفحة الشخص والعودة للرئيسية</button>
+
+            <!-- بطاقة الميزانية الخاصة بهذا الشخص وحده -->
+            <div class="glass-card" style="background: rgba(213,0,249,0.02); border-color: rgba(213,0,249,0.15);">
+                <h2 id="profile-box-name" style="color:#fff; margin-bottom:12px; font-weight: 700;">اسم العضو</h2>
+                <div style="display:flex; flex-direction:column; gap:8px;" id="profile-box-balances-list">
+                    <!-- تحقن الأرقام هنا برصيد الأمانة والديون المتبادلة الخاص به -->
+                </div>
+                <div style="margin-top:20px;">
+                    <button class="btn-submit" onclick="openTransactionModalForActivePerson()"><i class="fa-solid fa-plus"></i> تسجيل حركة مالية جديدة (أمانة/دين/سلف)</button>
                 </div>
             </div>
 
-            <div style="padding:0 16px;">
-                <h3 style="font-size:1rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-receipt"></i> كشف الحساب والعمليات التفصيلي للـشخص</h3>
-                <div id="profile-history-target"></div>
+            <!-- كشف حساب الشخص التاريخي الحصري -->
+            <div style="padding: 0 16px 30px 16px;">
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-receipt"></i> كشف الحساب التفصيلي للعمليات التاريخية</h3>
+                <div id="profile-exclusive-ledger-target"></div>
             </div>
         </div>
 
     </div>
 
+    <!-- 📥 MODAL: ADD NEW PERSON -->
     <div id="modal-add-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-person')">
         <div class="modal-content">
-            <h3 style="margin-bottom:15px;">إضافة شخص جديد في النظام الجانبي</h3>
+            <h3 style="margin-bottom:15px;"><i class="fa-solid fa-user-plus"></i> إضافة شخص جديد في القائمة</h3>
             <div class="form-group">
-                <label>اسم الشخص بالكامل</label>
-                <input type="text" id="p-name-input" class="form-control" placeholder="مثال: محمد، الوالد، أبو أحمد...">
+                <label>اسم الشخص</label>
+                <input type="text" id="p-name-input" class="form-control" placeholder="اكتب الاسم هنا...">
             </div>
-            <button class="btn-submit" onclick="executeSaveNewPerson()">تثبيت وتأكيد الحساب فوراً</button>
+            <button class="btn-submit" onclick="executeSaveNewPerson()">حفظ وتأكيد الاسم الجانبي</button>
         </div>
     </div>
 
+    <!-- 💳 MODAL: ACTION ENGINE FOR ACTIVE PERSON -->
     <div id="modal-adjust-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-adjust-person')">
         <div class="modal-content">
-            <h3 id="adjust-modal-title" style="color:var(--neon-blue); margin-bottom:15px;">تسجيل قيد حساب مالي</h3>
+            <h3 style="color:var(--neon-blue); margin-bottom:15px;"><i class="fa-solid fa-cash-register"></i> قيد حركة مالية جديدة</h3>
             <div class="form-group">
-                <label>طبيعة المعاملة المالية</label>
+                <label>نوع ونوعية العملية</label>
                 <select id="adjust-action-type" class="form-control">
-                    <option value="deposit_trust">📥 هو حط عندي أمانة / يجمع عندي راتبه أو فلوسه (+)</option>
-                    <option value="withdraw_trust">💸 هو سحب من أمانته / اشترى شيئاً بفلوسه من عندي (-)</option>
-                    <option value="give_loan">📤 أنا سلّفته فلوس / سجلت عليه دين له لك (+)</option>
-                    <option value="receive_loan_repay">💰 هو سددني ورجع لي ديني المستحق (-)</option>
-                    <option value="borrow_from_him">🫳 أنا استلفت منه فلوس / هو سلفني قيد علي (+)</option>
-                    <option value="pay_him_back">💳 أنا سددته ورجعت له الفلوس اللي استلفتها (-)</option>
+                    <option value="deposit_trust">📥 هو وضع عندي أمانة / يجمع رواتبه (+)</option>
+                    <option value="withdraw_trust">💸 هو سحب من أمانته / صرفت له من فلوسه عندي (-)</option>
+                    <option value="give_loan">📤 أنا سلفته مبلّغ / سجلت عليه دين مستحق لي (+)</option>
+                    <option value="receive_loan_repay">💰 هو سددني ورجع لي الدين المستحق (-)</option>
+                    <option value="borrow_from_him">🫳 أنا استلفت منه مبلغ / هو سلفني فلوس قيد علي (+)</option>
+                    <option value="pay_him_back">💳 أنا سددته ورجعت له سلفته المستحقة (-)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>قيمة المبلغ المراد تسجيله (ر.س)</label>
+                <label>قيمة المبلغ (ر.س)</label>
                 <input type="number" id="adjust-amount" class="form-control" placeholder="0.00">
             </div>
             <div class="form-group">
@@ -200,25 +228,25 @@
                 <input type="datetime-local" id="adjust-date" class="form-control">
             </div>
             <div class="form-group">
-                <label>الملاحظة والبيان (مثال: اشترى بـ 5 ريال بيبسي / أودع راتب شهر 5)</label>
-                <input type="text" id="adjust-reason" class="form-control" placeholder="اكتب الملاحظة هنا تفصيلياً...">
+                <label>البيان / الملاحظة التوضيحية</label>
+                <input type="text" id="adjust-reason" class="form-control" placeholder="اكتب التفاصيل بدقة...">
             </div>
-            <button class="btn-submit" onclick="executePersonDebtAdjustment()">توثيق وبناء القيد التاريخي</button>
+            <button class="btn-submit" onclick="executePersonDebtAdjustment()">تثبيت وبناء القيد فوراً</button>
         </div>
     </div>
 
     <script>
-        // 🏦 ENGINE STATE DATA ARCHITECTURE
+        // 💾 SYSTEM CENTRAL STORAGE STATE
         let state = {
-            db: { people: [] },
+            db: { people: [], globalLogs: [] },
             activePersonId: null
         };
         let globalChart = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('FAMILY_FINANCE_HAMBURGER_CORE_DATA');
+            const saved = localStorage.getItem('FAMILY_FINANCE_STRICT_ROUTER_DATA');
             if(saved) state.db = JSON.parse(saved);
-
+            
             initChartEngine();
             renderAllComponents();
         });
@@ -229,11 +257,11 @@
         }
 
         function commit() {
-            localStorage.setItem('FAMILY_FINANCE_HAMBURGER_CORE_DATA', JSON.stringify(state.db));
+            localStorage.setItem('FAMILY_FINANCE_STRICT_ROUTER_DATA', JSON.stringify(state.db));
             renderAllComponents();
         }
 
-        // 📊 CORE SYSTEM CALCULATIONS & RENDER
+        // 📊 ACCOUNTING CORE ENGINE
         function calculateSystemMetrics() {
             let sumTrusts = 0, sumLoansToThem = 0, sumLoansOnMe = 0;
 
@@ -243,40 +271,41 @@
                 sumLoansOnMe += ((p.borrowed_from_him || 0) - (p.repaid_to_him || 0));
             });
 
-            // السيولة الإجمالية المتاحة = الأمانات المودعة عندك + ما استلفته أنت من الناس - ما أقرضته أنت للناس
             let totalLiquidity = sumTrusts + sumLoansOnMe - sumLoansToThem;
-
             return { totalLiquidity, sumTrusts, sumLoansToThem, sumLoansOnMe };
         }
 
         function renderAllComponents() {
             const m = calculateSystemMetrics();
 
-            // تحديث أرقام واجهة الصفحة الرئيسية الموحدة
+            // تحديث شاشة الإجماليات الرئيسية المطلقة
             document.getElementById('global-total-liquidity').innerText = m.totalLiquidity.toFixed(2) + " ر.س";
             document.getElementById('global-sum-trusts').innerText = m.sumTrusts.toFixed(2) + " ر.س";
             document.getElementById('global-sum-loans-to-them').innerText = m.sumLoansToThem.toFixed(2) + " ر.س";
             document.getElementById('global-sum-loans-on-me').innerText = m.sumLoansOnMe.toFixed(2) + " ر.س";
 
-            // تحديث قائمة الأسماء الجانبية (داخل الهمبرغر)
-            renderDrawerPeopleList();
+            // بناء وحقن قائمة الأسماء في الهمبرغر الجانبي
+            renderHamburgerPeopleList();
 
-            // تحديث شاشة العرض التفصيلية للشخص لو كانت مفتوحة حالياً
+            // ملء السجل العام المصغر بالرئيسية
+            renderGlobalRecentLogs();
+
+            // لو كانت شاشة الشخص المفتوحة نشطة نقوم بتحديث بياناتها الداخلية حصرياً
             if(state.activePersonId) {
-                renderPersonProfilePage(state.activePersonId);
+                renderExclusivePersonProfilePage(state.activePersonId);
             }
 
-            // تحديث الرسم البياني الإجمالي
+            // تحديث مؤشر الدائرة
             if(globalChart) {
                 globalChart.data.datasets[0].data = [m.sumTrusts, m.sumLoansToThem, m.sumLoansOnMe];
                 globalChart.update();
             }
         }
 
-        // 👥 HAMBURGER PEOPLES DRAWER ACTIONS
+        // 👥 HAMBURGER PEOPLE LIST IMPLEMENTATION
         function executeSaveNewPerson() {
             const name = document.getElementById('p-name-input').value.trim();
-            if(!name) return;
+            if(!name) return alert("فضلاً اكتب اسم العضو أولاً.");
             
             state.db.people.push({
                 id: 'p_' + Date.now(),
@@ -292,122 +321,124 @@
             commit();
         }
 
-        function renderDrawerPeopleList() {
+        function renderHamburgerPeopleList() {
             const container = document.getElementById('drawer-people-target');
             container.innerHTML = '';
 
             if(state.db.people.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا يوجد أشخاص مضافين حالياً.</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:20px;">القائمة الجانبية فارغة، أضف أشخاصاً.</p>`;
                 return;
             }
 
             state.db.people.forEach(p => {
-                const div = document.createElement('div');
-                div.className = "person-menu-item";
-                div.onclick = () => {
-                    toggleDrawer(false);
-                    switchToPersonProfileView(p.id);
+                const item = document.createElement('div');
+                item.className = "person-menu-item";
+                item.onclick = () => {
+                    toggleDrawer(false); // إغلاق الهمبرغر
+                    navigateToPersonProfilePage(p.id); // فتح الصفحة المنفصلة
                 };
-                
-                div.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <i class="fa-solid fa-circle-user" style="color:var(--neon-blue); font-size:1.2rem;"></i>
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <i class="fa-solid fa-user" style="color:var(--neon-blue); font-size:1.1rem;"></i>
                         <span style="font-weight:500; color:#fff;">${p.name}</span>
                     </div>
-                    <i class="fa-solid fa-chevron-left" style="font-size:0.8rem; color:var(--text-secondary);"></i>
+                    <i class="fa-solid fa-angle-left" style="font-size:0.85rem; color:var(--text-secondary);"></i>
                 `;
-                container.appendChild(div);
+                container.appendChild(item);
             });
         }
 
-        // 🔄 SWITCH VIEWS CONTROLLER (التنقل الكامل بين الرئيسي والفرعي للأشخاص)
-        function switchToPersonProfileView(personId) {
+        // 🔄 STRICT SYSTEM ROUTER (نظام الانتقال والتبديل الصارم بين الشاشتين الكاملتين)
+        function navigateToPersonProfilePage(personId) {
             state.activePersonId = personId;
             
-            document.getElementById('view-dashboard').style.display = 'none';
-            document.getElementById('view-person-profile').style.display = 'block';
+            // إخفاء صفحة الرئيسية تماماً وحجب كتلها
+            document.getElementById('page-dashboard').classList.remove('active');
             
-            renderPersonProfilePage(personId);
+            // تفعيل وإظهار صفحة الشخص المستقلة كلياً
+            document.getElementById('page-person-profile').classList.add('active');
+            
+            renderExclusivePersonProfilePage(personId);
         }
 
-        function goBackToDashboard() {
+        function navigateToDashboard() {
             state.activePersonId = null;
-            document.getElementById('view-person-profile').style.display = 'none';
-            document.getElementById('view-dashboard').style.display = 'block';
-            document.getElementById('app-header-title').innerText = "الرئيسية: الإجماليات العامة";
+            
+            // إخفاء صفحة الشخص تماماً
+            document.getElementById('page-person-profile').classList.remove('active');
+            
+            // تفعيل وإعادة عرض صفحة الإجماليات الإجمالية الرئيسية
+            document.getElementById('page-dashboard').classList.add('active');
+            renderAllComponents();
         }
 
-        // 🗂️ INDIVIDUAL PERSON PROFILE RENDERING ENGINE
-        function renderPersonProfilePage(personId) {
+        // 🗂️ RENDER INDIVIDUAL EXCLUSIVE PAGE
+        function renderExclusivePersonProfilePage(personId) {
             const person = state.db.people.find(p => p.id === personId);
-            if(!person) return goBackToDashboard();
+            if(!person) return navigateToDashboard();
 
-            // تحديث عنوان الترويسة العلوية باسم الشخص
-            document.getElementById('app-header-title').innerText = `حساب: ${person.name}`;
-            
-            // تعبئة الاسم الداخلي
-            document.getElementById('profile-person-name').innerText = person.name;
+            // تحديث العناوين الداخلية والترويسة باسمه
+            document.getElementById('profile-page-header-title').innerText = `حساب: ${person.name}`;
+            document.getElementById('profile-box-name').innerText = person.name;
 
-            // حساب الأرصدة الحالية المستقلة له
+            // حساب المعطيات المباشرة له وحده
             const netTrust = person.trust_deposited - person.trust_withdrawn;
             const netLoan = person.loan_given - person.loan_repaid;
             const netBorrowed = person.borrowed_from_him - person.repaid_to_him;
 
-            const balanceContainer = document.getElementById('profile-person-balances');
-            balanceContainer.innerHTML = `
-                <div style="display:flex; justify-content:space-between; background:rgba(0,176,255,0.06); padding:10px 14px; border-radius:12px;">
-                    <span style="color:var(--text-secondary); font-size:0.9rem;">📥 أمانات مجمعة له عندك (راتب/وفر):</span>
+            const balancesBox = document.getElementById('profile-box-balances-list');
+            balancesBox.innerHTML = `
+                <div style="display:flex; justify-content:space-between; background:rgba(0,176,255,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(0,176,255,0.15)">
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">📥 أمانات له مجمعة عندك:</span>
                     <span style="color:var(--neon-blue); font-weight:700;">${netTrust.toFixed(2)} ر.س</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; background:rgba(255,145,0,0.06); padding:10px 14px; border-radius:12px;">
-                    <span style="color:var(--text-secondary); font-size:0.9rem;">📤 ديون وسلفيات له مترتبة عليه لك:</span>
-                    <span style="color:var(--neon-orange); font-weight:700;">${netLoan.toFixed(2)} ر.س</span>
+                <div style="display:flex; justify-content:space-between; background:rgba(255,145,0,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,145,0,0.15)">
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">📤 ديون وسلف مترتبة عليه لك:</span>
+                    <span style="color:var(--neon-orange); font-weight:700;">${netLoan.toFixed(2)} ر.s</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; background:rgba(255,23,68,0.06); padding:10px 14px; border-radius:12px;">
+                <div style="display:flex; justify-content:space-between; background:rgba(255,23,68,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,23,68,0.15)">
                     <span style="color:var(--text-secondary); font-size:0.9rem;">🫳 سلفيات أنت أخذتها منه (دين عليك له):</span>
                     <span style="color:var(--neon-red); font-weight:700;">${netBorrowed.toFixed(2)} ر.س</span>
                 </div>
-                <div style="text-align:left; margin-top:10px;">
-                    <button style="background:transparent; border:none; color:var(--neon-red); font-size:0.8rem; cursor:pointer;" onclick="executeDeleteCurrentPerson('${person.id}')"><i class="fa-solid fa-user-minus"></i> حذف ملف الشخص نهائياً</button>
+                <div style="text-align:left; margin-top:12px;">
+                    <button style="background:transparent; border:none; color:var(--neon-red); font-size:0.8rem; cursor:pointer;" onclick="executeDeleteEntirePerson('${person.id}')"><i class="fa-solid fa-trash-can"></i> حذف هذا الشخص نهائياً وملفه بالكامل ⚠️</button>
                 </div>
             `;
 
-            // بناء كشف الحساب التاريخي والعمليات الفرعي له
-            const historyContainer = document.getElementById('profile-history-target');
-            historyContainer.innerHTML = '';
+            // بناء دفتر كشف الحساب الحصري والوحيد له بالأسفل
+            const ledgerContainer = document.getElementById('profile-exclusive-ledger-target');
+            ledgerContainer.innerHTML = '';
 
             if(!person.history || person.history.length === 0) {
-                historyContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:20px;">لا يوجد عمليات مسجلة في كشف حساب ${person.name} حتى الآن.</p>`;
+                ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا يوجد قيود مسجلة في كشف حساب ${person.name}.</p>`;
                 return;
             }
 
-            person.history.slice().reverse().forEach((h, index) => {
+            person.history.slice().reverse().forEach((h, revIdx) => {
                 const item = document.createElement('div');
                 item.className = "list-item";
                 
-                // تحديد لون الحركة بناء على طبيعتها
-                let sideColor = "var(--neon-blue)";
-                if(h.type.includes('loan')) sideColor = "var(--neon-orange)";
-                if(h.type.includes('borrow') || h.type.includes('pay_him')) sideColor = "var(--neon-red)";
+                let accentColor = "var(--neon-blue)";
+                if(h.type.includes('loan')) accentColor = "var(--neon-orange)";
+                if(h.type.includes('borrow') || h.type.includes('pay_him')) accentColor = "var(--neon-red)";
 
-                item.style.borderRight = `4px solid ${sideColor}`;
-
+                item.style.borderRight = `4px solid ${accentColor}`;
                 item.innerHTML = `
                     <div style="max-width:75%;">
                         <h4 style="font-size:0.95rem; color:#fff;">${h.reason}</h4>
-                        <span style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${h.displayDate}</span>
+                        <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${h.displayDate}</small>
                     </div>
-                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
-                        <span style="font-weight:700; font-family:'Plus Jakarta Sans'; color:${sideColor}">${h.amt.toFixed(2)}</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${index})"><i class="fa-solid fa-trash-can"></i></button>
+                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                        <span style="font-weight:700; color:${accentColor}; font-family:'Plus Jakarta Sans';">${h.amt.toFixed(2)}</span>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${revIdx})"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
-                historyContainer.appendChild(item);
+                ledgerContainer.appendChild(item);
             });
         }
 
-        // 💳 EXECUTE FINANCIAL TRANSACTIONS FOR PERSON
-        function openAdjustCurrentPersonModal() {
+        // 💳 RECORD NEW TRANSACTION FOR ACTIVE PERSON
+        function openTransactionModalForActivePerson() {
             document.getElementById('adjust-amount').value = '';
             document.getElementById('adjust-reason').value = '';
             document.getElementById('adjust-date').value = new Date().toISOString().slice(0, 16);
@@ -420,23 +451,19 @@
             const userDate = document.getElementById('adjust-date').value;
             const reason = document.getElementById('adjust-reason').value.trim();
 
-            if(!amount || amount <= 0 || !reason || !userDate) return alert("فضلاً املأ كامل تفاصيل العملية بدقة!");
+            if(!amount || amount <= 0 || !reason || !userDate) return alert("الرجاء إدخال تفاصيل الحركة كاملة وبدقة.");
 
             const person = state.db.people.find(p => p.id === state.activePersonId);
             if(!person) return;
 
             const formattedDate = new Date(userDate).toLocaleString('ar-SA');
 
-            // حقن المعاملة في سجل مصفوفة الشخص الفردية
+            // حقن في سجل الشخص
             person.history.push({
-                type: action,
-                amt: amount,
-                date: userDate,
-                displayDate: formattedDate,
-                reason: reason
+                type: action, amt: amount, date: userDate, displayDate: formattedDate, reason: reason
             });
 
-            // تحديث الحسابات الهيكلية التراكمية بناء على نوع الخيار
+            // تحديث الأرصدة التراكمية
             if(action === 'deposit_trust') person.trust_deposited += amount;
             if(action === 'withdraw_trust') person.trust_withdrawn += amount;
             if(action === 'give_loan') person.loan_given += amount;
@@ -444,21 +471,28 @@
             if(action === 'borrow_from_him') person.borrowed_from_him += amount;
             if(action === 'pay_him_back') person.repaid_to_him += amount;
 
+            // تسجيل الحركة في سجل الأحداث العام بالصفحة الرئيسية
+            state.db.globalLogs.push({
+                id: 'log_' + Date.now(),
+                text: `حساب [${person.name}]: ${reason}`,
+                amount: amount,
+                type: (action.includes('deposit') || action.includes('repay') || action.includes('borrow')) ? 'plus' : 'minus',
+                date: formattedDate
+            });
+
             closeModal('modal-adjust-person');
             commit();
         }
 
-        // 🗑️ DELETE CONTROLLERS
+        // 🗑️ TRANSACTION & USER DELETION ENGINE
         function executeDeleteSingleTransaction(reversedIndex) {
             const person = state.db.people.find(p => p.id === state.activePersonId);
             if(!person) return;
             
-            // حساب الفهرس الحقيقي نظراً لأننا قمنا بعمل ريفيرس للعرض
-            const realIndex = person.history.length - 1 - reversedIndex;
-            const tx = person.history[realIndex];
+            const realIdx = person.history.length - 1 - reversedIndex;
+            const tx = person.history[realIdx];
 
-            if(confirm(`هل أنت متأكد من حذف حركة: (${tx.reason}) وتعديل الرصيد؟`)) {
-                // تراجع عكسي عن المبالغ
+            if(confirm(`هل تريد التراجع وحذف حركة: (${tx.reason}) وإعادة تعديل رصيد الشخص المالي؟`)) {
                 if(tx.type === 'deposit_trust') person.trust_deposited -= tx.amt;
                 if(tx.type === 'withdraw_trust') person.trust_withdrawn -= tx.amt;
                 if(tx.type === 'give_loan') person.loan_given -= tx.amt;
@@ -466,50 +500,60 @@
                 if(tx.type === 'borrow_from_him') person.borrowed_from_him -= tx.amt;
                 if(tx.type === 'pay_him_back') person.repaid_to_him -= tx.amt;
 
-                person.history.splice(realIndex, 1);
+                person.history.splice(realIdx, 1);
                 commit();
             }
         }
 
-        function executeDeleteCurrentPerson(personId) {
+        function executeDeleteEntirePerson(personId) {
             const person = state.db.people.find(p => p.id === personId);
             if(!person) return;
             
-            if(confirm(`🚨 تحذير أمني: هل تريد حذف ${person.name} وكامل كشوفات حساباته نهائياً من القائمة الجانبية؟`)) {
+            if(confirm(`🚨 قرار نهائي: هل تريد إزالة العضو [${person.name}] ومسح كل كشوفاته بالكامل وتعديل الإجماليات؟`)) {
                 state.db.people = state.db.people.filter(p => p.id !== personId);
-                goBackToDashboard();
+                navigateToDashboard();
                 commit();
             }
         }
 
-        // 📈 GLOBAL CHART ENGINE
+        function renderGlobalRecentLogs() {
+            const container = document.getElementById('global-recent-log-target');
+            container.innerHTML = '';
+
+            if(!state.db.globalLogs || state.db.globalLogs.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.8rem; text-align:center; padding:10px;">لا يوجد عمليات منجزة بعد.</p>`;
+                return;
+            }
+
+            state.db.globalLogs.slice(-4).reverse().forEach(l => {
+                const item = document.createElement('div');
+                item.className = "list-item";
+                item.style.padding = "10px 14px";
+                item.innerHTML = `
+                    <div>
+                        <h5 style="font-size:0.85rem; color:#fff; font-weight:500;">${l.text}</h5>
+                        <small style="color:var(--text-secondary); font-size:0.65rem;">${l.date}</small>
+                    </div>
+                    <span style="font-size:0.9rem; font-weight:700; color:${l.type==='plus'?'var(--neon-green)':'var(--neon-red)'}">${l.type==='plus'?'+':'-'} ${l.amount.toFixed(2)}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // 📊 INITIALIZE CHART ENGINE
         function initChartEngine() {
             const ctx = document.getElementById('globalDashboardChart').getContext('2d');
             globalChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['الأمانات المودعة', 'الديون المترتبة لك', 'الديون المترتبة عليك'],
+                    labels: ['الأمانات الإجمالية', 'الديون التي لك برّا', 'السلفيات التي عليك'],
                     datasets: [{ data: [0, 0, 0], backgroundColor: ['#00b0ff', '#ff9100', '#ff1744'], borderWidth: 0 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Tajawal', size: 11 } } } }
+                    plugins: { legend: { position: 'left', labels: { color: '#94a3b8', font: { family: 'Tajawal', size: 10 } } } }
                 }
             });
-        }
-
-        // BACKUP TOOL
-        function exportToJSONFile() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.db));
-            const dl = document.createElement('a'); dl.setAttribute("href", dataStr);
-            dl.setAttribute("download", `Family_Finance_Core_Backup.json`);
-            dl.click();
-        }
-
-        function wipeEverythingSystem() {
-            if(confirm("🚨 تصفير ومسح كامل قاعدة البيانات؟")) {
-                state.db = { people: [] }; commit(); location.reload();
-            }
         }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
