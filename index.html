@@ -14,8 +14,8 @@
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at 50% 50%, #161926 0%, #08090d 100%);
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.06);
+            --card-bg: #11131e; /* لون صلب وواضح للبطاقات لمنع السواد الباهت */
+            --glass-border: rgba(255, 255, 255, 0.08);
             --glass-accent: rgba(255, 255, 255, 0.08);
             --neon-green: #00e676;
             --neon-blue: #00b0ff;
@@ -32,16 +32,16 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); color: var(--text-primary); font-family: var(--font-ar); min-height: 100vh; overflow-x: hidden; display: flex; justify-content: center; }
         
-        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .app-container { width: 100%; max-width: 480px; background: #08090d; min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .glass-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
         
         header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .menu-hamburger { font-size: 1.6rem; color: var(--neon-blue); cursor: pointer; padding: 4px; transition: var(--transition); }
         .menu-hamburger:hover { transform: scale(1.1); }
 
         /* 🍔 HAMBURGER DRAWER */
-        .side-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: #090a10; border-left: 1px solid var(--glass-border); z-index: 10000; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px 20px; display: flex; flex-direction: column; }
+        .side-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: #0f111a; border-left: 1px solid var(--glass-border); z-index: 10000; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px 20px; display: flex; flex-direction: column; }
         .side-drawer.open { right: 0; }
         .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: none; backdrop-filter: blur(4px); }
         .drawer-overlay.open { display: block; }
@@ -52,20 +52,20 @@
 
         .people-list-menu { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         
-        .person-menu-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; cursor: pointer; transition: var(--transition); }
+        .person-menu-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; cursor: pointer; transition: var(--transition); }
         .person-menu-item:hover { background: rgba(0,176,255,0.08); border-color: var(--neon-blue); }
-        .person-menu-item.my-own { border-color: rgba(213,0,249,0.3); background: rgba(213,0,249,0.02); }
+        .person-menu-item.my-own { border-color: rgba(213,0,249,0.3); background: rgba(213,0,249,0.04); }
         .person-menu-item.my-own:hover { background: rgba(213,0,249,0.08); border-color: var(--neon-purple); }
 
         /* Dashboard Totals Boxes */
         .grid-totals { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; margin-top: 5px; }
-        .total-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .total-box { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .total-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; margin-top: 4px; }
 
         /* Navigation Bottom Tabs Style */
         .nav-tabs { display: flex; gap: 10px; padding: 0 16px; margin-bottom: 10px; }
         .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
-        .tab-btn.active { background: rgba(0, 176, 255, 0.1); border-color: var(--neon-blue); color: #fff; }
+        .tab-btn.active { background: rgba(0, 176, 255, 0.15); border-color: var(--neon-blue); color: #fff; }
 
         /* Pages System */
         .app-page { display: none; width: 100%; animation: fadeIn 0.3s ease; }
@@ -85,15 +85,13 @@
         .btn-submit { width: 100%; padding: 15px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-back { background: var(--glass-accent); border: 1px solid var(--glass-border); color: #fff; padding: 10px 16px; border-radius: 14px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; margin: 15px 16px 5px 16px; width: calc(100% - 32px); justify-content: center; font-weight: bold; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.01); border-radius: 14px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.03); }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.02); border-radius: 14px; margin-bottom: 10px; border: 1px solid var(--glass-border); }
         
-        .btn-reset-system { background: transparent; border: 1px dashed var(--neon-red); color: var(--neon-red); padding: 10px; border-radius: 12px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; transition: var(--transition); }
+        .btn-reset-system { background: transparent; border: 1px dashed var(--neon-red); color: var(--neon-red); padding: 10px; border-radius: 12px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; transition: var(--transition); width: 100%; }
         .btn-reset-system:hover { background: rgba(255, 23, 68, 0.1); }
 
-        .bill-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-top: 4px; }
-        
-        /* سجل دفعات الفاتورة */
-        .bill-log-item { background: rgba(255,255,255,0.02); border-right: 3px solid var(--neon-green); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 6px; display: flex; justify-content: space-between; }
+        .bill-badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-top: 4px; }
+        .bill-log-item { background: rgba(255,255,255,0.02); border-right: 3px solid var(--neon-green); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 6px; display: flex; justify-content: space-between; border-left: 1px solid var(--glass-border); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
     </style>
 </head>
 <body>
@@ -112,7 +110,7 @@
         
         <div class="people-list-menu" id="drawer-people-target"></div>
         
-        <button class="btn-submit" style="background: var(--neon-blue); color:#000; font-weight: bold; margin-bottom: 5px;" onclick="openModal('modal-add-person')">
+        <button class="btn-submit" style="background: var(--neon-blue); color:#000; font-weight: bold; margin-bottom: 10px;" onclick="openModal('modal-add-person')">
             <i class="fa-solid fa-user-plus"></i> إضافة شخص جديد
         </button>
 
@@ -123,13 +121,11 @@
 
     <div class="app-container">
         
-        <!-- 📑 NAVIGATION TABS ON TOP -->
         <div class="nav-tabs" style="margin-top: 20px;">
             <button class="tab-btn active" id="tab-dash" onclick="switchMainTab('dash')"><i class="fa-solid fa-house"></i> الرئيسية</button>
             <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-receipt"></i> دفتر الفواتير والديون</button>
         </div>
 
-        <!-- 🏠 PAGE 1: DASHBOARD -->
         <div id="page-dashboard" class="app-page active">
             <header style="padding-top: 5px;">
                 <div style="display:flex; align-items:center; gap:14px;">
@@ -141,7 +137,7 @@
                 </div>
             </header>
 
-            <div class="glass-card" style="background: linear-gradient(135deg, #121324 0%, #0b0c16 100%); text-align:center; border-color: rgba(0,230,118,0.15);">
+            <div class="glass-card" style="background: #121324; text-align:center; border-color: rgba(0,230,118,0.25);">
                 <p style="color: var(--text-secondary); font-size: 0.85rem;">💰 إجمالي السيولة النقدية المتاحة تحت يدك الآن</p>
                 <h1 style="font-size: 2.5rem; margin: 8px 0; color: var(--neon-green); font-family: 'Plus Jakarta Sans';" id="global-total-liquidity">0.00 ر.س</h1>
             </div>
@@ -152,7 +148,7 @@
                         <p style="color:var(--text-secondary); font-size:0.85rem;">📥 مجموع أمانات ورواتب الناس عندك</p>
                         <h4 id="global-sum-trusts" style="color:var(--neon-blue);">0.00 ر.س</h4>
                     </div>
-                    <i class="fa-solid fa-vault" style="font-size:1.4rem; color:var(--neon-blue); opacity:0.4;"></i>
+                    <i class="fa-solid fa-vault" style="font-size:1.4rem; color:var(--neon-blue); opacity:0.6;"></i>
                 </div>
                 
                 <div class="total-box" style="border-right: 5px solid var(--neon-orange);">
@@ -160,7 +156,7 @@
                         <p style="color:var(--text-secondary); font-size:0.85rem;">📤 مجموع ديون وسلفيات لك برّا عند الآخرين</p>
                         <h4 id="global-sum-loans-to-them" style="color:var(--neon-orange);">0.00 ر.س</h4>
                     </div>
-                    <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.4rem; color:var(--neon-orange); opacity:0.4;"></i>
+                    <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.4rem; color:var(--neon-orange); opacity:0.6;"></i>
                 </div>
 
                 <div class="total-box" style="border-right: 5px solid var(--neon-red);">
@@ -168,16 +164,15 @@
                         <p style="color:var(--text-secondary); font-size:0.85rem;">🫳 مجموع سلفيات عليك للناس (أنت تسلفتها)</p>
                         <h4 id="global-sum-loans-on-me" style="color:var(--neon-red);">0.00 ر.س</h4>
                     </div>
-                    <i class="fa-solid fa-comment-dollar" style="font-size:1.4rem; color:var(--neon-red); opacity:0.4;"></i>
+                    <i class="fa-solid fa-comment-dollar" style="font-size:1.4rem; color:var(--neon-red); opacity:0.6;"></i>
                 </div>
 
-                <!-- 🛒 كرت إجمالي دين الفواتير العام المتبقي -->
                 <div class="total-box" style="border-right: 5px solid var(--neon-yellow); cursor: pointer;" onclick="switchMainTab('grocery')">
                     <div>
                         <p style="color:var(--text-secondary); font-size:0.85rem;">⏳ إجمالي الفواتير والدين المتبقي عليك (بقالة، نت...)</p>
                         <h4 id="global-grocery-debt" style="color:var(--neon-yellow);">0.00 ر.س</h4>
                     </div>
-                    <i class="fa-solid fa-basket-shopping" style="font-size:1.4rem; color:var(--neon-yellow); opacity:0.4;"></i>
+                    <i class="fa-solid fa-basket-shopping" style="font-size:1.4rem; color:var(--neon-yellow); opacity:0.6;"></i>
                 </div>
             </div>
 
@@ -191,9 +186,8 @@
             </div>
         </div>
 
-        <!-- 🛒 PAGE 2: GENERAL DEBT HUB -->
         <div id="page-grocery" class="app-page">
-            <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center;">
+            <div class="glass-card" style="background: #1e1b10; border-color: rgba(255,214,0,0.4); text-align: center;">
                 <i class="fa-solid fa-file-invoice-dollar" style="font-size: 2rem; color: var(--neon-yellow); margin-bottom: 8px;"></i>
                 <p style="color: var(--text-secondary); font-size: 0.85rem;">📑 دفتر فواتير الدَّين المستحقة (بقالة، نت، كهرباء...)</p>
                 <h1 style="font-size: 2.3rem; margin: 6px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
@@ -211,7 +205,6 @@
             </div>
         </div>
 
-        <!-- 👤 PAGE 3: PERSON PROFILE -->
         <div id="page-person-profile" class="app-page">
             <header>
                 <div style="display:flex; align-items:center; gap:14px;">
@@ -225,7 +218,7 @@
 
             <button class="btn-back" onclick="navigateToDashboard()"><i class="fa-solid fa-arrow-right"></i> إغلاق الصفحة والعودة للرئيسية</button>
 
-            <div class="glass-card" id="profile-main-card-frame" style="background: rgba(213,0,249,0.02); border-color: rgba(213,0,249,0.15);">
+            <div class="glass-card" id="profile-main-card-frame" style="background: rgba(213,0,249,0.02); border-color: rgba(213,0,249,0.3);">
                 <h2 id="profile-box-name" style="color:#fff; margin-bottom:12px; font-weight: 700;">اسم العضو</h2>
                 <div style="display:flex; flex-direction:column; gap:8px;" id="profile-box-balances-list"></div>
                 <div style="margin-top:20px;">
@@ -241,7 +234,6 @@
 
     </div>
 
-    <!-- 🛍️ MODAL ADD BILL ITEM -->
     <div id="modal-add-grocery" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-grocery')">
         <div class="modal-content">
             <h3 style="color: var(--neon-yellow); margin-bottom:15px;"><i class="fa-solid fa-cart-plus"></i> إضافة فاتورة / دين جديد</h3>
@@ -266,12 +258,11 @@
         </div>
     </div>
 
-    <!-- 💳 MODAL DETAILED PARTIAL PAYMENT & LEDGER (UPDATED) -->
     <div id="modal-pay-part" class="modal" onclick="closeModalOnOuterClick(event, 'modal-pay-part')">
         <div class="modal-content" style="max-height: 90vh;">
             <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-receipt"></i> تفاصيل الفاتورة وتسديد الدفعات</h3>
             
-            <div class="glass-card" style="margin: 0 0 15px 0; background: rgba(255,255,255,0.02); padding:15px;">
+            <div class="glass-card" style="margin: 0 0 15px 0; background: #161824; padding:15px;">
                 <p id="pay-modal-bill-title" style="font-weight: bold; font-size:1.1rem; color:#fff;"></p>
                 <p id="pay-modal-bill-date" style="color:var(--text-secondary); font-size:0.75rem; margin-top:4px;"></p>
                 <p id="pay-modal-bill-original" style="color: var(--neon-blue); margin-top: 8px; font-weight: bold;"></p>
@@ -280,16 +271,14 @@
             
             <input type="hidden" id="pay-modal-bill-id">
             
-            <!-- حقل إدخال أي مبلغ للتسديد -->
-            <div class="form-group" style="background: rgba(0,230,118,0.03); padding: 12px; border-radius: 14px; border: 1px dashed rgba(0,230,118,0.2);">
+            <div class="form-group" style="background: rgba(0,230,118,0.05); padding: 12px; border-radius: 14px; border: 1px dashed rgba(0,230,118,0.3);">
                 <label style="color:#fff; font-weight: bold;">💸 اكتب المبلغ الذي تريد تسديده الآن (مفتوح):</label>
                 <input type="number" id="pay-part-amount" class="form-control" placeholder="اكتب 50، 100، 200... حسب مقدرتك" style="margin-top:5px;">
                 <button class="btn-submit" style="background: var(--neon-green); color: #000; margin-top:10px; padding:12px; font-size:0.95rem;" onclick="executeSubmitPartialPayment()">تأكيد سداد هذا المبلغ فوراً</button>
             </div>
 
-            <!-- سجل الحركات والعمليات الخاصة بهذه الفاتورة فقط -->
             <div style="margin-top: 20px;">
-                <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;"><i class="fa-solid fa-history"></i> ماذا حدث في هذه الفاتورة؟ (سجل الدفعات)</h4>
+                <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;"><i class="fa-solid fa-history"></i> سجل دفعات هذه الفاتورة</h4>
                 <div id="bill-individual-logs-target" style="max-height: 180px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
             </div>
             
@@ -474,7 +463,7 @@
                 name: name,
                 price: price,
                 remaining: price,
-                paymentsRegistry: [], // كشف حساب داخلي خاص بكل فاتورة لحالها
+                paymentsRegistry: [],
                 date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             });
 
@@ -519,14 +508,13 @@
                     <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;" onclick="event.stopPropagation();">
                         <span style="font-size:0.75rem; color:var(--text-secondary);">المتبقي الحالي:</span>
                         <span style="font-weight:900; color:var(--neon-yellow); font-family:'Plus Jakarta Sans'; font-size: 1.1rem;">${item.remaining.toFixed(2)} ر.س</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> إلغاء الفاتورة</button>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.6); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> إلغاء الفاتورة</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // فتح مودال تفاصيل الفاتورة وعرض كشف حسابها ودفعاتها
         function openPartialPaymentModal(id) {
             const item = state.db.groceryDebtList.find(x => x.id === id);
             if(!item) return;
@@ -538,7 +526,6 @@
             document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي للـسداد حالياً: ${item.remaining.toFixed(2)} ر.س`;
             document.getElementById('pay-part-amount').value = '';
             
-            // رندر كشف الحساب الخاص بالفاتورة دي لحالها
             const logsContainer = document.getElementById('bill-individual-logs-target');
             logsContainer.innerHTML = '';
 
@@ -560,7 +547,6 @@
             openModal('modal-pay-part');
         }
 
-        // تنفيذ تسديد أي مبلغ (مفتوح جزئي أو كلي)
         function executeSubmitPartialPayment() {
             const id = document.getElementById('pay-modal-bill-id').value;
             const payAmount = parseFloat(document.getElementById('pay-part-amount').value);
@@ -576,10 +562,8 @@
                 return alert(`المبلغ أكبر من المتبقي! المتبقي المطلوب هو فقط: ${item.remaining.toFixed(2)} ر.س`);
             }
 
-            // تخصيم المبلغ من المتبقي
             item.remaining -= payAmount;
             
-            // توثيق الحركة بكشف الحساب الخاص بالفاتورة نفسها لحالها
             if(!item.paymentsRegistry) item.paymentsRegistry = [];
             const timestamp = new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
             item.paymentsRegistry.push({
@@ -587,10 +571,8 @@
                 time: timestamp
             });
             
-            // خصم الدفعة من محفظتك الحرة الشخصية تلقائياً
             state.db.myAccount.balance -= payAmount;
 
-            // توثيق في سجل المحفظة الرئيسي
             state.db.myAccount.history.push({
                 type: 'my_expense',
                 amt: payAmount,
@@ -598,7 +580,6 @@
                 displayDate: timestamp
             });
 
-            // توثيق في السجل العام للرئيسية
             state.db.globalLogs.push({
                 name: `فاتورة ${item.type}`,
                 type: 'my_expense',
@@ -606,14 +587,12 @@
                 reason: `تسديد دفعة بقيمة ${payAmount} ر.س من فاتورة: ${item.name}`
             });
 
-            // لو تسددت بالكامل (باقي 0) تقفل الفاتورة وتختفي بنجاح
             if(item.remaining <= 0) {
                 alert(`تم سداد الفاتورة بالكامل وقفلها بنجاح! 🎉`);
                 state.db.groceryDebtList.splice(itemIndex, 1);
                 closeModal('modal-pay-part');
             } else {
                 alert(`تم تسجيل دفعة السداد بقيمة (${payAmount.toFixed(2)} ر.س) بنجاح داخل كشف الفاتورة ✅`);
-                // إنعاش بيانات المودال المفتوح عشان تشوف التحديث والجدول مباشرة
                 openPartialPaymentModal(id);
             }
 
@@ -709,7 +688,7 @@
                 document.getElementById('profile-page-header-title').innerText = me.name;
                 document.getElementById('profile-box-name').innerText = me.name;
                 document.getElementById('profile-icon-indicator').style.color = "var(--neon-purple)";
-                cardFrame.style.borderColor = "rgba(213,0,249,0.25)";
+                cardFrame.style.borderColor = "rgba(213,0,249,0.3)";
 
                 balancesBox.innerHTML = `
                     <div style="display:flex; justify-content:space-between; background:rgba(0,230,118,0.06); padding:14px; border-radius:14px; border: 1px solid rgba(0,230,118,0.2)">
@@ -736,7 +715,7 @@
                         </div>
                         <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
                             <span style="font-weight:700; color:${col}; font-family:'Plus Jakarta Sans';">${h.type=='my_income'?'+':'-'} ${h.amt.toFixed(2)}</span>
-                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteMyOwnTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
+                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteMyOwnTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     `;
                     ledgerContainer.appendChild(item);
@@ -750,22 +729,22 @@
             document.getElementById('profile-page-header-title').innerText = `حساب: ${person.name}`;
             document.getElementById('profile-box-name').innerText = person.name;
             document.getElementById('profile-icon-indicator').style.color = "var(--neon-purple)";
-            cardFrame.style.borderColor = "rgba(255,255,255,0.06)";
+            cardFrame.style.borderColor = "var(--glass-border)";
 
             const netTrust = person.trust_deposited - person.trust_withdrawn;
             const netLoan = person.loan_given - person.loan_repaid;
             const netBorrowed = person.borrowed_from_him - person.repaid_to_him;
 
             balancesBox.innerHTML = `
-                <div style="display:flex; justify-content:space-between; background:rgba(0,176,255,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(0,176,255,0.15)">
+                <div style="display:flex; justify-content:space-between; background:rgba(0,176,255,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(0,176,255,0.2)">
                     <span style="color:var(--text-secondary); font-size:0.9rem;">📥 أمانات ورواتب له عندك:</span>
                     <span style="color:var(--neon-blue); font-weight:700;">${netTrust.toFixed(2)} ر.س</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; background:rgba(255,145,0,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,145,0,0.15)">
+                <div style="display:flex; justify-content:space-between; background:rgba(255,145,0,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,145,0,0.2)">
                     <span style="color:var(--text-secondary); font-size:0.9rem;">📤 ديون وسلف مترتبة عليه لك:</span>
                     <span style="color:var(--neon-orange); font-weight:700;">${netLoan.toFixed(2)} ر.س</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; background:rgba(255,23,68,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,23,68,0.15)">
+                <div style="display:flex; justify-content:space-between; background:rgba(255,23,68,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,23,68,0.2)">
                     <span style="color:var(--text-secondary); font-size:0.9rem;">🫳 سلفيات أنت أخذتها منه (دين عليك):</span>
                     <span style="color:var(--neon-red); font-weight:700;">${netBorrowed.toFixed(2)} ر.س</span>
                 </div>
@@ -795,7 +774,7 @@
                     </div>
                     <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
                         <span style="font-weight:700; color:${accentColor}; font-family:'Plus Jakarta Sans';">${h.amt.toFixed(2)}</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
                 ledgerContainer.appendChild(item);
