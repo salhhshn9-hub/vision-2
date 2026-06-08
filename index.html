@@ -7,14 +7,16 @@
     <meta name="theme-color" content="#0d0e15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at 50% 50%, #161926 0%, #08090d 100%);
             --glass-bg: rgba(255, 255, 255, 0.02);
             --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-accent: rgba(255, 255, 255, 0.08);
             --neon-green: #00e676;
             --neon-blue: #00b0ff;
             --neon-orange: #ff9100;
@@ -30,45 +32,45 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); color: var(--text-primary); font-family: var(--font-ar); min-height: 100vh; overflow-x: hidden; display: flex; justify-content: center; }
         
-        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); padding-top: 70px; }
+        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         
-        /* 🍔 TOP NAVBAR */
-        .top-navbar { position: fixed; top: 0; width: 100%; max-width: 478px; height: 70px; background: rgba(8, 9, 13, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--glass-border); z-index: 999; }
-        .menu-btn { background: transparent; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; transition: var(--transition); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .menu-btn:active { background: rgba(255,255,255,0.05); }
-        .nav-title { font-size: 1.1rem; font-weight: 700; color: #fff; }
-
-        /* 🚪 SIDEBAR SYSTEM */
-        .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: flex-end; }
-        .sidebar-overlay.active { display: flex; }
-        .sidebar { width: 280px; height: 100%; background: #0f111a; border-left: 1px solid var(--glass-border); padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-        [dir="rtl"] .sidebar { animation: slideInRtl 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes slideInRtl { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .sidebar-close { background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
-        .sidebar-menu { display: flex; flex-direction: column; gap: 8px; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: rgba(255,255,255,0.01); border: 1px solid transparent; border-radius: 14px; color: var(--text-secondary); text-decoration: none; font-weight: bold; cursor: pointer; transition: var(--transition); }
-        .menu-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-        .menu-item:hover, .menu-item.active { background: rgba(0, 176, 255, 0.08); border-color: rgba(0, 176, 255, 0.2); color: #fff; }
-
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
         
+        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .menu-hamburger { font-size: 1.6rem; color: var(--neon-blue); cursor: pointer; padding: 4px; transition: var(--transition); }
+        .menu-hamburger:hover { transform: scale(1.1); }
+
+        /* 🍔 HAMBURGER DRAWER */
+        .side-drawer { position: fixed; top: 0; right: -320px; width: 310px; height: 100%; background: #090a10; border-left: 1px solid var(--glass-border); z-index: 10000; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px 20px; display: flex; flex-direction: column; }
+        .side-drawer.open { right: 0; }
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: none; backdrop-filter: blur(4px); }
+        .drawer-overlay.open { display: block; }
+        
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--glass-border); }
+        
+        .my-money-box { background: linear-gradient(135deg, rgba(0,230,118,0.1) 0%, rgba(0,176,255,0.05) 100%); border: 1px solid rgba(0,230,118,0.2); border-radius: 16px; padding: 14px; margin-bottom: 15px; text-align: center; }
+
+        .people-list-menu { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        
+        .person-menu-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; cursor: pointer; transition: var(--transition); }
+        .person-menu-item:hover { background: rgba(0,176,255,0.08); border-color: var(--neon-blue); }
+        .person-menu-item.my-own { border-color: rgba(213,0,249,0.3); background: rgba(213,0,249,0.02); }
+        .person-menu-item.my-own:hover { background: rgba(213,0,249,0.08); border-color: var(--neon-purple); }
+
+        /* Dashboard Totals Boxes */
+        .grid-totals { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; margin-top: 5px; }
+        .total-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .total-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; margin-top: 4px; }
+
+        /* Navigation Bottom Tabs Style */
+        .nav-tabs { display: flex; gap: 10px; padding: 0 16px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
+        .tab-btn.active { background: rgba(0, 176, 255, 0.1); border-color: var(--neon-blue); color: #fff; }
+
         /* Pages System */
         .app-page { display: none; width: 100%; animation: fadeIn 0.3s ease; }
         .app-page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Grid System */
-        .categories-grid { display: flex; flex-direction: column; gap: 10px; padding: 0 16px; margin-bottom: 15px; }
-        .cat-card { background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border); border-radius: 18px; padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
-        
-        .cat-info h4 { font-size: 1.15rem; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 2px; }
-        .cat-actions { display: flex; gap: 8px; }
-        .action-btn { border: none; padding: 8px 12px; border-radius: 10px; font-family: inherit; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: var(--transition); }
-        .action-btn.add { background: rgba(0, 176, 255, 0.15); color: var(--neon-blue); }
-        .action-btn.pay { background: rgba(0, 230, 118, 0.15); color: var(--neon-green); }
 
         /* Modals */
         .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 99999; display: none; justify-content: center; align-items: flex-end; }
@@ -78,446 +80,917 @@
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary); }
         .form-control { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; color: #fff; font-family: inherit; font-size: 1rem; }
+        .form-control:focus { outline: none; border-color: var(--neon-blue); }
         
         .btn-submit { width: 100%; padding: 15px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 16px; border-radius: 14px; cursor: pointer; font-size: 0.9rem; width: 100%; display: block; text-align: center; margin-top: 15px; font-weight: bold; }
+        .btn-back { background: var(--glass-accent); border: 1px solid var(--glass-border); color: #fff; padding: 10px 16px; border-radius: 14px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; margin: 15px 16px 5px 16px; width: calc(100% - 32px); justify-content: center; font-weight: bold; }
 
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.01); border-radius: 14px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.03); }
         
-        .btn-reset-system { background: transparent; border: 1px dashed var(--neon-red); color: var(--neon-red); padding: 12px; border-radius: 14px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin: 20px 16px; width: calc(100% - 32px); }
+        .btn-reset-system { background: transparent; border: 1px dashed var(--neon-red); color: var(--neon-red); padding: 10px; border-radius: 12px; font-weight: bold; font-family: inherit; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; transition: var(--transition); }
+        .btn-reset-system:hover { background: rgba(255, 23, 68, 0.1); }
+
+        .bill-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-top: 4px; }
+        
+        /* سجل دفعات الفاتورة */
+        .bill-log-item { background: rgba(255,255,255,0.02); border-right: 3px solid var(--neon-green); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; margin-top: 6px; display: flex; justify-content: space-between; }
+
+        /* 📱 فئات الديون العلوية المصممة من الصورة */
+        .sub-categories-grid { display: flex; flex-direction: column; gap: 10px; margin: 15px 16px; }
+        .sub-category-card { background: rgba(255, 255, 255, 0.01); border: 1px solid var(--glass-border); border-radius: 18px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
+        .sub-category-card:hover { background: rgba(255, 255, 255, 0.03); }
+        .sub-card-actions { display: flex; gap: 8px; }
+        .sub-card-btn { padding: 6px 14px; border-radius: 10px; border: none; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: var(--transition); }
+        .sub-card-btn.add-bill { background: rgba(0, 176, 255, 0.15); color: var(--neon-blue); border: 1px solid rgba(0, 176, 255, 0.3); }
+        .sub-card-btn.add-bill:hover { background: var(--neon-blue); color: #000; }
+        .sub-card-btn.pay-bill { background: rgba(0, 230, 118, 0.15); color: var(--neon-green); border: 1px solid rgba(0, 230, 118, 0.3); }
+        .sub-card-btn.pay-bill:hover { background: var(--neon-green); color: #000; }
     </style>
 </head>
 <body>
 
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer(false)"></div>
+    <div class="side-drawer" id="side-drawer">
+        <div class="drawer-header">
+            <h3>👥 القائمة والمحفظة</h3>
+            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.3rem;" onclick="toggleDrawer(false)"></i>
+        </div>
+
+        <div class="my-money-box">
+            <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:4px;">💰 صافي فلوسي الحقيقية المتاحة</p>
+            <h3 id="drawer-my-real-money" style="color:var(--neon-green); font-family:'Plus Jakarta Sans'; font-size:1.35rem;">0.00 ر.س</h3>
+        </div>
+        
+        <div class="people-list-menu" id="drawer-people-target"></div>
+        
+        <button class="btn-submit" style="background: var(--neon-blue); color:#000; font-weight: bold; margin-bottom: 5px;" onclick="openModal('modal-add-person')">
+            <i class="fa-solid fa-user-plus"></i> إضافة شخص جديد
+        </button>
+
+        <button class="btn-reset-system" onclick="executeSystemReset()">
+            <i class="fa-solid fa-trash-arrow-up"></i> إعادة ضبط النظام والبدء من جديد
+        </button>
+    </div>
+
     <div class="app-container">
         
-        <div class="top-navbar">
-            <button class="menu-btn" onclick="toggleSidebar(true)"><i class="fa-solid fa-bars"></i></button>
-            <div class="nav-title" id="navbar-title">الخزينة والودائع العامة</div>
-            <div style="width: 40px;"></div>
+        <div class="nav-tabs" style="margin-top: 20px;">
+            <button class="tab-btn active" id="tab-dash" onclick="switchMainTab('dash')"><i class="fa-solid fa-house"></i> الرئيسية</button>
+            <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-receipt"></i> دفتر الفواتير والديون</button>
         </div>
 
-        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)">
-            <div class="sidebar" onclick="event.stopPropagation()">
-                <div class="sidebar-header">
-                    <h3 style="font-size:1.1rem; background: linear-gradient(135deg, #fff, var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Family Finance Pro</h3>
-                    <button class="sidebar-close" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="sidebar-menu">
-                    <div class="menu-item active" id="menu-main" onclick="switchPage('main', 'الخزينة والودائع العامة')">
-                        <i class="fa-solid fa-vault"></i> الخزينة والودائع (فلوسي وفلوس الناس)
-                    </div>
-                    <div class="menu-item" id="menu-grocery" onclick="switchPage('grocery', 'دفتر الديون والالتزامات')">
-                        <i class="fa-solid fa-basket-shopping"></i> دفتر الديون والفواتير (البقالة)
+        <div id="page-dashboard" class="app-page active">
+            <header style="padding-top: 5px;">
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <i class="fa-solid fa-bars menu-hamburger" onclick="toggleDrawer(true)"></i>
+                    <div>
+                        <h3 style="font-size: 1.2rem; color: #fff;">الرئيسية: الإجماليات</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">افتح القائمة ☰ لتصفح حسابك والأسماء</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </header>
 
-        <div id="page-main" class="app-page active">
-            <div class="glass-card" style="background: linear-gradient(135deg, #09203f 0%, #134e5e 100%); border-color: rgba(0,176,255,0.2); text-align: center;">
-                <i class="fa-solid fa-wallet" style="font-size: 2rem; color: var(--neon-blue); margin-bottom: 8px;"></i>
-                <p style="color: var(--text-secondary); font-size: 0.85rem;">💰 صافي أموالك الشخصية الحالية</p>
-                <h1 style="font-size: 2.5rem; margin: 4px 0; color: #fff; font-family: 'Plus Jakarta Sans';" id="my-cash-total">0.00 ر.س</h1>
-                <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button class="action-btn add" style="flex:1; justify-content:center; padding:10px;" onclick="openMainFinanceModal('add', 'my_cash')"><i class="fa-solid fa-plus"></i> إيداع لفلوسي</button>
-                    <button class="action-btn pay" style="flex:1; justify-content:center; padding:10px; background:rgba(255,23,68,0.15); color:var(--neon-red);" onclick="openMainFinanceModal('sub', 'my_cash')"><i class="fa-solid fa-minus"></i> سحب من فلوسي</button>
+            <div class="glass-card" style="background: linear-gradient(135deg, #121324 0%, #0b0c16 100%); text-align:center; border-color: rgba(0,230,118,0.15);">
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">💰 إجمالي السيولة النقدية المتاحة تحت يدك الآن</p>
+                <h1 style="font-size: 2.5rem; margin: 8px 0; color: var(--neon-green); font-family: 'Plus Jakarta Sans';" id="global-total-liquidity">0.00 ر.س</h1>
+            </div>
+
+            <div class="grid-totals">
+                <div class="total-box" style="border-right: 5px solid var(--neon-blue);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">📥 مجموع أمانات ورواتب الناس عندك</p>
+                        <h4 id="global-sum-trusts" style="color:var(--neon-blue);">0.00 ر.س</h4>
+                    </div>
+                    <i class="fa-solid fa-vault" style="font-size:1.4rem; color:var(--neon-blue); opacity:0.4;"></i>
+                </div>
+                
+                <div class="total-box" style="border-right: 5px solid var(--neon-orange);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">📤 مجموع ديون وسلفيات لك برّا عند الآخرين</p>
+                        <h4 id="global-sum-loans-to-them" style="color:var(--neon-orange);">0.00 ر.س</h4>
+                    </div>
+                    <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.4rem; color:var(--neon-orange); opacity:0.4;"></i>
+                </div>
+
+                <div class="total-box" style="border-right: 5px solid var(--neon-red);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">🫳 مجموع سلفيات عليك للناس (أنت تسلفتها)</p>
+                        <h4 id="global-sum-loans-on-me" style="color:var(--neon-red);">0.00 ر.س</h4>
+                    </div>
+                    <i class="fa-solid fa-comment-dollar" style="font-size:1.4rem; color:var(--neon-red); opacity:0.4;"></i>
+                </div>
+
+                <div class="total-box" style="border-right: 5px solid var(--neon-yellow); cursor: pointer;" onclick="switchMainTab('grocery')">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">⏳ إجمالي الفواتير والدين المتبقي عليك (بقالة، نت...)</p>
+                        <h4 id="global-grocery-debt" style="color:var(--neon-yellow);">0.00 ر.س</h4>
+                    </div>
+                    <i class="fa-solid fa-basket-shopping" style="font-size:1.4rem; color:var(--neon-yellow); opacity:0.4;"></i>
                 </div>
             </div>
 
-            <div class="glass-card" style="background: linear-gradient(135deg, #1a102f 0%, #0b051c 100%); border-color: rgba(213,0,249,0.2); text-align: center;">
-                <i class="fa-solid fa-users-viewfinder" style="font-size: 2rem; color: var(--neon-purple); margin-bottom: 8px;"></i>
-                <p style="color: var(--text-secondary); font-size: 0.85rem;">🤝 إجمالي ودائع وأمانات الناس عندك (محفوظة)</p>
-                <h1 style="font-size: 2.5rem; margin: 4px 0; color: var(--neon-purple); font-family: 'Plus Jakarta Sans';" id="people-cash-total">0.00 ر.س</h1>
-                <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button class="action-btn add" style="flex:1; justify-content:center; padding:10px; background:rgba(213,0,249,0.15); color:var(--neon-purple);" onclick="openMainFinanceModal('add', 'people_cash')"><i class="fa-solid fa-user-plus"></i> استلام أمانة شخص</button>
-                    <button class="action-btn pay" style="flex:1; justify-content:center; padding:10px; background:rgba(255,145,0,0.15); color:var(--neon-orange);" onclick="openMainFinanceModal('sub', 'people_cash')"><i class="fa-solid fa-user-minus"></i> رد / تسليم أمانة</button>
-                </div>
+            <div class="glass-card" style="margin-top:15px;">
+                <canvas id="globalDashboardChart" style="max-height: 150px; width: 100%;"></canvas>
             </div>
 
-            <div style="padding:10px 16px 30px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-clock-rotate-left"></i> العمليات الأخيرة بالخزينة العامة</h3>
-                <div id="main-logs-target"></div>
+            <div style="padding:0 16px 20px 16px;">
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-history"></i> آخر التحركات النقدية بالسيستم</h3>
+                <div id="global-recent-log-target"></div>
             </div>
         </div>
 
         <div id="page-grocery" class="app-page">
-            <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center; margin-bottom: 15px;">
+            <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center; margin-bottom: 5px;">
                 <i class="fa-solid fa-file-invoice-dollar" style="font-size: 2rem; color: var(--neon-yellow); margin-bottom: 8px;"></i>
                 <p style="color: var(--text-secondary); font-size: 0.85rem;">📑 إجمالي الديون والفواتير المتبقية عليك حالياً</p>
-                <h1 style="font-size: 2.5rem; margin: 4px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
+                <h1 style="font-size: 2.3rem; margin: 6px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
                 
-                <button class="btn-submit" style="background: var(--text-primary); color: #000; padding: 10px; font-size: 0.85rem; margin-top: 10px; border-radius: 12px;" onclick="openModal('modal-create-category')">
-                    <i class="fa-solid fa-folder-plus"></i> إنشاء فئة فواتير جديدة من عندك
-                </button>
+                <div style="margin-top: 15px;">
+                    <button class="btn-submit" style="background: #ffffff; color: #000; padding: 12px; font-size: 0.95rem; border-radius: 14px;" onclick="openModalWithDefaultType('بقالة')">
+                        <i class="fa-solid fa-square-plus"></i> إنشاء فئة فواتير جديدة من عندك
+                    </button>
+                </div>
             </div>
 
-            <div style="padding: 0 16px 5px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary);"><i class="fa-solid fa-layer-group"></i> فئات الديون والعدادات العلوية:</h3>
-            </div>
+            <p style="font-size:0.9rem; color:var(--text-secondary); padding: 5px 16px 0 16px; font-weight: bold;">💎 فئات الديون والعدادات العلوية:</p>
+            <div class="sub-categories-grid">
+                <div class="sub-category-card" style="border-right: 4px solid var(--neon-orange);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">🛒 مجموع دين البقالة:</p>
+                        <h3 id="sub-total-grocery" style="color:var(--neon-orange); font-family:'Plus Jakarta Sans'; margin-top:2px;">0.00 ر.س</h3>
+                    </div>
+                    <div class="sub-card-actions">
+                        <button class="sub-card-btn add-bill" onclick="openModalWithDefaultType('بقالة')"><i class="fa-solid fa-plus"></i> فاتورة</button>
+                        <button class="sub-card-btn pay-bill" onclick="triggerQuickPayForCategory('بقالة')"><i class="fa-solid fa-check"></i> تسديد</button>
+                    </div>
+                </div>
 
-            <div class="categories-grid" id="categories-cards-target"></div>
+                <div class="sub-category-card" style="border-right: 4px solid var(--neon-blue);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">🌐 مجموع دين الإنترنت:</p>
+                        <h3 id="sub-total-internet" style="color:var(--neon-blue); font-family:'Plus Jakarta Sans'; margin-top:2px;">0.00 ر.س</h3>
+                    </div>
+                    <div class="sub-card-actions">
+                        <button class="sub-card-btn add-bill" onclick="openModalWithDefaultType('نت')"><i class="fa-solid fa-plus"></i> فاتورة</button>
+                        <button class="sub-card-btn pay-bill" onclick="triggerQuickPayForCategory('نت')"><i class="fa-solid fa-check"></i> تسديد</button>
+                    </div>
+                </div>
+
+                <div class="sub-category-card" style="border-right: 4px solid var(--neon-yellow);">
+                    <div>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">⚡ مجموع دين الكهرباء والخدمات:</p>
+                        <h3 id="sub-total-electricity" style="color:var(--neon-yellow); font-family:'Plus Jakarta Sans'; margin-top:2px;">0.00 ر.س</h3>
+                    </div>
+                    <div class="sub-card-actions">
+                        <button class="sub-card-btn add-bill" onclick="openModalWithDefaultType('كهرباء')"><i class="fa-solid fa-plus"></i> فاتورة</button>
+                        <button class="sub-card-btn pay-bill" onclick="triggerQuickPayForCategory('كهرباء')"><i class="fa-solid fa-check"></i> تسديد</button>
+                    </div>
+                </div>
+            </div>
 
             <div style="padding:10px 16px 30px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-history"></i> سجل فواتير المشتريات والدفعات السابقة</h3>
-                <div id="grocery-logs-target"></div>
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-clock-rotate-left"></i> سجل فواتير المشتريات والدفعات السابقة</h3>
+                <div id="grocery-items-list-target"></div>
+            </div>
+        </div>
+
+        <div id="page-person-profile" class="app-page">
+            <header>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <i class="fa-solid fa-user-gear" style="font-size: 1.4rem; color: var(--neon-purple);" id="profile-icon-indicator"></i>
+                    <div>
+                        <h3 id="profile-page-header-title" style="font-size: 1.2rem; color: #fff;">حساب الملف</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);" id="profile-page-subtitle">صفحة كشف الحساب والإجراءات</p>
+                    </div>
+                </div>
+            </header>
+
+            <button class="btn-back" onclick="navigateToDashboard()"><i class="fa-solid fa-arrow-right"></i> إغلاق الصفحة والعودة للرئيسية</button>
+
+            <div class="glass-card" id="profile-main-card-frame" style="background: rgba(213,0,249,0.02); border-color: rgba(213,0,249,0.15);">
+                <h2 id="profile-box-name" style="color:#fff; margin-bottom:12px; font-weight: 700;">اسم العضو</h2>
+                <div style="display:flex; flex-direction:column; gap:8px;" id="profile-box-balances-list"></div>
+                <div style="margin-top:20px;">
+                    <button class="btn-submit" onclick="openTransactionModalForActivePerson()"><i class="fa-solid fa-plus"></i> تسجيل حركة مالية جديدة وتوثيقها</button>
+                </div>
             </div>
 
-            <button class="btn-reset-system" onclick="executeSystemReset()">
-                <i class="fa-solid fa-trash-arrow-up"></i> تصفير الدفتر والبدء من جديد
-            </button>
+            <div style="padding: 0 16px 30px 16px;">
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-receipt"></i> دفتر كشف الحساب والقيود التاريخية</h3>
+                <div id="profile-exclusive-ledger-target"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modal-add-grocery" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-grocery')">
+        <div class="modal-content">
+            <h3 style="color: var(--neon-yellow); margin-bottom:15px;"><i class="fa-solid fa-cart-plus"></i> إضافة فاتورة / دين جديد</h3>
+            <div class="form-group">
+                <label>نوع الدين / الجهة</label>
+                <select id="g-item-type" class="form-control">
+                    <option value="بقالة">🛒 دين بقالة</option>
+                    <option value="نت">🌐 فاتورة إنترنت</option>
+                    <option value="كهرباء">⚡ فاتورة كهرباء / خدمات</option>
+                    <option value="أخرى">📝 دين / فاتورة أخرى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>البيان أو الوصف (مثال: أغراض العشاء، اشتراك شهر يونيو)</label>
+                <input type="text" id="g-item-name" class="form-control" placeholder="اكتب التفاصيل...">
+            </div>
+            <div class="form-group">
+                <label>قيمة الفاتورة أو الدين الإجمالي (ر.س)</label>
+                <input type="number" id="g-item-price" class="form-control" placeholder="0.00">
+            </div>
+            <button class="btn-submit" style="background: var(--neon-yellow); color: #000;" onclick="executeSaveGroceryItem()">إضافة إلى دفتر الديون</button>
         </div>
     </div>
 
-    <div id="modal-main-finance" class="modal" onclick="closeModalOnOuterClick(event, 'modal-main-finance')">
+    <div id="modal-pay-part" class="modal" onclick="closeModalOnOuterClick(event, 'modal-pay-part')">
+        <div class="modal-content" style="max-height: 90vh;">
+            <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-receipt"></i> تفاصيل الفاتورة وتسديد الدفعات</h3>
+            
+            <div class="glass-card" style="margin: 0 0 15px 0; background: rgba(255,255,255,0.02); padding:15px;">
+                <p id="pay-modal-bill-title" style="font-weight: bold; font-size:1.1rem; color:#fff;"></p>
+                <p id="pay-modal-bill-date" style="color:var(--text-secondary); font-size:0.75rem; margin-top:4px;"></p>
+                <p id="pay-modal-bill-original" style="color: var(--neon-blue); margin-top: 8px; font-weight: bold;"></p>
+                <p id="pay-modal-bill-remaining" style="color: var(--neon-yellow); margin-top: 4px; font-weight: 900; font-size:1.2rem; font-family:'Plus Jakarta Sans';"></p>
+            </div>
+            
+            <input type="hidden" id="pay-modal-bill-id">
+            
+            <div class="form-group" style="background: rgba(0,230,118,0.03); padding: 12px; border-radius: 14px; border: 1px dashed rgba(0,230,118,0.2);">
+                <label style="color:#fff; font-weight: bold;">💸 اكتب المبلغ الذي تريد تسديده الآن (مرن ومفتوح):</label>
+                <input type="number" id="pay-part-amount" class="form-control" placeholder="اكتب 50، 100، 200... حسب مقدرتك" style="margin-top:5px;">
+                <button class="btn-submit" style="background: var(--neon-green); color: #000; margin-top:10px; padding:12px; font-size:0.95rem;" onclick="executeSubmitPartialPayment()">تأكيد سداد هذا المبلغ فوراً</button>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;"><i class="fa-solid fa-history"></i> ماذا حدث في هذه الفاتورة؟ (سجل الدفعات)</h4>
+                <div id="bill-individual-logs-target" style="max-height: 180px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+            
+            <button class="btn-back" style="margin: 20px 0 0 0; width:100%;" onclick="closeModal('modal-pay-part')">إغلاق النافذة</button>
+        </div>
+    </div>
+
+    <div id="modal-add-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-person')">
         <div class="modal-content">
-            <h3 id="main-finance-modal-title" style="color: var(--neon-blue); margin-bottom:15px;">تعديل رصيد</h3>
-            <input type="hidden" id="main-finance-action-type">
-            <input type="hidden" id="main-finance-target">
+            <h3><i class="fa-solid fa-user-plus"></i> إضافة شخص جديد في القائمة الجانبية</h3>
+            <div class="form-group">
+                <label>اسم الشخص</label>
+                <input type="text" id="p-name-input" class="form-control" placeholder="اكتب الاسم هنا...">
+            </div>
+            <button class="btn-submit" onclick="executeSaveNewPerson()">حفظ وتأكيد العضو فوراً</button>
+        </div>
+    </div>
+
+    <div id="modal-adjust-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-adjust-person')">
+        <div class="modal-content">
+            <h3 style="color:var(--neon-blue); margin-bottom:15px;" id="transaction-modal-title"><i class="fa-solid fa-cash-register"></i> قيد حركة مالية جديدة</h3>
             
             <div class="form-group">
-                <label>اسم الشخص / البيان أو السبب</label>
-                <input type="text" id="main-finance-reason" class="form-control" placeholder="مثال: أمانة أبو فهد، مصروف شخصي...">
+                <label>نوع ونوعية العملية</label>
+                <select id="adjust-action-type" class="form-control"></select>
             </div>
             <div class="form-group">
-                <label>المبلغ (ر.س)</label>
-                <input type="number" id="main-finance-amount" class="form-control" placeholder="0.00">
-            </div>
-            <button class="btn-submit" id="main-finance-submit-btn" onclick="executeMainFinanceAction()">تأكيد العملية</button>
-            <button class="btn-back" onclick="closeModal('modal-main-finance')">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="modal-add-bill" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-bill')">
-        <div class="modal-content">
-            <h3 style="color: var(--neon-blue); margin-bottom:15px;"><i class="fa-solid fa-plus-circle"></i> إضافة فاتورة / سحبة جديدة</h3>
-            <p id="add-modal-title" style="color: var(--text-secondary); margin-bottom: 15px; font-size: 0.9rem;"></p>
-            <input type="hidden" id="add-modal-cat-id">
-            
-            <div class="form-group">
-                <label>البيان / الوصف (اختياري)</label>
-                <input type="text" id="add-modal-reason" class="form-control" placeholder="مثال: مقاضي عشاء...">
+                <label>قيمة المبلغ (ر.س)</label>
+                <input type="number" id="adjust-amount" class="form-control" placeholder="0.00">
             </div>
             <div class="form-group">
-                <label>المبلغ المراد إضافته للمجموع (ر.س)</label>
-                <input type="number" id="add-modal-amount" class="form-control" placeholder="0.00">
+                <label>تحديد التاريخ والوقت يدوياً</label>
+                <input type="datetime-local" id="adjust-date" class="form-control">
             </div>
-            <button class="btn-submit" style="background: var(--neon-blue); color: #000;" onclick="executeAddBillToCategory()">تأكيد إضافة المبلغ</button>
-            <button class="btn-back" onclick="closeModal('modal-add-bill')">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="modal-pay-bill" class="modal" onclick="closeModalOnOuterClick(event, 'modal-pay-bill')">
-        <div class="modal-content">
-            <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-money-bill-wave"></i> تسديد مبلغ من المجموع الكلي</h3>
-            <p id="pay-modal-title" style="color: var(--text-secondary); margin-bottom: 15px; font-size: 0.9rem;"></p>
-            <input type="hidden" id="pay-modal-cat-id">
-            
             <div class="form-group">
-                <label>مبلغ التسديد الحالي (ر.س) - اكتب ما تقدر عليه</label>
-                <input type="number" id="pay-modal-amount" class="form-control" placeholder="مثال: 50، 100...">
+                <label>البيان / الملاحظة التوضيحية</label>
+                <input type="text" id="adjust-reason" class="form-control" placeholder="اكتب التفاصيل بدقة...">
             </div>
-            <button class="btn-submit" style="background: var(--neon-green); color: #000;" onclick="executePayFromCategoryTotal()">تأكيد خصم وتسديد المبلغ</button>
-            <button class="btn-back" onclick="closeModal('modal-pay-bill')">إلغاء</button>
-        </div>
-    </div>
-
-    <div id="modal-create-category" class="modal" onclick="closeModalOnOuterClick(event, 'modal-create-category')">
-        <div class="modal-content">
-            <h3 style="color: var(--neon-purple); margin-bottom:15px;"><i class="fa-solid fa-folder-plus"></i> إنشاء فئة فواتير جديدة</h3>
-            <div class="form-group">
-                <label>اسم الفئة الجديدة</label>
-                <input type="text" id="new-cat-name" class="form-control" placeholder="مثال: صيدلية، بنزين...">
-            </div>
-            <button class="btn-submit" onclick="executeCreateCategory()">حفظ الفئة وظهورها فوق</button>
-            <button class="btn-back" onclick="closeModal('modal-create-category')">إلغاء</button>
+            <button class="btn-submit" onclick="executePersonDebtAdjustment()">تثبيت وبناء القيد فوراً</button>
         </div>
     </div>
 
     <script>
-        // دمج كامل البيانات في الـ State
+        // 💾 SYSTEM STORAGE STATE
         let state = {
-            myCash: 0,
-            peopleCash: 0,
-            mainLogs: [],
-            categories: [
-                { id: 'cat_grocery', name: 'البقالة', total: 0, color: '#ff9100', icon: 'fa-basket-shopping' },
-                { id: 'cat_net', name: 'الإنترنت', total: 0, color: '#00b0ff', icon: 'fa-globe' },
-                { id: 'cat_electricity', name: 'الكهرباء والخدمات', total: 0, color: '#ffd600', icon: 'fa-bolt' }
-            ],
-            logs: []
+            db: { 
+                myAccount: { id: 'my_own_core_account', name: 'حسابي الشخصي (أنا)', balance: 0, history: [] },
+                people: [], 
+                globalLogs: [],
+                groceryDebtList: [] 
+            },
+            activePersonId: null
         };
+        let globalChart = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('FAMILY_FINANCE_MASTER_DATA_2026');
+            const saved = localStorage.getItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA');
             if(saved) {
-                state = JSON.parse(saved);
+                state.db = JSON.parse(saved);
+                if(!state.db.myAccount) state.db.myAccount = { id: 'my_own_core_account', name: 'حسابي الشخصي (أنا)', balance: 0, history: [] };
+                if(!state.db.globalLogs) state.db.globalLogs = [];
+                if(!state.db.groceryDebtList) state.db.groceryDebtList = [];
             }
-            renderAll();
+            
+            initChartEngine();
+            renderAllComponents();
         });
 
-        function toggleSidebar(open) {
-            const overlay = document.getElementById('sidebar-overlay');
-            if (open) {
-                overlay.style.display = 'flex';
-                setTimeout(() => overlay.classList.add('active'), 10);
-            } else {
-                overlay.classList.remove('active');
-                setTimeout(() => overlay.style.display = 'none', 300);
-            }
+        function toggleDrawer(open) {
+            document.getElementById('side-drawer').classList.toggle('open', open);
+            document.getElementById('drawer-overlay').classList.toggle('open', open);
         }
 
-        function switchPage(pageId, titleText) {
-            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            document.getElementById(`menu-${pageId}`).classList.add('active');
-            document.getElementById('navbar-title').innerText = titleText;
-            
-            toggleSidebar(false);
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function closeModalOnOuterClick(e, id) {
+            if(e.target.id === id) closeModal(id);
+        }
+
+        function openModalWithDefaultType(type) {
+            document.getElementById('g-item-type').value = type;
+            openModal('modal-add-grocery');
         }
 
         function commit() {
-            localStorage.setItem('FAMILY_FINANCE_MASTER_DATA_2026', JSON.stringify(state));
-            renderAll();
+            localStorage.setItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA', JSON.stringify(state.db));
+            renderAllComponents();
         }
 
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function closeModalOnOuterClick(e, id) { if(e.target.id === id) closeModal(id); }
+        function switchMainTab(tab) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            state.activePersonId = null;
 
-        // فتح مودال العمليات الرئيسية للخزينة
-        function openMainFinanceModal(actionType, target) {
-            document.getElementById('main-finance-action-type').value = actionType;
-            document.getElementById('main-finance-target').value = target;
-            document.getElementById('main-finance-amount').value = '';
-            document.getElementById('main-finance-reason').value = '';
-            
-            const titleEl = document.getElementById('main-finance-modal-title');
-            if(target === 'my_cash') {
-                titleEl.innerText = actionType === 'add' ? '📥 إيداع وزيادة بفلوسك الشخصية' : '📤 سحب ونقص من فلوسك الشخصية';
-            } else {
-                titleEl.innerText = actionType === 'add' ? '🤝 استلام وحفظ أمانة للناس عندك' : '💸 رد وإرجاع الأمانة لصاحبها';
+            if(tab === 'dash') {
+                document.getElementById('page-dashboard').classList.add('active');
+                document.getElementById('tab-dash').classList.add('active');
+            } else if(tab === 'grocery') {
+                document.getElementById('page-grocery').classList.add('active');
+                document.getElementById('tab-grocery').classList.add('active');
+                renderGroceryPage();
             }
-            openModal('modal-main-finance');
         }
 
-        function executeMainFinanceAction() {
-            const actionType = document.getElementById('main-finance-action-type').value;
-            const target = document.getElementById('main-finance-target').value;
-            const amt = parseFloat(document.getElementById('main-finance-amount').value);
-            let reason = document.getElementById('main-finance-reason').value.trim();
+        function calculateSystemMetrics() {
+            let sumTrusts = 0, sumLoansToThem = 0, sumLoansOnMe = 0;
 
-            if(isNaN(amt) || amt <= 0) return alert("الرجاء كتابة مبلغ صحيح.");
-            if(!reason) reason = target === 'my_cash' ? 'حركة نقدية عامة' : 'وديعة/أمانة بدون اسم';
+            state.db.people.forEach(p => {
+                sumTrusts += ((p.trust_deposited || 0) - (p.trust_withdrawn || 0));
+                sumLoansToThem += ((p.loan_given || 0) - (p.loan_repaid || 0));
+                sumLoansOnMe += ((p.borrowed_from_him || 0) - (p.repaid_to_him || 0));
+            });
 
-            if(actionType === 'add') {
-                if(target === 'my_cash') state.myCash += amt;
-                else state.peopleCash += amt;
-            } else {
-                if(target === 'my_cash') {
-                    if(amt > state.myCash) return alert("لا يوجد رصيد كافي بفلوسك الشخصية!");
-                    state.myCash -= amt;
-                } else {
-                    if(amt > state.peopleCash) return alert("المبلغ المراد رده أكبر من إجمالي الأمانات المتوفرة عندك!");
-                    state.peopleCash -= amt;
+            let totalGroceryDebt = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.remaining, 0);
+
+            let myOwnBalance = state.db.myAccount.balance || 0;
+            let totalLiquidity = myOwnBalance + sumTrusts + sumLoansOnMe - sumLoansToThem;
+            let myRealMoney = myOwnBalance + sumLoansToThem - sumLoansOnMe - totalGroceryDebt;
+
+            // حساب فئات الديون المخصصة للعدادات الذكية
+            let subGrocery = state.db.groceryDebtList.filter(x => x.type === 'بقالة').reduce((a, b) => a + b.remaining, 0);
+            let subInternet = state.db.groceryDebtList.filter(x => x.type === 'نت').reduce((a, b) => a + b.remaining, 0);
+            let subElectricity = state.db.groceryDebtList.filter(x => x.type === 'كهرباء' || x.type === 'أخرى').reduce((a, b) => a + b.remaining, 0);
+
+            return { totalLiquidity, sumTrusts, sumLoansToThem, sumLoansOnMe, totalGroceryDebt, myRealMoney, subGrocery, subInternet, subElectricity };
+        }
+
+        function initChartEngine() {
+            const ctx = document.getElementById('globalDashboardChart').getContext('2d');
+            globalChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أمانات الناس عندك', 'ديون لك برّا', 'ديون عليك للناس'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: ['#00b0ff', '#ff9100', '#ff1744'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Tajawal' } } }
+                    }
                 }
+            });
+        }
+
+        function renderAllComponents() {
+            const m = calculateSystemMetrics();
+
+            document.getElementById('global-total-liquidity').innerText = m.totalLiquidity.toFixed(2) + " ر.س";
+            document.getElementById('global-sum-trusts').innerText = m.sumTrusts.toFixed(2) + " ر.س";
+            document.getElementById('global-sum-loans-to-them').innerText = m.sumLoansToThem.toFixed(2) + " ر.س";
+            document.getElementById('global-sum-loans-on-me').innerText = m.sumLoansOnMe.toFixed(2) + " ر.س";
+            document.getElementById('global-grocery-debt').innerText = m.totalGroceryDebt.toFixed(2) + " ر.س";
+
+            document.getElementById('drawer-my-real-money').innerText = m.myRealMoney.toFixed(2) + " ر.s";
+
+            // تحديث قيم العدادات العلوية الفرعية المصممة من الصورة
+            if(document.getElementById('sub-total-grocery')) {
+                document.getElementById('sub-total-grocery').innerText = m.subGrocery.toFixed(2) + " ر.س";
+                document.getElementById('sub-total-internet').innerText = m.subInternet.toFixed(2) + " ر.س";
+                document.getElementById('sub-total-electricity').innerText = m.subElectricity.toFixed(2) + " ر.س";
             }
 
-            state.mainLogs.push({
-                actionType: actionType,
-                target: target,
-                amount: amt,
-                reason: reason,
+            renderHamburgerPeopleList();
+            renderGlobalRecentLogs();
+            renderGroceryPage();
+
+            if(state.activePersonId) {
+                renderExclusivePersonProfilePage(state.activePersonId);
+            }
+
+            if(globalChart) {
+                globalChart.data.datasets[0].data = [m.sumTrusts, m.sumLoansToThem, m.sumLoansOnMe + m.totalGroceryDebt];
+                globalChart.update();
+            }
+        }
+
+        // 🛒 BILLS LOGIC
+        function executeSaveGroceryItem() {
+            const type = document.getElementById('g-item-type').value;
+            const name = document.getElementById('g-item-name').value.trim();
+            const price = parseFloat(document.getElementById('g-item-price').value);
+
+            if(!name) return alert("الرجاء كتابة البيان أو الوصف.");
+            if(isNaN(price) || price <= 0) return alert("الرجاء إدخال مبلغ صحيح.");
+
+            state.db.groceryDebtList.push({
+                id: 'bill_' + Date.now(),
+                type: type,
+                name: name,
+                price: price,
+                remaining: price,
+                paymentsRegistry: [], 
                 date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             });
 
-            closeModal('modal-main-finance');
+            document.getElementById('g-item-name').value = '';
+            document.getElementById('g-item-price').value = '';
+            closeModal('modal-add-grocery');
             commit();
         }
 
-        function renderAll() {
-            // رندر الخزينة الرئيسية
-            document.getElementById('my-cash-total').innerText = state.myCash.toFixed(2) + " ر.س";
-            document.getElementById('people-cash-total').innerText = state.peopleCash.toFixed(2) + " ر.s";
+        function renderGroceryPage() {
+            const container = document.getElementById('grocery-items-list-target');
+            if(!container) return;
+            container.innerHTML = '';
 
-            const mainLogsContainer = document.getElementById('main-logs-target');
-            mainLogsContainer.innerHTML = '';
-            if(state.mainLogs.length === 0) {
-                mainLogsContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:20px;">لا توجد حركات بالخزينة حالياً.</p>`;
-            } else {
-                state.mainLogs.slice().reverse().forEach((l, idx) => {
-                    const realIdx = state.mainLogs.length - 1 - idx;
-                    const div = document.createElement('div');
-                    div.className = "list-item";
-                    let isAdd = l.actionType === 'add';
-                    let sideColor = isAdd ? "var(--neon-blue)" : "var(--neon-red)";
-                    if(l.target === 'people_cash') sideColor = isAdd ? "var(--neon-purple)" : "var(--neon-orange)";
-                    div.style.borderRight = `4px solid ${sideColor}`;
+            let totalRemaining = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.remaining, 0);
+            document.getElementById('grocery-total-bill').innerText = totalRemaining.toFixed(2) + " ر.س";
 
-                    div.innerHTML = `
-                        <div>
-                            <span style="font-size:0.75rem; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.04); color:var(--text-secondary); font-weight:bold;">${l.target === 'my_cash' ? 'فلوسي' : 'أمانات الناس'}</span>
-                            <h4 style="font-size:0.9rem; color:#fff; margin-top:4px;">${l.reason}</h4>
-                            <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:2px;"><i class="fa-regular fa-clock"></i> ${l.date}</small>
-                        </div>
-                        <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                            <span style="font-weight:900; color:${sideColor}; font-family:'Plus Jakarta Sans';">${isAdd ? '+' : '-'} ${l.amount.toFixed(2)} ر.س</span>
-                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteMainLog(${realIdx})"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    `;
-                    mainLogsContainer.appendChild(div);
-                });
+            if(state.db.groceryDebtList.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">السجل فارغ حالياً أو تم قفل جميع الفواتير بنجاح 🎉</p>`;
+                return;
             }
 
-            // رندر الدفتر والبقالة
-            let globalTotal = state.categories.reduce((acc, c) => acc + c.total, 0);
-            document.getElementById('grocery-total-bill').innerText = globalTotal.toFixed(2) + " ر.س";
+            state.db.groceryDebtList.slice().reverse().forEach((item, index) => {
+                const realIndex = state.db.groceryDebtList.length - 1 - index;
+                const div = document.createElement('div');
+                div.className = "list-item";
+                
+                let accentColor = "var(--neon-yellow)";
+                if(item.type === "بقالة") accentColor = "var(--neon-orange)";
+                if(item.type === "نت") accentColor = "var(--neon-blue)";
+                
+                div.style.borderRight = `4px solid ${accentColor}`;
+                div.style.cursor = "pointer";
+                div.setAttribute('onclick', `openPartialPaymentModal('${item.id}')`);
 
-            const cardsContainer = document.getElementById('categories-cards-target');
-            cardsContainer.innerHTML = '';
-            state.categories.forEach(cat => {
-                const card = document.createElement('div');
-                card.className = "cat-card";
-                card.style.borderRight = `5px solid ${cat.color}`;
-                card.innerHTML = `
-                    <div class="cat-info">
-                        <p style="color: var(--text-secondary); font-size: 0.85rem;"><i class="fa-solid ${cat.icon}" style="color:${cat.color}"></i> مجموع دين ${cat.name}:</p>
-                        <h4 style="color: ${cat.color};">${cat.total.toFixed(2)} ر.س</h4>
+                let typeIcon = "📑";
+                if(item.type === "بقالة") typeIcon = "🛒";
+                if(item.type === "نت") typeIcon = "🌐";
+                if(item.type === "كهرباء") typeIcon = "⚡";
+
+                div.innerHTML = `
+                    <div style="max-width: 65%;">
+                        <h4 style="font-size:0.95rem; color:#fff;">${typeIcon} [${item.type}] - ${item.name}</h4>
+                        <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${item.date}</small>
+                        <span class="bill-badge" style="background: rgba(0,176,255,0.1); color: var(--neon-blue);">الفاتورة الأصلية: ${item.price.toFixed(2)} ر.س</span>
                     </div>
-                    <div class="cat-actions">
-                        <button class="action-btn add" onclick="openAddBillModal('${cat.id}')"><i class="fa-solid fa-plus"></i> فاتورة</button>
-                        <button class="action-btn pay" onclick="openPayBillModal('${cat.id}')"><i class="fa-solid fa-check"></i> تسديد</button>
+                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;" onclick="event.stopPropagation();">
+                        <span style="font-size:0.75rem; color:var(--text-secondary);">المتبقي الحالي:</span>
+                        <span style="font-weight:900; color:${accentColor}; font-family:'Plus Jakarta Sans'; font-size: 1.1rem;">${item.remaining.toFixed(2)} ر.س</span>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> إلغاء الفاتورة</button>
                     </div>
                 `;
-                cardsContainer.appendChild(card);
+                container.appendChild(div);
             });
+        }
 
-            const logsContainer = document.getElementById('grocery-logs-target');
-            logsContainer.innerHTML = '';
-            if(state.logs.length === 0) {
-                logsContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:20px;">السجل فارغ حالياً.</p>`;
+        function triggerQuickPayForCategory(type) {
+            // جلب أول فاتورة معلقة من هذه الفئة لتسهيل عملية السداد السريع للجهة
+            let match = state.db.groceryDebtList.find(x => x.type === type);
+            if(match) {
+                openPartialPaymentModal(match.id);
             } else {
-                state.logs.slice().reverse().forEach((l, idx) => {
-                    const realIdx = state.logs.length - 1 - idx;
-                    const div = document.createElement('div');
-                    div.className = "list-item";
-                    let isAdd = l.type === 'add';
-                    let sideColor = isAdd ? "var(--neon-blue)" : "var(--neon-green)";
-                    div.style.borderRight = `4px solid ${sideColor}`;
-                    div.innerHTML = `
-                        <div>
-                            <span style="font-size:0.8rem; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.04); color:var(--text-secondary); font-weight:bold;">${l.catName}</span>
-                            <h4 style="font-size:0.9rem; color:#fff; margin-top:4px;">${l.reason}</h4>
-                            <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:2px;"><i class="fa-regular fa-clock"></i> ${l.date}</small>
-                        </div>
-                        <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                            <span style="font-weight:900; color:${sideColor}; font-family:'Plus Jakarta Sans';">${isAdd ? '+' : '-'} ${l.amount.toFixed(2)} ر.س</span>
-                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteLog(${realIdx})"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
+                alert(`لا توجد فواتير معلقة حالياً تحت فئة [${type}].`);
+            }
+        }
+
+        // فتح مودال تفاصيل الفاتورة وعرض كشف حسابها ودفعاتها
+        function openPartialPaymentModal(id) {
+            const item = state.db.groceryDebtList.find(x => x.id === id);
+            if(!item) return;
+
+            document.getElementById('pay-modal-bill-id').value = id;
+            document.getElementById('pay-modal-bill-title').innerText = `فاتورة [${item.type}] - ${item.name}`;
+            document.getElementById('pay-modal-bill-date').innerText = `تاريخ الإنشاء: ${item.date}`;
+            document.getElementById('pay-modal-bill-original').innerText = `قيمة الدَّين الأصلي الكلي: ${item.price.toFixed(2)} ر.س`;
+            document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي للـسداد حالياً: ${item.remaining.toFixed(2)} ر.س`;
+            document.getElementById('pay-part-amount').value = '';
+            
+            const logsContainer = document.getElementById('bill-individual-logs-target');
+            logsContainer.innerHTML = '';
+
+            if(!item.paymentsRegistry || item.paymentsRegistry.length === 0) {
+                logsContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.8rem; text-align:center; padding:10px;">لم يتم دفع أي دفعات لهذه الفاتورة بعد (جديدة).</p>`;
+            } else {
+                item.paymentsRegistry.forEach(p => {
+                    const logDiv = document.createElement('div');
+                    logDiv.className = "bill-log-item";
+                    logDiv.innerHTML = `
+                        <span>💵 تم تسديد دفعة</span>
+                        <strong style="color:var(--neon-green); font-family:'Plus Jakarta Sans';">${p.amount.toFixed(2)} ر.س</strong>
+                        <span style="font-size:0.7rem; color:var(--text-secondary);">${p.time}</span>
                     `;
-                    logsContainer.appendChild(div);
+                    logsContainer.appendChild(logDiv);
                 });
             }
+
+            openModal('modal-pay-part');
         }
 
-        function executeDeleteMainLog(index) {
-            if(!confirm("هل تريد التراجع عن هذه العملية بالخزينة وحذفها؟")) return;
-            const log = state.mainLogs[index];
-            if(log.actionType === 'add') {
-                if(log.target === 'my_cash') state.myCash = Math.max(0, state.myCash - log.amount);
-                else state.peopleCash = Math.max(0, state.peopleCash - log.amount);
+        // تنفيذ تسديد أي مبلغ (مفتوح جزئي أو كلي مرن)
+        function executeSubmitPartialPayment() {
+            const id = document.getElementById('pay-modal-bill-id').value;
+            const payAmount = parseFloat(document.getElementById('pay-part-amount').value);
+
+            if(isNaN(payAmount) || payAmount <= 0) return alert("الرجاء إدخال مبلغ صحيح للتسديد.");
+
+            let itemIndex = state.db.groceryDebtList.findIndex(x => x.id === id);
+            if(itemIndex === -1) return;
+
+            let item = state.db.groceryDebtList[itemIndex];
+
+            if(payAmount > item.remaining) {
+                return alert(`المبلغ أكبر من المتبقي! المتبقي المطلوب هو فقط: ${item.remaining.toFixed(2)} ر.س`);
+            }
+
+            item.remaining -= payAmount;
+            
+            if(!item.paymentsRegistry) item.paymentsRegistry = [];
+            const timestamp = new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
+            item.paymentsRegistry.push({
+                amount: payAmount,
+                time: timestamp
+            });
+            
+            state.db.myAccount.balance -= payAmount;
+
+            state.db.myAccount.history.push({
+                type: 'my_expense',
+                amt: payAmount,
+                reason: `💸 تسديد دفعة من فاتورة [${item.type}: ${item.name}]`,
+                displayDate: timestamp
+            });
+
+            state.db.globalLogs.push({
+                name: `فاتورة ${item.type}`,
+                type: 'my_expense',
+                amt: payAmount,
+                reason: `تسديد دفعة بقيمة ${payAmount} ر.س من فاتورة: ${item.name}`
+            });
+
+            if(item.remaining <= 0) {
+                alert(`تم سداد الفاتورة بالكامل وقفلها بنجاح! 🎉`);
+                state.db.groceryDebtList.splice(itemIndex, 1);
+                closeModal('modal-pay-part');
             } else {
-                if(log.target === 'my_cash') state.myCash += log.amount;
-                else state.peopleCash += log.amount;
+                alert(`تم تسجيل دفعة السداد بقيمة (${payAmount.toFixed(2)} ر.س) بنجاح داخل كشف الفاتورة ✅`);
+                openPartialPaymentModal(id);
             }
-            state.mainLogs.splice(index, 1);
+
             commit();
         }
 
-        function openAddBillModal(catId) {
-            const cat = state.categories.find(c => c.id === catId);
-            if(!cat) return;
-            document.getElementById('add-modal-cat-id').value = catId;
-            document.getElementById('add-modal-title').innerText = `سيتم زيادة دين [${cat.name}].`;
-            document.getElementById('add-modal-amount').value = '';
-            document.getElementById('add-modal-reason').value = '';
-            openModal('modal-add-bill');
+        function executeDeleteGroceryItem(index) {
+            if(!confirm("هل تريد إلغاء وحذف هذه الفاتورة تماماً من النظام؟")) return;
+            state.db.groceryDebtList.splice(index, 1);
+            commit();
         }
 
-        function executeAddBillToCategory() {
-            const catId = document.getElementById('add-modal-cat-id').value;
-            const amt = parseFloat(document.getElementById('add-modal-amount').value);
-            let reason = document.getElementById('add-modal-reason').value.trim();
-            if(isNaN(amt) || amt <= 0) return alert("الرجاء كتابة مبلغ صحيح.");
-            const cat = state.categories.find(c => c.id === catId);
-            if(!cat) return;
-            if(!reason) reason = `فاتورة مشتريات`;
-            cat.total += amt;
-            state.logs.push({
-                type: 'add', catId: catId, catName: cat.name, amount: amt, reason: reason,
-                date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
+        // 👥 PEOPLE CORE
+        function executeSaveNewPerson() {
+            const name = document.getElementById('p-name-input').value.trim();
+            if(!name) return alert("فضلاً اكتب اسم العضو أولاً.");
+            
+            state.db.people.push({
+                id: 'p_' + Date.now(),
+                name: name,
+                trust_deposited: 0, trust_withdrawn: 0,
+                loan_given: 0, loan_repaid: 0,
+                borrowed_from_him: 0, repaid_to_him: 0,
+                history: []
             });
-            closeModal('modal-add-bill');
+
+            document.getElementById('p-name-input').value = '';
+            closeModal('modal-add-person');
             commit();
         }
 
-        function openPayBillModal(catId) {
-            const cat = state.categories.find(c => c.id === catId);
-            if(!cat) return;
-            document.getElementById('pay-modal-cat-id').value = catId;
-            document.getElementById('pay-modal-title').innerText = `المجموع لدين ${cat.name} هو (${cat.total.toFixed(2)} ر.س).`;
-            document.getElementById('pay-modal-amount').value = '';
-            openModal('modal-pay-bill');
-        }
+        function renderHamburgerPeopleList() {
+            const container = document.getElementById('drawer-people-target');
+            if(!container) return;
+            container.innerHTML = '';
 
-        function executePayFromCategoryTotal() {
-            const catId = document.getElementById('pay-modal-cat-id').value;
-            const amt = parseFloat(document.getElementById('pay-modal-amount').value);
-            if(isNaN(amt) || amt <= 0) return alert("الرجاء كتابة مبلغ تسديد صحيح.");
-            const cat = state.categories.find(c => c.id === catId);
-            if(!cat) return;
-            if(amt > cat.total) return alert(`مبلغ التسديد أكبر من المجموع الحالي للدين!`);
-            cat.total -= amt;
-            state.logs.push({
-                type: 'pay', catId: catId, catName: cat.name, amount: amt, reason: `💸 تسديد جزء من الحساب الإجمالي`,
-                date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
+            const myItem = document.createElement('div');
+            myItem.className = "person-menu-item my-own";
+            myItem.onclick = () => {
+                toggleDrawer(false);
+                navigateToPersonProfilePage('my_own_core_account');
+            };
+            myItem.innerHTML = `
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <i class="fa-solid fa-circle-user" style="color:var(--neon-purple); font-size:1.2rem;"></i>
+                    <span style="font-weight:700; color:#fff;">👤 حسابي الشخصي (أنا)</span>
+                </div>
+                <span style="font-size:0.8rem; background:rgba(213,0,249,0.2); padding:2px 8px; border-radius:6px; color:var(--neon-purple);">أساسي</span>
+            `;
+            container.appendChild(myItem);
+
+            state.db.people.forEach(p => {
+                const item = document.createElement('div');
+                item.className = "person-menu-item";
+                item.onclick = () => {
+                    toggleDrawer(false);
+                    navigateToPersonProfilePage(p.id);
+                };
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <i class="fa-solid fa-user" style="color:var(--neon-blue); font-size:1.1rem;"></i>
+                        <span style="font-weight:500; color:#fff;">${p.name}</span>
+                    </div>
+                    <i class="fa-solid fa-angle-left" style="font-size:0.85rem; color:var(--text-secondary);"></i>
+                `;
+                container.appendChild(item);
             });
-            closeModal('modal-pay-bill');
-            commit();
         }
 
-        function executeCreateCategory() {
-            const name = document.getElementById('new-cat-name').value.trim();
-            if(!name) return alert("الرجاء كتابة اسم الفئة أولاً.");
-            const id = 'cat_' + Date.now();
-            const colors = ['#d500f9', '#ff1744', '#00e676', '#ff9100', '#00b0ff', '#ffd600'];
-            state.categories.push({ id: id, name: name, total: 0, color: colors[Math.floor(Math.random() * colors.length)], icon: 'fa-folder-open' });
-            document.getElementById('new-cat-name').value = '';
-            closeModal('modal-create-category');
-            commit();
+        function navigateToPersonProfilePage(personId) {
+            state.activePersonId = personId;
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-person-profile').classList.add('active');
+            renderExclusivePersonProfilePage(personId);
         }
 
-        function executeDeleteLog(index) {
-            if(!confirm("هل تريد حذف الحركة من السجل؟")) return;
-            const log = state.logs[index];
-            const cat = state.categories.find(c => c.id === log.catId);
-            if(cat) {
-                if(log.type === 'add') cat.total = Math.max(0, cat.total - log.amount);
-                else cat.total += log.amount;
+        function navigateToDashboard() {
+            state.activePersonId = null;
+            document.getElementById('page-person-profile').classList.remove('active');
+            document.getElementById('page-dashboard').classList.add('active');
+            renderAllComponents();
+        }
+
+        function renderExclusivePersonProfilePage(personId) {
+            const balancesBox = document.getElementById('profile-box-balances-list');
+            const ledgerContainer = document.getElementById('profile-exclusive-ledger-target');
+            const cardFrame = document.getElementById('profile-main-card-frame');
+            
+            ledgerContainer.innerHTML = '';
+
+            if(personId === 'my_own_core_account') {
+                const me = state.db.myAccount;
+                document.getElementById('profile-page-header-title').innerText = me.name;
+                document.getElementById('profile-box-name').innerText = me.name;
+                document.getElementById('profile-icon-indicator').style.color = "var(--neon-purple)";
+                cardFrame.style.borderColor = "rgba(213,0,249,0.25)";
+
+                balancesBox.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; background:rgba(0,230,118,0.06); padding:14px; border-radius:14px; border: 1px solid rgba(0,230,118,0.2)">
+                        <span style="color:var(--text-secondary); font-size:0.95rem;">💵 رصيد أموالي الحرة الحالية داخل محفظتي:</span>
+                        <span style="color:var(--neon-green); font-weight:900; font-size:1.2rem;">${(me.balance || 0).toFixed(2)} ر.س</span>
+                    </div>
+                `;
+
+                if(!me.history || me.history.length === 0) {
+                    ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا يوجد قيود مسجلة في محفظتك الشخصية بعد.</p>`;
+                    return;
+                }
+
+                me.history.slice().reverse().forEach((h, index) => {
+                    const realIndex = me.history.length - 1 - index;
+                    const item = document.createElement('div');
+                    item.className = "list-item";
+                    let col = h.type === 'my_income' ? "var(--neon-green)" : "var(--neon-red)";
+                    item.style.borderRight = `4px solid ${col}`;
+                    item.innerHTML = `
+                        <div style="max-width:75%;">
+                            <h4 style="font-size:0.95rem; color:#fff;">${h.reason}</h4>
+                            <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${h.displayDate}</small>
+                        </div>
+                        <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                            <span style="font-weight:700; color:${col}; font-family:'Plus Jakarta Sans';">${h.type=='my_income'?'+':'-'} ${h.amt.toFixed(2)}</span>
+                            <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteMyOwnTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    `;
+                    ledgerContainer.appendChild(item);
+                });
+                return;
             }
-            state.logs.splice(index, 1);
+
+            const person = state.db.people.find(p => p.id === personId);
+            if(!person) return navigateToDashboard();
+
+            document.getElementById('profile-page-header-title').innerText = `حساب: ${person.name}`;
+            document.getElementById('profile-box-name').innerText = person.name;
+            document.getElementById('profile-icon-indicator').style.color = "var(--neon-purple)";
+            cardFrame.style.borderColor = "rgba(255,255,255,0.06)";
+
+            const netTrust = person.trust_deposited - person.trust_withdrawn;
+            const netLoan = person.loan_given - person.loan_repaid;
+            const netBorrowed = person.borrowed_from_him - person.repaid_to_him;
+
+            balancesBox.innerHTML = `
+                <div style="display:flex; justify-content:space-between; background:rgba(0,176,255,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(0,176,255,0.15)">
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">📥 أمانات ورواتب له عندك:</span>
+                    <span style="color:var(--neon-blue); font-weight:700;">${netTrust.toFixed(2)} ر.س</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; background:rgba(255,145,0,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,145,0,0.15)">
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">📤 ديون وسلف مترتبة عليه لك:</span>
+                    <span style="color:var(--neon-orange); font-weight:700;">${netLoan.toFixed(2)} ر.س</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; background:rgba(255,23,68,0.06); padding:12px; border-radius:14px; border: 1px solid rgba(255,23,68,0.15)">
+                    <span style="color:var(--text-secondary); font-size:0.9rem;">🫳 سلفيات أنت أخذتها منه (دين عليك):</span>
+                    <span style="color:var(--neon-red); font-weight:700;">${netBorrowed.toFixed(2)} ر.س</span>
+                </div>
+                <div style="text-align:left; margin-top:12px;">
+                    <button style="background:transparent; border:none; color:var(--neon-red); font-size:0.8rem; cursor:pointer;" onclick="executeDeleteEntirePerson('${person.id}')"><i class="fa-solid fa-trash-can"></i> حذف هذا الشخص وملفه نهائياً ⚠️</button>
+                </div>
+            `;
+
+            if(!person.history || person.history.length === 0) {
+                ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا يوجد قيود مسجلة في كشف حساب ${person.name}.</p>`;
+                return;
+            }
+
+            person.history.slice().reverse().forEach((h, index) => {
+                const realIndex = person.history.length - 1 - index;
+                const item = document.createElement('div');
+                item.className = "list-item";
+                let accentColor = "var(--neon-blue)";
+                if(h.type.includes('loan')) accentColor = "var(--neon-orange)";
+                if(h.type.includes('borrow') || h.type.includes('pay_him')) accentColor = "var(--neon-red)";
+
+                item.style.borderRight = `4px solid ${accentColor}`;
+                item.innerHTML = `
+                    <div style="max-width:75%;">
+                        <h4 style="font-size:0.95rem; color:#fff;">${h.reason}</h4>
+                        <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${h.displayDate}</small>
+                    </div>
+                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                        <span style="font-weight:700; color:${accentColor}; font-family:'Plus Jakarta Sans';">${h.amt.toFixed(2)}</span>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.4); font-size:0.75rem; cursor:pointer;" onclick="executeDeleteSingleTransaction(${realIndex})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                ledgerContainer.appendChild(item);
+            });
+        }
+
+        function openTransactionModalForActivePerson() {
+            const select = document.getElementById('adjust-action-type');
+            select.innerHTML = '';
+
+            if(state.activePersonId === 'my_own_core_account') {
+                document.getElementById('transaction-modal-title').innerText = "تسجيل في محفظتي الشخصية";
+                select.innerHTML = `
+                    <option value="my_income">📥 إيداع دخل / راتب شخصي لي (+)</option>
+                    <option value="my_expense">💸 سحب كاش / مصروفات شخصية ومشتريات (-)</option>
+                `;
+            } else {
+                document.getElementById('transaction-modal-title').innerText = "قيد حركة مالية على اسم الشخص";
+                select.innerHTML = `
+                    <option value="deposit_trust">📥 هو وضع عندي أمانة / يجمع رواتبه (+)</option>
+                    <option value="withdraw_trust">💸 هو سحب من أمانته / صرفت له من فلوسه عندي (-)</option>
+                    <option value="give_loan">📤 أنا سلفته مبلّغ / سجلت عليه دين مستحق لي (+)</option>
+                    <option value="receive_loan_repay">💰 هو سددني ورجع لي الدين المستحق (-)</option>
+                    <option value="borrow_from_him">🫳 أنا استلفت منه مبلغ / هو سلفني فلوس قيد علي (+)</option>
+                    <option value="pay_him_back">💳 أنا سددته ورجعت له سلفته المستحقة (-)</option>
+                `;
+            }
+
+            document.getElementById('adjust-amount').value = '';
+            document.getElementById('adjust-reason').value = '';
+            document.getElementById('adjust-date').value = new Date().toISOString().slice(0, 16);
+            openModal('modal-adjust-person');
+        }
+
+        function executePersonDebtAdjustment() {
+            const type = document.getElementById('adjust-action-type').value;
+            const amt = parseFloat(document.getElementById('adjust-amount').value);
+            const reason = document.getElementById('adjust-reason').value.trim() || "بدون بيان";
+            const dateInput = document.getElementById('adjust-date').value;
+            const displayDate = dateInput ? dateInput.replace('T', ' ') : new Date().toLocaleString();
+
+            if(isNaN(amt) || amt <= 0) return alert("فضلاً أدخل مبلغاً صحيحاً أكبر من الصفر.");
+
+            const logEntry = { type, amt, reason, displayDate };
+
+            if(state.activePersonId === 'my_own_core_account') {
+                if(type === 'my_income') state.db.myAccount.balance += amt;
+                else state.db.myAccount.balance -= amt;
+                state.db.myAccount.history.push(logEntry);
+                state.db.globalLogs.push({ name: "محفظتي الشخصية", ...logEntry });
+            } else {
+                let p = state.db.people.find(x => x.id === state.activePersonId);
+                if(!p) return;
+
+                if(type === 'deposit_trust') p.trust_deposited += amt;
+                else if(type === 'withdraw_trust') p.trust_withdrawn += amt;
+                else if(type === 'give_loan') p.loan_given += amt;
+                else if(type === 'receive_loan_repay') p.loan_repaid += amt;
+                else if(type === 'borrow_from_him') p.borrowed_from_him += amt;
+                else if(type === 'pay_him_back') p.repaid_to_him += amt;
+
+                p.history.push(logEntry);
+                state.db.globalLogs.push({ name: p.name, ...logEntry });
+            }
+
+            closeModal('modal-adjust-person');
             commit();
+        }
+
+        function executeDeleteMyOwnTransaction(index) {
+            if(!confirm("هل أنت متأكد من حذف هذه الحركة؟")) return;
+            let h = state.db.myAccount.history[index];
+            if(h.type === 'my_income') state.db.myAccount.balance -= h.amt;
+            else state.db.myAccount.balance += h.amt;
+            state.db.myAccount.history.splice(index, 1);
+            commit();
+        }
+
+        function executeDeleteSingleTransaction(index) {
+            if(!confirm("هل أنت متأكد من حذف هذا القيد المالي؟")) return;
+            let p = state.db.people.find(x => x.id === state.activePersonId);
+            if(!p) return;
+
+            let h = p.history[index];
+            if(h.type === 'deposit_trust') p.trust_deposited -= h.amt;
+            else if(h.type === 'withdraw_trust') p.trust_withdrawn -= h.amt;
+            else if(h.type === 'give_loan') p.loan_given -= h.amt;
+            else if(h.type === 'receive_loan_repay') p.loan_repaid -= h.amt;
+            else if(h.type === 'borrow_from_him') p.borrowed_from_him -= h.amt;
+            else if(h.type === 'pay_him_back') p.repaid_to_him -= h.amt;
+
+            p.history.splice(index, 1);
+            commit();
+        }
+
+        function executeDeleteEntirePerson(id) {
+            if(!confirm("⚠️ تحذير: هل أنت متأكد من حذف هذا الشخص وكافة سجلاته المالية نهائياً؟")) return;
+            state.db.people = state.db.people.filter(p => p.id !== id);
+            navigateToDashboard();
+        }
+
+        function renderGlobalRecentLogs() {
+            const container = document.getElementById('global-recent-log-target');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            if(!state.db.globalLogs || state.db.globalLogs.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا يوجد تحركات مسجلة بالسيستم بعد.</p>`;
+                return;
+            }
+
+            state.db.globalLogs.slice().reverse().slice(0, 5).forEach(l => {
+                const item = document.createElement('div');
+                item.className = "list-item";
+                item.innerHTML = `
+                    <div>
+                        <strong style="color:var(--neon-blue); font-size:0.9rem;">${l.name}</strong>
+                        <p style="font-size:0.85rem; color:#fff; margin-top:2px;">${l.reason}</p>
+                    </div>
+                    <span style="font-family:'Plus Jakarta Sans'; font-weight:700; color:var(--text-secondary);">${l.amt.toFixed(2)} ر.س</span>
+                `;
+                container.appendChild(item);
+            });
         }
 
         function executeSystemReset() {
-            if(confirm("⚠️ هل أنت متأكد من تصفير ومسح كافة فئات الديون والمبالغ للبدء من جديد؟")) {
-                localStorage.removeItem('FAMILY_FINANCE_MASTER_DATA_2026');
-                location.reload();
+            if(confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من مسح وإعادة ضبط التطبيق؟")) {
+                if(confirm("🛑 تأكيد أخير:\nاضغط موافق لتأكيد الحذف الكامل والبدء من جديد الآن.")) {
+                    localStorage.removeItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA');
+                    location.reload();
+                }
             }
         }
-       
     </script>
 </body>
 </html>
