@@ -30,15 +30,31 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); color: var(--text-primary); font-family: var(--font-ar); min-height: 100vh; overflow-x: hidden; display: flex; justify-content: center; }
         
-        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); padding-top: 70px; }
         
+        /* 🍔 TOP NAVBAR WITH HAMBURGER */
+        .top-navbar { position: fixed; top: 0; width: 100%; max-width: 478px; height: 70px; background: rgba(8, 9, 13, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--glass-border); z-index: 999; }
+        .menu-btn { background: transparent; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; transition: var(--transition); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .menu-btn:active { background: rgba(255,255,255,0.05); }
+        .nav-title { font-size: 1.1rem; font-weight: 700; color: #fff; }
+
+        /* 🚪 SIDEBAR SYSTEM */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: flex-end; }
+        .sidebar-overlay.active { display: flex; }
+        .sidebar { width: 280px; height: 100%; background: #0f111a; border-left: 1px solid var(--glass-border); padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        [dir="rtl"] .sidebar { animation: slideInRtl 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes slideInRtl { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .sidebar-close { background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
+        .sidebar-menu { display: flex; flex-direction: column; gap: 8px; }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: rgba(255,255,255,0.01); border: 1px solid transparent; border-radius: 14px; color: var(--text-secondary); text-decoration: none; font-weight: bold; cursor: pointer; transition: var(--transition); }
+        .menu-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+        .menu-item:hover, .menu-item.active { background: rgba(0, 176, 255, 0.08); border-color: rgba(0, 176, 255, 0.2); color: #fff; }
+
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
         
-        /* Navigation Bottom Tabs Style */
-        .nav-tabs { display: flex; gap: 10px; padding: 0 16px; margin-top: 20px; margin-bottom: 10px; }
-        .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
-        .tab-btn.active { background: rgba(0, 176, 255, 0.1); border-color: var(--neon-blue); color: #fff; }
-
         /* Pages System */
         .app-page { display: none; width: 100%; animation: fadeIn 0.3s ease; }
         .app-page.active { display: block; }
@@ -75,8 +91,37 @@
 
     <div class="app-container">
         
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchMainTab('grocery')"><i class="fa-solid fa-basket-shopping"></i> دفتر الديون والفواتير</button>
+        <div class="top-navbar">
+            <button class="menu-btn" onclick="toggleSidebar(true)"><i class="fa-solid fa-bars"></i></button>
+            <div class="nav-title" id="navbar-title">دفتر الديون والفواتير</div>
+            <div style="width: 40px;"></div> </div>
+
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)">
+            <div class="sidebar" onclick="event.stopPropagation()">
+                <div class="sidebar-header">
+                    <h3 style="font-size:1.1rem; background: linear-gradient(135deg, #fff, var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Family Finance</h3>
+                    <button class="sidebar-close" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="sidebar-menu">
+                    <div class="menu-item" id="menu-main" onclick="switchPage('main', 'الصفحة الرئيسية')">
+                        <i class="fa-solid fa-house-chimney"></i> الصفحة الرئيسية
+                    </div>
+                    <div class="menu-item active" id="menu-grocery" onclick="switchPage('grocery', 'دفتر الديون والفواتير')">
+                        <i class="fa-solid fa-basket-shopping"></i> دفتر الديون والالتزامات
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-main" class="app-page">
+            <div class="glass-card" style="text-align: center; margin-top: 20px;">
+                <i class="fa-solid fa-wallet" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px;"></i>
+                <h2>أهلاً بك في القائمة الرئيسية</h2>
+                <p style="color: var(--text-secondary); margin-top: 10px; font-size: 0.9rem; line-height: 1.6;">هنا يمكنك إدارة كامل ملفاتك المالية الشخصية والعائلية بذكاء وسرعة.</p>
+                <button class="btn-submit" style="margin-top: 20px;" onclick="switchPage('grocery', 'دفتر الديون والفواتير')">
+                    <i class="fa-solid fa-arrow-left"></i> الدخول لدفتر الديون والعدادات
+                </button>
+            </div>
         </div>
 
         <div id="page-grocery" class="app-page active">
@@ -155,7 +200,7 @@
     </div>
 
     <script>
-        // قواعد البيانات المبسطة مع الربط بـ localStorage لمنع ضياع البيانات
+        // قواعد البيانات والمزامنة
         let state = {
             categories: [
                 { id: 'cat_grocery', name: 'البقالة', total: 0, color: '#ff9100', icon: 'fa-basket-shopping' },
@@ -173,6 +218,37 @@
             renderAll();
         });
 
+        // 🔗 التحكم بالقائمة الجانبية (Sidebar)
+        function toggleSidebar(open) {
+            const overlay = document.getElementById('sidebar-overlay');
+            if (open) {
+                overlay.style.display = 'flex';
+                setTimeout(() => overlay.classList.add('active'), 10);
+            } else {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.style.display = 'none', 300);
+            }
+        }
+
+        // 🔄 التنقل بين الصفحات وتغيير العنوان في البار العلوي
+        function switchPage(pageId, titleText) {
+            // إخفاء كل الصفحات
+            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
+            // إزالة الحالة النشطة من أزرار القائمة
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            
+            // إظهار الصفحة المطلوبة
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            // تفعيل الزر في القائمة
+            document.getElementById(`menu-${pageId}`).classList.add('active');
+            
+            // تغيير عنوان البار العلوي
+            document.getElementById('navbar-title').innerText = titleText;
+            
+            // إغلاق القائمة الجانبية تلقائياً
+            toggleSidebar(false);
+        }
+
         function commit() {
             localStorage.setItem('SIMPLE_GROCERY_BILL_DATA_2026', JSON.stringify(state));
             renderAll();
@@ -182,16 +258,10 @@
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function closeModalOnOuterClick(e, id) { if(e.target.id === id) closeModal(id); }
 
-        function switchMainTab(tab) {
-            // صفحة واحدة سريعة ومباشرة ومستقرة
-        }
-
         function renderAll() {
-            // 1. حساب الإجمالي العام
             let globalTotal = state.categories.reduce((acc, c) => acc + c.total, 0);
             document.getElementById('grocery-total-bill').innerText = globalTotal.toFixed(2) + " ر.س";
 
-            // 2. رندر كروت العدادات العلوية الفئات
             const cardsContainer = document.getElementById('categories-cards-target');
             cardsContainer.innerHTML = '';
 
@@ -213,7 +283,6 @@
                 cardsContainer.appendChild(card);
             });
 
-            // 3. رندر السجل التاريخي للحركات
             const logsContainer = document.getElementById('grocery-logs-target');
             logsContainer.innerHTML = '';
 
@@ -244,7 +313,6 @@
             }
         }
 
-        // فتح مودال الإضافة لفئة معينة
         function openAddBillModal(catId) {
             const cat = state.categories.find(c => c.id === catId);
             if(!cat) return;
@@ -282,7 +350,6 @@
             commit();
         }
 
-        // فتح مودال التسديد الجزئي المرن من المجموع الكلي لفئة معينة
         function openPayBillModal(catId) {
             const cat = state.categories.find(c => c.id === catId);
             if(!cat) return;
@@ -313,14 +380,13 @@
                 catName: cat.name,
                 amount: amt,
                 reason: `💸 تسديد جزء من الحساب الإجمالي`,
-                date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
+                date: new Date().toLocaleDateString('ar-SA'] + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             });
 
             closeModal('modal-pay-bill');
             commit();
         }
 
-        // إنشاء فئة مخصصة من قبل المستخدم
         function executeCreateCategory() {
             const name = document.getElementById('new-cat-name').value.trim();
             if(!name) return alert("الرجاء كتابة اسم الفئة أولاً.");
@@ -342,7 +408,6 @@
             commit();
         }
 
-        // حذف حركة وتعديل الحسابات بناءً عليها تلقائياً والتراجع
         function executeDeleteLog(index) {
             if(!confirm("هل تريد حذف وتراجع هذه الحركة من السجل؟")) return;
             const log = state.logs[index];
