@@ -67,15 +67,6 @@
         .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
         .tab-btn.active { background: rgba(0, 176, 255, 0.1); border-color: var(--neon-blue); color: #fff; }
 
-        /* Categories Upper Grid */
-        .categories-grid { display: flex; flex-direction: column; gap: 10px; padding: 0 16px; margin-bottom: 15px; }
-        .cat-card { background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border); border-radius: 18px; padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
-        .cat-info h4 { font-size: 1.15rem; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 2px; }
-        .cat-actions { display: flex; gap: 8px; }
-        .action-btn { border: none; padding: 8px 12px; border-radius: 10px; font-family: inherit; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: var(--transition); }
-        .action-btn.add { background: rgba(0, 176, 255, 0.15); color: var(--neon-blue); }
-        .action-btn.pay { background: rgba(0, 230, 118, 0.15); color: var(--neon-green); }
-
         /* Pages System */
         .app-page { display: none; width: 100%; animation: fadeIn 0.3s ease; }
         .app-page.active { display: block; }
@@ -204,20 +195,11 @@
                 <h1 style="font-size: 2.5rem; margin: 4px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
                 
                 <div style="margin-top:12px; display:flex; gap:8px;">
-                    <button class="btn-submit" style="background: var(--neon-yellow); color: #000; padding: 10px; font-size: 0.85rem; border-radius: 12px; flex: 1;" onclick="openModal('modal-add-grocery')">
+                    <button class="btn-submit" style="background: var(--neon-yellow); color: #000; padding: 14px; font-size: 1rem; border-radius: 14px; flex: 1;" onclick="openModal('modal-add-grocery')">
                         <i class="fa-solid fa-plus"></i> إضافة فاتورة جديدة
-                    </button>
-                    <button class="btn-submit" style="background: var(--text-primary); color: #000; padding: 10px; font-size: 0.85rem; border-radius: 12px; flex: 1;" onclick="openModal('modal-create-category')">
-                        <i class="fa-solid fa-folder-plus"></i> إنشاء فئة جديدة
                     </button>
                 </div>
             </div>
-
-            <div style="padding: 0 16px 5px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary);"><i class="fa-solid fa-layer-group"></i> فئات الديون والعدادات العلوية:</h3>
-            </div>
-            
-            <div class="categories-grid" id="categories-cards-target"></div>
 
             <div style="padding:10px 16px 30px 16px;">
                 <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> الفواتير القائمة (اضغط لتسديد أي مبلغ أو عرض كشفها)</h3>
@@ -263,29 +245,14 @@
         <div class="modal-content">
             <h3 style="color: var(--neon-yellow); margin-bottom:15px;"><i class="fa-solid fa-cart-plus"></i> إضافة فاتورة / دين جديد</h3>
             <div class="form-group">
-                <label>اختر الفئة المستهدفة</label>
-                <select id="g-item-cat-select" class="form-control"></select>
-            </div>
-            <div class="form-group">
-                <label>البيان أو الوصف (مثال: أغراض العشاء، اشتراك شهر يونيو)</label>
-                <input type="text" id="g-item-name" class="form-control" placeholder="اكتب التفاصيل...">
+                <label>البيان أو الوصف (مثال: دين بقالة، فاتورة نت، كهرباء)</label>
+                <input type="text" id="g-item-name" class="form-control" placeholder="اكتب تفاصيل الفاتورة...">
             </div>
             <div class="form-group">
                 <label>قيمة الفاتورة أو الدين الإجمالي (ر.س)</label>
                 <input type="number" id="g-item-price" class="form-control" placeholder="0.00">
             </div>
             <button class="btn-submit" style="background: var(--neon-yellow); color: #000;" onclick="executeSaveGroceryItem()">إضافة إلى دفتر الديون</button>
-        </div>
-    </div>
-
-    <div id="modal-create-category" class="modal" onclick="closeModalOnOuterClick(event, 'modal-create-category')">
-        <div class="modal-content">
-            <h3 style="color: var(--neon-blue); margin-bottom:15px;"><i class="fa-solid fa-folder-plus"></i> إنشاء فئة فواتير مخصصة</h3>
-            <div class="form-group">
-                <label>اسم الفئة الجديدة (مثال: صيدلية، مغسلة، فواتير عامة)</label>
-                <input type="text" id="new-cat-name" class="form-control" placeholder="اكتب اسم الفئة المخصصة...">
-            </div>
-            <button class="btn-submit" onclick="executeCreateCategory()">تأكيد وإنشاء الفئة فوراً</button>
         </div>
     </div>
 
@@ -364,20 +331,12 @@
                 myRealCash: 0,
                 people: [],
                 bills: [],
-                globalLogs: [],
-                categories: []
+                globalLogs: []
             },
             activePage: 'dash',
             activePersonId: null,
             chartInstance: null
         };
-
-        const defaultCategories = [
-            { id: 'cat_grocery', name: '🛒 دين بقالة', total: 0, color: '#ffd600', icon: 'fa-basket-shopping' },
-            { id: 'cat_net', name: '🌐 فاتورة إنترنت', total: 0, color: '#00b0ff', icon: 'fa-globe' },
-            { id: 'cat_electricity', name: '⚡ فاتورة كهرباء', total: 0, color: '#ff9100', icon: 'fa-bolt' },
-            { id: 'cat_others', name: '📝 دين / فئة أخرى', total: 0, color: '#d500f9', icon: 'fa-folder-open' }
-        ];
 
         window.addEventListener('DOMContentLoaded', () => {
             loadDatabaseFromStorage();
@@ -393,9 +352,6 @@
                     if(!state.db.people) state.db.people = [];
                     if(!state.db.bills) state.db.bills = [];
                     if(!state.db.globalLogs) state.db.globalLogs = [];
-                    if(!state.db.categories || state.db.categories.length === 0) {
-                        state.db.categories = [...defaultCategories];
-                    }
                 } catch(e) {
                     initCleanDatabase();
                 }
@@ -411,70 +367,16 @@
                     { id: 'p_own_wallet', name: 'محفظتي الشخصية (كاشي الخاص)', trustBal: 0, loanToThemBal: 0, loanOnMeBal: 0, logs: [], isSystemOwn: true }
                 ],
                 bills: [],
-                globalLogs: [],
-                categories: [...defaultCategories]
+                globalLogs: []
             };
             commit();
         }
 
         function commit() {
             localStorage.setItem('FAMILY_FINANCE_PRO_MAX_DB', JSON.stringify(state.db));
-            recalculateSummaryCounters();
-        }
-
-        function recalculateSummaryCounters() {
-            // حساب فئات الفواتير ديناميكياً بناءً على الفواتير الحالية
-            state.db.categories.forEach(c => c.total = 0);
-            state.db.bills.forEach(b => {
-                let catId = b.catId;
-                if(!catId) {
-                    if(b.type === 'بقالة') catId = 'cat_grocery';
-                    else if(b.type === 'نت') catId = 'cat_net';
-                    else if(b.type === 'كهرباء') catId = 'cat_electricity';
-                    else catId = 'cat_others';
-                    b.catId = catId; 
-                }
-                const foundCat = state.db.categories.find(c => c.id === catId);
-                if(foundCat) {
-                    foundCat.total += Math.max(0, b.remaining);
-                }
-            });
         }
 
         function renderAppStructure() {
-            // التحديث العلوي للأزرار والفئات
-            const catSelect = document.getElementById('g-item-cat-select');
-            if(catSelect) {
-                catSelect.innerHTML = '';
-                state.db.categories.forEach(c => {
-                    catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-                });
-            }
-
-            // تحديث كروت الفئات الذكية العلوية (المدمجة من ملف in.html)
-            const catGridTarget = document.getElementById('categories-cards-target');
-            if(catGridTarget) {
-                catGridTarget.innerHTML = '';
-                state.db.categories.forEach(c => {
-                    const card = document.createElement('div');
-                    card.className = "cat-card";
-                    card.style.borderRight = `5px solid ${c.color}`;
-                    card.innerHTML = `
-                        <div class="cat-info">
-                            <span style="color:var(--text-secondary); font-size:0.8rem;"><i class="fa-solid ${c.icon}"></i> فئة</span>
-                            <h4 style="color:${c.color}">${c.name}</h4>
-                            <p style="font-size:0.85rem; font-family:'Plus Jakarta Sans'; margin-top:2px;">${c.total.toFixed(2)} ر.س</p>
-                        </div>
-                        <div class="cat-actions">
-                            <button class="action-btn add" onclick="openModalAndPreSelectCat('${c.id}')"><i class="fa-solid fa-plus"></i> شراء</button>
-                            ${c.id !== 'cat_grocery' && c.id !== 'cat_net' && c.id !== 'cat_electricity' && c.id !== 'cat_others' ? 
-                            `<button class="action-btn" style="background:rgba(255,23,68,0.1); color:var(--neon-red);" onclick="executeDeleteCategory('${c.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
-                        </div>
-                    `;
-                    catGridTarget.appendChild(card);
-                });
-            }
-
             // حساب الإجماليات
             let sumTrusts = 0;
             let sumLoansToThem = 0;
@@ -514,11 +416,6 @@
             if(state.activePage === 'profile' && state.activePersonId) {
                 renderPersonProfilePage(state.activePersonId);
             }
-        }
-
-        function openModalAndPreSelectCat(catId) {
-            openModal('modal-add-grocery');
-            document.getElementById('g-item-cat-select').value = catId;
         }
 
         function renderPeopleDrawerList() {
@@ -594,17 +491,15 @@
                 item.onclick = () => openPartialPaymentModal(index);
 
                 const isPaid = b.remaining <= 0;
-                const catObj = state.db.categories.find(c => c.id === b.catId) || { name: b.type, color: '#ffd600' };
 
                 item.innerHTML = `
                     <div style="flex:1;">
-                        <span class="bill-badge" style="background:rgba(255,255,255,0.05); color:${catObj.color}; border:1px solid ${catObj.color}44;">${catObj.name}</span>
-                        <strong style="display:block; margin-top:4px; font-size:0.95rem; color:#fff;">${b.name}</strong>
+                        <strong style="display:block; font-size:1rem; color:#fff;">📄 ${b.name}</strong>
                         <span style="font-size:0.75rem; color:var(--text-secondary);">${b.date}</span>
                     </div>
                     <div style="text-align:left;">
                         <span style="font-family:'Plus Jakarta Sans'; font-weight:700; color:${isPaid ? 'var(--neon-green)' : 'var(--neon-yellow)'}; font-size:1.05rem; display:block;">
-                            ${isPaid ? '✅ تم السداد كاملاً' : `${b.remaining.toFixed(2)} ر.س`}
+                            ${isPaid ? '✅ تم السداد' : `${b.remaining.toFixed(2)} ر.س`}
                         </span>
                         <span style="font-size:0.75rem; color:var(--text-secondary); text-decoration:line-through;">الأصل: ${b.totalPrice.toFixed(0)}</span>
                     </div>
@@ -618,10 +513,9 @@
             if(!container) return;
             container.innerHTML = '';
 
-            // تصفية السجلات العالمية التي تخص الفواتير والمشتريات
             const groceryLogs = state.db.globalLogs.filter(l => l.reason.includes('فاتورة') || l.reason.includes('سداد فاتورة') || l.reason.includes('دفعة من'));
             if(groceryLogs.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا توجد عمليات فواتير مسجلة في السجل التاريخي.</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا توجد عمليات فواتير مسجلة.</p>`;
                 return;
             }
 
@@ -639,57 +533,20 @@
             });
         }
 
-        function executeCreateCategory() {
-            const name = document.getElementById('new-cat-name').value.trim();
-            if(!name) { alert("الرجاء كتابة اسم الفئة!"); return; }
-
-            const id = 'cat_' + Date.now();
-            const colors = ['#d500f9', '#ff1744', '#00e676', '#ff9100', '#00b0ff', '#ffd600'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-            state.db.categories.push({
-                id: id,
-                name: '📝 ' + name,
-                total: 0,
-                color: randomColor,
-                icon: 'fa-folder-open'
-            });
-
-            document.getElementById('new-cat-name').value = '';
-            closeModal('modal-create-category');
-            commit();
-            renderAppStructure();
-        }
-
-        function executeDeleteCategory(catId) {
-            if(confirm("هل أنت متأكد من حذف هذه الفئة المخصصة؟ سيتم تحويل فواتيرها للفئة العامة.")) {
-                state.db.bills.forEach(b => {
-                    if(b.catId === catId) b.catId = 'cat_others';
-                });
-                state.db.categories = state.db.categories.filter(c => c.id !== catId);
-                commit();
-                renderAppStructure();
-            }
-        }
-
         function executeSaveGroceryItem() {
-            const catId = document.getElementById('g-item-cat-select').value;
             const name = document.getElementById('g-item-name').value.trim();
             const price = parseFloat(document.getElementById('g-item-price').value);
 
             if(!name || isNaN(price) || price <= 0) {
-                alert("الرجاء إدخال تفاصيل صحيحة وقيمة أكبر من الصفر!");
+                alert("الرجاء إدخال تفاصيل صحيحة ومبلغ أكبر من الصفر!");
                 return;
             }
 
-            const catObj = state.db.categories.find(c => c.id === catId);
             const today = new Date();
             const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')} ${String(today.getHours()).padStart(2,'0')}:${String(today.getMinutes()).padStart(2,'0')}`;
 
             const newBill = {
                 id: 'bill_' + Date.now(),
-                catId: catId,
-                type: catObj ? catObj.name : "عام",
                 name: name,
                 totalPrice: price,
                 remaining: price,
@@ -700,8 +557,8 @@
             state.db.bills.push(newBill);
             
             state.db.globalLogs.push({
-                name: `شراء / ${newBill.type}`,
-                reason: `فاتورة جديدة: ${name} (إجمالي: ${price} ر.س)`,
+                name: `فاتورة جديدة`,
+                reason: `تسجيل فاتورة: ${name} (إجمالي: ${price} ر.س)`,
                 amt: price
             });
 
@@ -716,7 +573,7 @@
         function openPartialPaymentModal(index) {
             const b = state.db.bills[index];
             document.getElementById('pay-modal-bill-id').value = index;
-            document.getElementById('pay-modal-bill-title').innerText = `📄 ${b.name} (${b.type})`;
+            document.getElementById('pay-modal-bill-title').innerText = `📄 ${b.name}`;
             document.getElementById('pay-modal-bill-date').innerText = `📅 تاريخ التسجيل: ${b.date}`;
             document.getElementById('pay-modal-bill-original').innerText = `قيمة الفاتورة الأصلية: ${b.totalPrice.toFixed(2)} ر.س`;
             document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي غير المسدد: ${b.remaining.toFixed(2)} ر.س`;
@@ -754,7 +611,7 @@
 
             const b = state.db.bills[index];
             if(amt > b.remaining) {
-                alert(`⚠️ المبلغ المدخل (${amt} ر.س) أكبر من المتبقي الفعلي في الفاتورة (${b.remaining} ر.س). تم تعديل المبلغ ليكون مساوياً للمتبقي تماماً.`);
+                alert(`⚠️ المبلغ أكبر من المتبقي فعلياً في الفاتورة (${b.remaining} ر.س).`);
                 return;
             }
 
@@ -766,15 +623,15 @@
             
             b.remaining = Math.max(0, b.remaining - amt);
 
-            // خصم الدفعة تلقائياً من الكاش الخاص بك
+            // خصم الدفعة تلقائياً من محفظتك الشخصية
             const ownWallet = state.db.people.find(p => p.isSystemOwn);
             if(ownWallet) {
                 ownWallet.trustBal = Math.max(0, ownWallet.trustBal - amt);
             }
 
             state.db.globalLogs.push({
-                name: `سداد فاتورة / ${b.type}`,
-                reason: `دفعة من فاتورة (${b.name}) - تم خصمها من كاشك الخاص`,
+                name: `سداد فاتورة`,
+                reason: `دفعة جزئية من فاتورة (${b.name}) - خصم من كاش المحفظة`,
                 amt: amt
             });
 
@@ -811,7 +668,6 @@
             
             document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-person-profile').classList.add('active');
-            
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
             renderPersonProfilePage(pId);
@@ -862,7 +718,6 @@
                 `;
             }
 
-            // طباعة كشف الحساب الخاص بالشخص
             const ledgerTarget = document.getElementById('profile-exclusive-ledger-target');
             ledgerTarget.innerHTML = '';
 
@@ -937,7 +792,6 @@
                 p.trustBal = Math.max(0, p.trustBal - amt);
                 typeText = "سحب ومصرف من الكاش";
             } else {
-                // العمليات للأشخاص الآخرين وتأثيرها على كاش المحفظة الخاصة بك تلقائياً
                 if(type === 'trust_add') {
                     p.trustBal += amt;
                     if(ownWallet) ownWallet.trustBal += amt; 
@@ -1044,15 +898,13 @@
         function closeModalOnOuterClick(e, id) { if(e.target === document.getElementById(id)) closeModal(id); }
 
         function executeSystemReset() {
-            if(confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من مسح وإعادة ضبط التطبيق بالكامل وبدء الحسابات من الصفر؟")) {
-                if(confirm("🛑 تأكيد أخير:\nاضغط موافق لتأكيد الحذف الكامل والبدء من جديد الآن.")) {
-                    localStorage.removeItem('FAMILY_FINANCE_PRO_MAX_DB');
-                    initCleanDatabase();
-                    renderAppStructure();
-                    toggleDrawer(false);
-                    switchMainTab('dash');
-                    alert("تمت إعادة ضبط النظام بنجاح وبدء التطبيق من الصفر 🚀");
-                }
+            if(confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من مسح وإعادة ضبط التطبيق بالكامل؟")) {
+                localStorage.removeItem('FAMILY_FINANCE_PRO_MAX_DB');
+                initCleanDatabase();
+                renderAppStructure();
+                toggleDrawer(false);
+                switchMainTab('dash');
+                alert("تمت إعادة ضبط النظام بنجاح 🚀");
             }
         }
     </script>
