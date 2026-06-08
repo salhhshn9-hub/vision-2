@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Finance Ultra Hub Pro</title>
+    <title>Family Finance - الديون والفواتير التراكمية</title>
     <meta name="theme-color" content="#0d0e15">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,7 @@
             --neon-orange: #ff9100;
             --neon-red: #ff1744;
             --neon-purple: #d500f9;
+            --neon-yellow: #ffd600;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --font-ar: 'Tajawal', sans-serif;
@@ -31,48 +32,64 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-gradient); color: var(--text-primary); font-family: var(--font-ar); min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; }
         
-        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.96); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); padding-bottom: 40px; }
+        .app-container { width: 100%; max-width: 480px; background: rgba(8, 9, 13, 0.98); min-height: 100vh; position: relative; display: flex; flex-direction: column; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.8); padding-bottom: 40px; }
         
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden; }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 22px; margin: 12px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); position: relative; }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .logo-area { display: flex; align-items: center; gap: 12px; }
-        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff; box-shadow: 0 0 15px rgba(213,0,249,0.4); }
-        .logo-text h2 { font-size: 1.15rem; font-weight: 900; background: linear-gradient(120deg, #fff, var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo-text p { font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-en); font-weight: 600; letter-spacing: 0.5px; margin-top: 1px; }
+        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--neon-yellow), var(--neon-orange)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #000; box-shadow: 0 0 15px rgba(255,145,0,0.3); }
+        .logo-text h2 { font-size: 1.15rem; font-weight: 900; color: #fff; }
+        .logo-text p { font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-en); font-weight: 600; letter-spacing: 0.5px; }
 
-        .balance-display { text-align: center; padding: 15px 0 5px 0; }
-        .balance-display p { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .balance-display h1 { font-family: var(--font-en); font-size: 2.75rem; font-weight: 700; margin: 6px 0; letter-spacing: -0.5px; background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .balance-display { text-align: center; padding: 10px 0; }
+        .balance-display p { font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .balance-display h1 { font-family: var(--font-en); font-size: 2.6rem; font-weight: 700; margin: 4px 0; background: linear-gradient(135deg, #ffffff 0%, #fde047 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* 📊 فئات الفواتير التراكمية العلير */
+        .categories-grid { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; margin-top: 5px; }
+        .category-box { background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border); border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; transition: var(--transition); }
+        .category-top { display: flex; justify-content: space-between; align-items: center; }
+        .category-title { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.95rem; }
+        .category-amt { font-family: var(--font-en); font-weight: 700; font-size: 1.15rem; }
         
-        .action-hub { padding: 0 16px; margin-top: 5px; }
-        .btn-main-action { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); background: linear-gradient(135deg, rgba(213,0,249,0.15) 0%, rgba(0,176,255,0.15) 100%); color: #fff; font-family: var(--font-ar); font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: var(--transition); box-shadow: inset 0 1px 1px rgba(255,255,255,0.1); }
-        .btn-main-action:active { transform: scale(0.98); background: linear-gradient(135deg, rgba(213,0,249,0.25) 0%, rgba(0,176,255,0.25) 100%); }
+        /* 📈 خط التقدم الـ Progress Bar الحركي */
+        .progress-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; position: relative; }
+        .progress-bar-fill { height: 100%; width: 0%; border-radius: 4px; transition: width 0.5s ease-out; }
 
-        .section-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); padding: 15px 22px 8px 22px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title span { font-size: 0.75rem; color: var(--text-secondary); font-weight: normal; font-family: var(--font-en); }
+        /* الأزرار والإجراءات */
+        .actions-row { display: flex; gap: 10px; padding: 0 16px; margin-top: 15px; }
+        .btn-action { flex: 1; padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-family: var(--font-ar); font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
+        .btn-action.add-bill { background: linear-gradient(135deg, rgba(255,214,0,0.15) 0%, rgba(255,145,0,0.15) 100%); border-color: rgba(255,214,0,0.3); color: var(--neon-yellow); }
+        .btn-action.pay-bill { background: linear-gradient(135deg, rgba(0,230,118,0.15) 0%, rgba(0,176,255,0.15) 100%); border-color: rgba(0,230,118,0.3); color: var(--neon-green); }
+        .btn-action:active { transform: scale(0.97); }
 
+        .btn-create-category { background: transparent; border: 1px dashed var(--glass-border); color: var(--text-secondary); padding: 12px; border-radius: 16px; font-weight: 500; font-family: inherit; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0 16px; transition: var(--transition); }
+        .btn-create-category:hover { background: rgba(255,255,255,0.02); color: #fff; border-color: var(--text-secondary); }
+
+        .section-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); padding: 25px 22px 10px 22px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title span { font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-en); }
+
+        /* سجل الأنشطة والعمليات التراكمية */
         .logs-container { display: flex; flex-direction: column; gap: 10px; padding: 0 16px; }
-        .log-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 14px 16px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); }
-        .log-card:active { background: var(--glass-accent); }
-        
+        .log-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 14px 16px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; }
         .log-info { display: flex; align-items: center; gap: 12px; }
-        .log-icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-        .log-icon-box.add { background: rgba(0, 230, 118, 0.08); color: var(--neon-green); border: 1px solid rgba(0, 230, 118, 0.15); }
-        .log-icon-box.sub { background: rgba(255, 23, 68, 0.08); color: var(--neon-red); border: 1px solid rgba(255, 23, 68, 0.15); }
+        .log-icon-box { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; }
+        .log-icon-box.add { background: rgba(255, 145, 0, 0.08); color: var(--neon-orange); border: 1px solid rgba(255, 145, 0, 0.15); }
+        .log-icon-box.pay { background: rgba(0, 230, 118, 0.08); color: var(--neon-green); border: 1px solid rgba(0, 230, 118, 0.15); }
         
         .log-details strong { display: block; font-size: 0.9rem; color: #fff; margin-bottom: 2px; }
         .log-details span { font-size: 0.72rem; color: var(--text-secondary); font-family: var(--font-en); }
         
         .log-amount-area { text-align: left; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
         .log-amount { font-family: var(--font-en); font-weight: 700; font-size: 0.95rem; }
-        .log-amount.add { color: var(--neon-green); }
-        .log-amount.sub { color: var(--neon-red); }
-        
-        .btn-delete-log { background: transparent; border: none; color: var(--text-secondary); opacity: 0.3; cursor: pointer; font-size: 0.8rem; padding: 2px 5px; transition: var(--transition); }
+        .log-amount.add { color: var(--neon-orange); }
+        .log-amount.pay { color: var(--neon-green); }
+
+        .btn-delete-log { background: transparent; border: none; color: var(--text-secondary); opacity: 0.2; cursor: pointer; font-size: 0.75rem; transition: var(--transition); }
         .btn-delete-log:hover { opacity: 1; color: var(--neon-red); }
 
-        /* Modals */
+        /* النوافذ المنسدلة (Modals) */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5, 6, 10, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 9999; display: none; justify-content: center; align-items: flex-end; }
         .modal-overlay.active { display: flex; }
         .modal-sheet { width: 100%; max-width: 480px; background: #0c0e17; border-top-left-radius: 32px; border-top-right-radius: 32px; border-top: 1px solid var(--glass-border); padding: 30px 24px; box-shadow: 0 -10px 40px rgba(0,0,0,0.6); animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 85vh; overflow-y: auto; }
@@ -80,22 +97,17 @@
         
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
         .modal-header h3 { font-size: 1.15rem; font-weight: 700; }
-        .btn-close-modal { width: 32px; height: 32px; background: var(--glass-accent); border: 1px solid var(--glass-border); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; }
+        .btn-close-modal { width: 32px; height: 32px; background: var(--glass-accent); border: 1px solid var(--glass-border); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         
         .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; }
-        .form-control { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 14px 16px; border-radius: 14px; color: #fff; font-family: inherit; font-size: 0.95rem; transition: var(--transition); }
-        .form-control:focus { outline: none; border-color: var(--neon-purple); background: rgba(255,255,255,0.06); }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-secondary); }
+        .form-control { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 14px 16px; border-radius: 14px; color: #fff; font-family: inherit; font-size: 0.95rem; }
+        .form-control:focus { outline: none; border-color: var(--neon-orange); }
         
-        .type-selector { display: flex; gap: 12px; margin-bottom: 20px; }
-        .type-btn { flex: 1; padding: 14px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); }
-        .type-btn.sub.active { background: rgba(255, 23, 68, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
-        .type-btn.add.active { background: rgba(0, 230, 118, 0.1); border-color: var(--neon-green); color: var(--neon-green); }
-        
-        .btn-submit { width: 100%; padding: 16px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue)); color: #fff; font-family: var(--font-ar); font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(213,0,249,0.25); }
+        .btn-submit { width: 100%; padding: 16px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--neon-orange), var(--neon-purple)); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255,145,0,0.2); }
 
-        .btn-reset-system { background: transparent; border: 1px dashed rgba(255, 23, 68, 0.2); color: rgba(255, 23, 68, 0.6); padding: 12px; border-radius: 14px; font-weight: bold; font-family: inherit; font-size: 0.8rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin: 20px 16px 10px 16px; transition: var(--transition); }
-        .btn-reset-system:hover { border-color: var(--neon-red); color: var(--neon-red); background: rgba(255, 23, 68, 0.05); }
+        .btn-reset-system { background: transparent; border: 1px dashed rgba(255, 23, 68, 0.15); color: rgba(255, 23, 68, 0.5); padding: 12px; border-radius: 14px; font-weight: bold; font-family: inherit; font-size: 0.8rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; margin: 25px 16px 10px 16px; transition: var(--transition); }
+        .btn-reset-system:hover { border-color: var(--neon-red); color: var(--neon-red); }
     </style>
 </head>
 <body>
@@ -105,83 +117,118 @@
         <header>
             <div class="logo-area">
                 <div class="logo-icon">
-                    <i class="fa-solid fa-chart-pie"></i>
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
                 </div>
                 <div class="logo-text">
-                    <h2>Family Finance</h2>
-                    <p>ULTRA HUB PRO</p>
+                    <h2>دفتر الفواتير القائمة</h2>
+                    <p>TOTAL DEBTS TRACKER</p>
                 </div>
             </div>
         </header>
 
-        <div class="glass-card" style="background: linear-gradient(135deg, rgba(213,0,249,0.04) 0%, rgba(13,14,21,0.5) 100%); border-color: rgba(213,0,249,0.15);">
+        <div class="glass-card" style="background: linear-gradient(135deg, rgba(255,145,0,0.03) 0%, rgba(13,14,21,0.5) 100%); border-color: rgba(255,145,0,0.12);">
             <div class="balance-display">
-                <p><i class="fa-solid fa-wallet" style="color: var(--neon-purple);"></i> إجمالي الميزانية الحالية المتاحة</p>
-                <h1 id="global-balance">0.00</h1>
+                <p><i class="fa-solid fa-calculator" style="color: var(--neon-orange);"></i> إجمالي الديون المتبقية عليك للكل</p>
+                <h1 id="global-debts-sum">0.00</h1>
                 <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: bold;">ريال سعودي</span>
             </div>
         </div>
 
-        <div class="action-hub">
-            <button class="btn-main-action" onclick="openModal('modal-add-transaction')">
-                <i class="fa-solid fa-plus-circle" style="font-size: 1.1rem;"></i> إضافة حركة مالية جديدة
+        <div class="categories-grid" id="categories-target"></div>
+
+        <button class="btn-create-category" onclick="openModal('modal-create-category')">
+            <i class="fa-solid fa-folder-plus"></i> إنشاء فئة فواتير جديدة من رأسك
+        </button>
+
+        <div class="actions-row">
+            <button class="btn-action add-bill" onclick="openModal('modal-add-invoice')">
+                <i class="fa-solid fa-cart-plus"></i> شراء / إضافة فاتورة
+            </button>
+            <button class="btn-action pay-bill" onclick="openModal('modal-pay-category')">
+                <i class="fa-solid fa-hand-holding-dollar"></i> تسديد من فئة
             </button>
         </div>
 
         <div class="section-title">
-            <h3><i class="fa-solid fa-history" style="color: var(--neon-blue); margin-left: 6px;"></i> سجل العمليات الأخير</h3>
-            <span id="log-count">0 عمليات</span>
+            <h3><i class="fa-solid fa-history" style="color: var(--neon-blue); margin-left: 6px;"></i> كشف القيود والعمليات الأخير</h3>
+            <span id="logs-count">0 عمليات</span>
         </div>
 
         <div class="logs-container" id="logs-target"></div>
 
         <button class="btn-reset-system" onclick="executeSystemReset()">
-            <i class="fa-solid fa-trash-can"></i> تهيئة ومسح البيانات والبدء من الصفر
+            <i class="fa-solid fa-trash-can"></i> تهيئة ومسح الدفتر بالكامل
         </button>
 
     </div>
 
-    <div id="modal-add-transaction" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'modal-add-transaction')">
+    <div id="modal-add-invoice" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'modal-add-invoice')">
         <div class="modal-sheet">
             <div class="modal-header">
-                <h3>إضافة حركة مالية جديدة</h3>
-                <div class="btn-close-modal" onclick="closeModal('modal-add-transaction')">
-                    <i class="fa-solid fa-xmark"></i>
-                </div>
+                <h3>تسجيل فاتورة / شراء جديد</h3>
+                <div class="btn-close-modal" onclick="closeModal('modal-add-invoice')"><i class="fa-solid fa-xmark"></i></div>
             </div>
-
-            <label style="display:block; margin-bottom:8px; font-size:0.85rem; color:var(--text-secondary);">نوع العملية المالي</label>
-            <div class="type-selector">
-                <button id="type-sub" class="type-btn sub active" onclick="setTransactionType('sub')">
-                    <i class="fa-solid fa-arrow-down-long"></i> مصروف / خصم
-                </button>
-                <button id="type-add" class="type-btn add" onclick="setTransactionType('add')">
-                    <i class="fa-solid fa-arrow-up-long"></i> إيداع / إضافة
-                </button>
-            </div>
-
             <div class="form-group">
-                <label>اسم الحركة أو البيان (مثال: مقاضي البيت، الراتب، بنزين)</label>
-                <input type="text" id="tx-name" class="form-control" placeholder="اكتب وصفاً مختصراً هنا...">
+                <label>اختر فئة الفاتورة المستهدفة</label>
+                <select id="add-invoice-category" class="form-control" style="background:#131522; color:#fff;"></select>
             </div>
-
             <div class="form-group">
-                <label>المبلغ الإجمالي (ر.س)</label>
-                <input type="number" id="tx-amount" class="form-control" placeholder="0.00" inputmode="decimal">
+                <label>البيان أو وصف المشتريات (اختياري)</label>
+                <input type="text" id="add-invoice-name" class="form-control" placeholder="مثال: دجاج وأجبان، فاتورة الشهر...">
             </div>
-
-            <button class="btn-submit" onclick="executeSaveTransaction()">تأكيد وحفظ العملية فوراً</button>
+            <div class="form-group">
+                <label>مبلغ الفاتورة المراد إضافته للحساب (ر.س)</label>
+                <input type="number" id="add-invoice-amount" class="form-control" placeholder="0.00" inputmode="decimal">
+            </div>
+            <button class="btn-submit" style="background:linear-gradient(135deg, var(--neon-orange), #ff6d00);" onclick="executeAddInvoice()">إضافة للمجموع فوراً</button>
         </div>
     </div>
 
+    <div id="modal-pay-category" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'modal-pay-category')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>تسديد دفعة من حساب فئة الكلي</h3>
+                <div class="btn-close-modal" onclick="closeModal('modal-pay-category')"><i class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="form-group">
+                <label>اختر الفئة التي تريد السداد منها</label>
+                <select id="pay-category-select" class="form-control" style="background:#131522; color:#fff;"></select>
+            </div>
+            <div class="form-group">
+                <label>المبلغ المراد سداده وتنزيله من الفئة (ر.س)</label>
+                <input type="number" id="pay-category-amount" class="form-control" placeholder="اكتب 50، 100، 200... حسب مقدرتك" inputmode="decimal">
+            </div>
+            <button class="btn-submit" style="background:linear-gradient(135deg, var(--neon-green), #00c853); color:#000;" onclick="executePayCategory()">تأكيد خصم السداد الكلي</button>
+        </div>
+    </div>
+
+    <div id="modal-create-category" class="modal-overlay" onclick="closeModalOnOuterClick(event, 'modal-create-category')">
+        <div class="modal-sheet">
+            <div class="modal-header">
+                <h3>إنشاء فئة فواتير جديدة</h3>
+                <div class="btn-close-modal" onclick="closeModal('modal-create-category')"><i class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="form-group">
+                <label>اسم الفئة الجديدة</label>
+                <input type="text" id="new-cat-name" class="form-control" placeholder="مثال: صيدلية، مغسلة، بنزين السيارة...">
+            </div>
+            <button class="btn-submit" onclick="executeCreateCategory()">تأكيد إنشاء الفئة</button>
+        </div>
+    </div>
+
+
     <script>
         let state = {
-            db: {
-                balance: 0,
-                logs: []
-            },
-            currentType: 'sub' // النوع الافتراضي مصروف
+            categories: [],
+            logs: []
         };
+
+        // الفئات الافتراضية المذكورة بطلبك لتأسيس الدفتر عليها أول مرة
+        const defaultCategories = [
+            { id: 'cat_grocery', name: 'إجمالي دين البقالة', total: 0, color: '#ffd600', icon: 'fa-basket-shopping' },
+            { id: 'cat_net', name: 'إجمالي دين النت', total: 0, color: '#00b0ff', icon: 'fa-wifi' },
+            { id: 'cat_electricity', name: 'إجمالي دين الكهرباء', total: 0, color: '#ff9100', icon: 'fa-bolt' }
+        ];
 
         window.addEventListener('DOMContentLoaded', () => {
             loadDatabase();
@@ -189,74 +236,115 @@
         });
 
         function loadDatabase() {
-            const raw = localStorage.getItem('FAMILY_FINANCE_SIMPLIFIED_DB');
+            const raw = localStorage.getItem('FAMILY_FINANCE_ACCUMULATIVE_DB');
             if(raw) {
                 try {
-                    state.db = JSON.parse(raw);
-                    if(!state.db.logs) state.db.logs = [];
-                } catch (e) {
-                    initCleanDB();
+                    state = JSON.parse(raw);
+                    if(!state.categories || state.categories.length === 0) state.categories = [...defaultCategories];
+                    if(!state.logs) state.logs = [];
+                } catch(e) {
+                    resetToDefaults();
                 }
             } else {
-                initCleanDB();
+                resetToDefaults();
             }
         }
 
-        function initCleanDB() {
-            state.db = {
-                balance: 0,
+        function resetToDefaults() {
+            state = {
+                categories: JSON.parse(JSON.stringify(defaultCategories)),
                 logs: []
             };
             commit();
         }
 
         function commit() {
-            localStorage.setItem('FAMILY_FINANCE_SIMPLIFIED_DB', JSON.stringify(state.db));
+            localStorage.setItem('FAMILY_FINANCE_ACCUMULATIVE_DB', JSON.stringify(state.db || state));
         }
 
         function renderApp() {
-            // إعادة حساب الرصيد الإجمالي بناءً على الحركات تلافياً لأي خطأ
-            let total = 0;
-            state.db.logs.forEach(l => {
-                if(l.type === 'add') {
-                    total += l.amount;
-                } else {
-                    total -= l.amount;
-                }
-            });
-            state.db.balance = total;
+            // حساب المجموع الكلي لكافة الفئات القائمة
+            let globalSum = state.categories.reduce((acc, current) => acc + current.total, 0);
+            document.getElementById('global-debts-sum').innerText = globalSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('logs-count').innerText = `${state.logs.length} عملية مسجلة`;
 
-            // عرض البيانات على الواجهة
-            document.getElementById('global-balance').innerText = state.db.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('log-count').innerText = `${state.db.logs.length} عملية مسجلة`;
-
+            renderCategoryCards(globalSum);
+            populateDropdowns();
             renderLogsList();
+        }
+
+        function renderCategoryCards(globalSum) {
+            const container = document.getElementById('categories-target');
+            container.innerHTML = '';
+
+            state.categories.forEach(cat => {
+                // حساب نسبة شريط التقدم التراكمي المقارن بالمجموع العام لكي يعطي شكلاً بيانياً دقيقاً
+                let percentage = globalSum > 0 ? (cat.total / globalSum) * 100 : 0;
+
+                const box = document.createElement('div');
+                box.className = 'category-box';
+                box.style.borderColor = `rgba(${hexToRgb(cat.color)}, 0.12)`;
+                box.style.background = `linear-gradient(135deg, rgba(${hexToRgb(cat.color)}, 0.01) 0%, rgba(255,255,255,0.01) 100%)`;
+
+                box.innerHTML = `
+                    <div class="category-top">
+                        <div class="category-title" style="color: ${cat.color};">
+                            <i class="fa-solid ${cat.icon || 'fa-folder'}"></i>
+                            <span>${cat.name}</span>
+                        </div>
+                        <div class="category-amt" style="color: ${cat.color};">${cat.total.toFixed(2)} ر.س</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="background: ${cat.color}; width: ${percentage}%;"></div>
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function populateDropdowns() {
+            const addSelect = document.getElementById('add-invoice-category');
+            const paySelect = document.getElementById('pay-category-select');
+
+            addSelect.innerHTML = '';
+            paySelect.innerHTML = '';
+
+            state.categories.forEach(cat => {
+                const opt1 = document.createElement('option');
+                opt1.value = cat.id;
+                opt1.innerText = cat.name;
+                addSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = cat.id;
+                opt2.innerText = `${cat.name} (الحالي: ${cat.total.toFixed(2)} ر.س)`;
+                paySelect.appendChild(opt2);
+            });
         }
 
         function renderLogsList() {
             const container = document.getElementById('logs-target');
             container.innerHTML = '';
 
-            if(state.db.logs.length === 0) {
+            if(state.logs.length === 0) {
                 container.innerHTML = `
                     <div style="text-align:center; padding:30px 10px; color:var(--text-secondary); font-size:0.85rem;">
-                        <i class="fa-solid fa-receipt" style="font-size:2rem; margin-bottom:10px; display:block; opacity:0.2;"></i>
-                        لا توجد حركات مالية مسجلة حالياً بالمنصة.
+                        <i class="fa-solid fa-receipt" style="font-size:2rem; margin-bottom:10px; display:block; opacity:0.15;"></i>
+                        لا يوجد مشتريات أو سدادات مقيدة حالياً.
                     </div>
                 `;
                 return;
             }
 
-            // عرض الحركات مرتبة من الأحدث للأقدم
-            state.db.logs.slice().reverse().forEach((l, revIndex) => {
-                const actualIndex = state.db.logs.length - 1 - revIndex;
+            state.logs.slice().reverse().forEach((l, revIndex) => {
+                const actualIndex = state.logs.length - 1 - revIndex;
                 const card = document.createElement('div');
                 card.className = 'log-card';
 
                 const isAdd = l.type === 'add';
+                const typeClass = isAdd ? 'add' : 'pay';
+                const icon = isAdd ? 'fa-cart-plus' : 'fa-handshake';
                 const sign = isAdd ? '+' : '-';
-                const typeClass = isAdd ? 'add' : 'sub';
-                const icon = isAdd ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
 
                 card.innerHTML = `
                     <div class="log-info">
@@ -264,14 +352,14 @@
                             <i class="fa-solid ${icon}"></i>
                         </div>
                         <div class="log-details">
-                            <strong>${l.name}</strong>
-                            <span>${l.date}</span>
+                            <strong>${l.title}</strong>
+                            <span>${l.date} | الفئة: ${l.categoryName}</span>
                         </div>
                     </div>
                     <div class="log-amount-area">
                         <span class="log-amount ${typeClass}">${sign} ${l.amount.toFixed(2)} ر.س</span>
                         <button class="btn-delete-log" onclick="executeDeleteLog(${actualIndex})">
-                            <i class="fa-solid fa-trash-can"></i> حذف
+                            <i class="fa-solid fa-trash-arrow-up"></i> حذف
                         </button>
                     </div>
                 `;
@@ -279,53 +367,125 @@
             });
         }
 
-        function setTransactionType(type) {
-            state.currentType = type;
-            document.getElementById('type-sub').classList.toggle('active', type === 'sub');
-            document.getElementById('type-add').classList.toggle('active', type === 'add');
-        }
+        function executeAddInvoice() {
+            const catId = document.getElementById('add-invoice-category').value;
+            let note = document.getElementById('add-invoice-name').value.trim();
+            const amount = parseFloat(document.getElementById('add-invoice-amount').value);
 
-        function executeSaveTransaction() {
-            const name = document.getElementById('tx-name').value.trim();
-            const amount = parseFloat(document.getElementById('tx-amount').value);
+            const cat = state.categories.find(c => c.id === catId);
+            if(!cat) return;
 
-            if(!name) { alert("الرجاء كتابة اسم الحركة أو الوصف!"); return; }
-            if(isNaN(amount) || amount <= 0) { alert("الرجاء إدخال مبلغ صحيح أكبر من الصفر!"); return; }
+            if(isNaN(amount) || amount <= 0) { alert("الرجاء إدخال قيمة فاتورة صحيحة أكبر من الصفر!"); return; }
+            if(!note) note = "شراء / فاتورة قائمة جديدة";
 
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')} ${String(today.getHours()).padStart(2,'0')}:${String(today.getMinutes()).padStart(2,'0')}`;
+            // إضافة الفاتورة تراكمياً للمجموع الكلي للفئة مباشرة
+            cat.total += amount;
 
-            state.db.logs.push({
-                name: name,
+            state.logs.push({
+                type: 'add',
+                catId: catId,
+                categoryName: cat.name,
+                title: note,
                 amount: amount,
-                type: state.currentType,
-                date: dateStr
+                date: generateDateString()
             });
 
-            // تصفير الخانات
-            document.getElementById('tx-name').value = '';
-            document.getElementById('tx-amount').value = '';
-            setTransactionType('sub'); // إرجاع الخيار الافتراضي لمصروف
+            document.getElementById('add-invoice-name').value = '';
+            document.getElementById('add-invoice-amount').value = '';
+            closeModal('modal-add-invoice');
+            commit();
+            renderApp();
+        }
 
-            closeModal('modal-add-transaction');
+        function executePayCategory() {
+            const catId = document.getElementById('pay-category-select').value;
+            const amount = parseFloat(document.getElementById('pay-category-amount').value);
+
+            const cat = state.categories.find(c => c.id === catId);
+            if(!cat) return;
+
+            if(isNaN(amount) || amount <= 0) { alert("الرجاء كتابة مبلغ سداد صحيح!"); return; }
+            if(amount > cat.total) { alert(`المبلغ المراد سداده أكبر من المجموع الحالي للدين بهذه الفئة (${cat.total.toFixed(2)} ر.س)`); return; }
+
+            // خصم الدفعة الكلية من حساب الفئة مباشرة دون التقيد بفاتورة معينة
+            cat.total -= amount;
+
+            state.logs.push({
+                type: 'pay',
+                catId: catId,
+                categoryName: cat.name,
+                title: `تسديد دفعة كاش من حساب ${cat.name}`,
+                amount: amount,
+                date: generateDateString()
+            });
+
+            document.getElementById('pay-category-amount').value = '';
+            closeModal('modal-pay-category');
+            commit();
+            renderApp();
+        }
+
+        function executeCreateCategory() {
+            const name = document.getElementById('new-cat-name').value.trim();
+            if(!name) { alert("الرجاء كتابة اسم الفئة الجديدة!"); return; }
+
+            const id = 'cat_' + Date.now();
+            const neonColors = ['#ffd600', '#00b0ff', '#ff9100', '#d500f9', '#00e676', '#ff1744'];
+            const randomColor = neonColors[Math.floor(Math.random() * neonColors.length)];
+
+            state.categories.push({
+                id: id,
+                name: `إجمالي دين ${name}`,
+                total: 0,
+                color: randomColor,
+                icon: 'fa-folder-open'
+            });
+
+            document.getElementById('new-cat-name').value = '';
+            closeModal('modal-create-category');
             commit();
             renderApp();
         }
 
         function executeDeleteLog(index) {
-            if(confirm("هل أنت متأكد من رغبتك في حذف وتراجع هذه الحركة نهائياً؟")) {
-                state.db.logs.splice(index, 1);
+            if(confirm("هل أنت متأكد من حذف هذه الحركة والتراجع عن أثرها المالي التراكمي؟")) {
+                const log = state.logs[index];
+                const cat = state.categories.find(c => c.id === log.catId);
+                
+                if(cat) {
+                    if(log.type === 'add') {
+                        cat.total = Math.max(0, cat.total - log.amount);
+                    } else {
+                        cat.total += log.amount;
+                    }
+                }
+                state.logs.splice(index, 1);
                 commit();
                 renderApp();
             }
         }
 
         function executeSystemReset() {
-            if(confirm("⚠️ تنبيه شديد الخطورة:\nهل تريد مسح جميع الحركات والتحركات بالكامل والبدء من الصفر؟")) {
-                initCleanDB();
+            if(confirm("⚠️ تنبيه شديد:\nهل تريد مسح الدفتر وتصفير كافة العدادات والفئات والبدء من الصفر؟")) {
+                resetToDefaults();
                 renderApp();
-                alert("تم تصفير المنصة بالكامل بنجاح 🚀");
+                alert("تم تصفير وتهيئة النظام بالكامل بنجاح 🚀");
             }
+        }
+
+        function generateDateString() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')} ${String(today.getHours()).padStart(2,'0')}:${String(today.getMinutes()).padStart(2,'0')}`;
+        }
+
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `${r}, ${g}, ${b}`;
         }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
