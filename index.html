@@ -62,6 +62,12 @@
         .total-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; }
         .total-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; margin-top: 4px; }
 
+        /* Sub-grids for categories counters */
+        .mini-counters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 16px 0 16px; }
+        .mini-counter-box { background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; justify-content: center; }
+        .mini-counter-box p { font-size: 0.75rem; color: var(--text-secondary); }
+        .mini-counter-box h5 { font-size: 1.05rem; font-family: 'Plus Jakarta Sans'; margin-top: 4px; }
+
         /* Navigation Bottom Tabs Style */
         .nav-tabs { display: flex; gap: 10px; padding: 0 16px; margin-bottom: 10px; }
         .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--transition); }
@@ -123,7 +129,7 @@
 
     <div class="app-container">
         
-        <!-- 📑 NAVIGATION TABS ON TOP -->
+        <!-- 📑 NAVIGATION TABS -->
         <div class="nav-tabs" style="margin-top: 20px;">
             <button class="tab-btn active" id="tab-dash" onclick="switchMainTab('dash')"><i class="fa-solid fa-house"></i> الرئيسية</button>
             <button class="tab-btn" id="tab-grocery" onclick="switchMainTab('grocery')"><i class="fa-solid fa-receipt"></i> دفتر الفواتير والديون</button>
@@ -136,7 +142,7 @@
                     <i class="fa-solid fa-bars menu-hamburger" onclick="toggleDrawer(true)"></i>
                     <div>
                         <h3 style="font-size: 1.2rem; color: #fff;">الرئيسية: الإجماليات</h3>
-                        <p style="font-size: 0.8rem; color: var(--text-secondary);">افتح القائمة ☰ لتصفح حسابك والأسماء</p>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">افتح القائمة ☰ لتصفح الحسابات والأسماء</p>
                     </div>
                 </div>
             </header>
@@ -158,7 +164,7 @@
                 <div class="total-box" style="border-right: 5px solid var(--neon-orange);">
                     <div>
                         <p style="color:var(--text-secondary); font-size:0.85rem;">📤 مجموع ديون وسلفيات لك برّا عند الآخرين</p>
-                        <h4 id="global-sum-loans-to-them" style="color:var(--neon-orange);">0.00 ر.س</h4>
+                        <h4 id="global-sum-loans-to-them" style="color:var(--neon-orange);">0.00 ر.s</h4>
                     </div>
                     <i class="fa-solid fa-hand-holding-dollar" style="font-size:1.4rem; color:var(--neon-orange); opacity:0.4;"></i>
                 </div>
@@ -171,10 +177,9 @@
                     <i class="fa-solid fa-comment-dollar" style="font-size:1.4rem; color:var(--neon-red); opacity:0.4;"></i>
                 </div>
 
-                <!-- 🛒 كرت إجمالي دين الفواتير العام المتبقي -->
                 <div class="total-box" style="border-right: 5px solid var(--neon-yellow); cursor: pointer;" onclick="switchMainTab('grocery')">
                     <div>
-                        <p style="color:var(--text-secondary); font-size:0.85rem;">⏳ إجمالي الفواتير والدين المتبقي عليك (بقالة، نت...)</p>
+                        <p style="color:var(--text-secondary); font-size:0.85rem;">⏳ إجمالي الفواتير والدين المتبقي العام عليك</p>
                         <h4 id="global-grocery-debt" style="color:var(--neon-yellow);">0.00 ر.س</h4>
                     </div>
                     <i class="fa-solid fa-basket-shopping" style="font-size:1.4rem; color:var(--neon-yellow); opacity:0.4;"></i>
@@ -191,22 +196,38 @@
             </div>
         </div>
 
-        <!-- 🛒 PAGE 2: GENERAL DEBT HUB -->
+        <!-- 🛒 PAGE 2: GENERAL DEBT HUB (UPDATED WITH EXCLUSIVE UPPER COUNTERS) -->
         <div id="page-grocery" class="app-page">
-            <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center;">
+            <div class="glass-card" style="background: linear-gradient(135deg, #1e1b10 0%, #0c0a05 100%); border-color: rgba(255,214,0,0.2); text-align: center; margin-bottom: 5px;">
                 <i class="fa-solid fa-file-invoice-dollar" style="font-size: 2rem; color: var(--neon-yellow); margin-bottom: 8px;"></i>
-                <p style="color: var(--text-secondary); font-size: 0.85rem;">📑 دفتر فواتير الدَّين المستحقة (بقالة، نت، كهرباء...)</p>
-                <h1 style="font-size: 2.3rem; margin: 6px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">📑 مجموع كافّة الفواتير والديون المتبقية</p>
+                <h1 style="font-size: 2.3rem; margin: 4px 0; color: var(--neon-yellow); font-family: 'Plus Jakarta Sans';" id="grocery-total-bill">0.00 ر.س</h1>
                 
-                <div style="margin-top: 15px;">
+                <div style="margin-top: 12px;">
                     <button class="btn-submit" style="background: var(--neon-yellow); color: #000; padding: 12px; font-size: 0.95rem;" onclick="openModal('modal-add-grocery')">
                         <i class="fa-solid fa-plus"></i> إضافة فاتورة دين جديدة
                     </button>
                 </div>
             </div>
 
-            <div style="padding:0 16px 30px 16px;">
-                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> الفواتير القائمة (اضغط لتسديد أي مبلغ أو عرض كشفها)</h3>
+            <!-- 🔥 العدادات العلوية المخصصة لكل نوع فاتورة لحالها -->
+            <div class="mini-counters-grid">
+                <div class="mini-counter-box" style="border-right: 4px solid #ff9100;">
+                    <p>🛒 مجموع دين البقالة:</p>
+                    <h5 id="counter-grocery-sum" style="color: #ff9100;">0.00 ر.س</h5>
+                </div>
+                <div class="mini-counter-box" style="border-right: 4px solid #00b0ff;">
+                    <p>🌐 مجموع دين النت:</p>
+                    <h5 id="counter-internet-sum" style="color: #00b0ff;">0.00 ر.س</h5>
+                </div>
+                <div class="mini-counter-box" style="border-right: 4px solid #ffd600; margin-top: 4px; grid-column: span 2;">
+                    <p>⚡ مجموع الكهرباء والخدمات الأخرى الساقطة بالدفتر:</p>
+                    <h5 id="counter-others-sum" style="color: #ffd600;">0.00 ر.س</h5>
+                </div>
+            </div>
+
+            <div style="padding:15px 16px 30px 16px;">
+                <h3 style="font-size:0.95rem; color:var(--text-secondary); margin-bottom:10px;"><i class="fa-solid fa-list-check"></i> الفواتير التفصيلية المضافة (اضغط لتسديد مبلغ جزئي)</h3>
                 <div id="grocery-items-list-target"></div>
             </div>
         </div>
@@ -250,23 +271,23 @@
                 <select id="g-item-type" class="form-control">
                     <option value="بقالة">🛒 دين بقالة</option>
                     <option value="نت">🌐 فاتورة إنترنت</option>
-                    <option value="كهرباء">⚡ فاتورة كهرباء / خدمات</option>
+                    <option value="كهرباء">⚡ فاتورة كهرباء</option>
                     <option value="أخرى">📝 دين / فاتورة أخرى</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>البيان أو الوصف (مثال: أغراض العشاء، اشتراك شهر يونيو)</label>
+                <label>البيان أو الوصف (مثال: مقاضي البيت الأسبوعية، عشاء الخميس)</label>
                 <input type="text" id="g-item-name" class="form-control" placeholder="اكتب التفاصيل...">
             </div>
             <div class="form-group">
-                <label>قيمة الفاتورة أو الدين الإجمالي (ر.س)</label>
+                <label>قيمة الفاتورة الحالية (ر.س)</label>
                 <input type="number" id="g-item-price" class="form-control" placeholder="0.00">
             </div>
             <button class="btn-submit" style="background: var(--neon-yellow); color: #000;" onclick="executeSaveGroceryItem()">إضافة إلى دفتر الديون</button>
         </div>
     </div>
 
-    <!-- 💳 MODAL DETAILED PARTIAL PAYMENT & LEDGER (UPDATED) -->
+    <!-- 💳 MODAL DETAILED PARTIAL PAYMENT & LEDGER -->
     <div id="modal-pay-part" class="modal" onclick="closeModalOnOuterClick(event, 'modal-pay-part')">
         <div class="modal-content" style="max-height: 90vh;">
             <h3 style="color: var(--neon-green); margin-bottom:15px;"><i class="fa-solid fa-receipt"></i> تفاصيل الفاتورة وتسديد الدفعات</h3>
@@ -280,16 +301,14 @@
             
             <input type="hidden" id="pay-modal-bill-id">
             
-            <!-- حقل إدخال أي مبلغ للتسديد -->
             <div class="form-group" style="background: rgba(0,230,118,0.03); padding: 12px; border-radius: 14px; border: 1px dashed rgba(0,230,118,0.2);">
-                <label style="color:#fff; font-weight: bold;">💸 اكتب المبلغ الذي تريد تسديده الآن (مفتوح):</label>
-                <input type="number" id="pay-part-amount" class="form-control" placeholder="اكتب 50، 100، 200... حسب مقدرتك" style="margin-top:5px;">
+                <label style="color:#fff; font-weight: bold;">💸 اكتب المبلغ الذي تريد تسديده الآن (مفتوح جزئي):</label>
+                <input type="number" id="pay-part-amount" class="form-control" placeholder="اكتب 50، 100... حسب مقدرتك اليوم">
                 <button class="btn-submit" style="background: var(--neon-green); color: #000; margin-top:10px; padding:12px; font-size:0.95rem;" onclick="executeSubmitPartialPayment()">تأكيد سداد هذا المبلغ فوراً</button>
             </div>
 
-            <!-- سجل الحركات والعمليات الخاصة بهذه الفاتورة فقط -->
             <div style="margin-top: 20px;">
-                <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;"><i class="fa-solid fa-history"></i> ماذا حدث في هذه الفاتورة؟ (سجل الدفعات)</h4>
+                <h4 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;"><i class="fa-solid fa-history"></i> سجل الدفعات السابقة لهذه الفاتورة لحالها</h4>
                 <div id="bill-individual-logs-target" style="max-height: 180px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
             </div>
             
@@ -297,6 +316,7 @@
         </div>
     </div>
 
+    <!-- Modals للأشخاص -->
     <div id="modal-add-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-add-person')">
         <div class="modal-content">
             <h3><i class="fa-solid fa-user-plus"></i> إضافة شخص جديد في القائمة الجانبية</h3>
@@ -311,7 +331,6 @@
     <div id="modal-adjust-person" class="modal" onclick="closeModalOnOuterClick(event, 'modal-adjust-person')">
         <div class="modal-content">
             <h3 style="color:var(--neon-blue); margin-bottom:15px;" id="transaction-modal-title"><i class="fa-solid fa-cash-register"></i> قيد حركة مالية جديدة</h3>
-            
             <div class="form-group">
                 <label>نوع ونوعية العملية</label>
                 <select id="adjust-action-type" class="form-control"></select>
@@ -333,7 +352,6 @@
     </div>
 
     <script>
-        // 💾 SYSTEM STORAGE STATE
         let state = {
             db: { 
                 myAccount: { id: 'my_own_core_account', name: 'حسابي الشخصي (أنا)', balance: 0, history: [] },
@@ -353,7 +371,6 @@
                 if(!state.db.globalLogs) state.db.globalLogs = [];
                 if(!state.db.groceryDebtList) state.db.groceryDebtList = [];
             }
-            
             initChartEngine();
             renderAllComponents();
         });
@@ -397,7 +414,6 @@
 
         function calculateSystemMetrics() {
             let sumTrusts = 0, sumLoansToThem = 0, sumLoansOnMe = 0;
-
             state.db.people.forEach(p => {
                 sumTrusts += ((p.trust_deposited || 0) - (p.trust_withdrawn || 0));
                 sumLoansToThem += ((p.loan_given || 0) - (p.loan_repaid || 0));
@@ -405,12 +421,20 @@
             });
 
             let totalGroceryDebt = state.db.groceryDebtList.reduce((acc, curr) => acc + curr.remaining, 0);
+            
+            // حساب العدادات الفرعية للفواتير بناءً على النوع
+            let grocerySub = 0, internetSub = 0, othersSub = 0;
+            state.db.groceryDebtList.forEach(item => {
+                if(item.type === 'بقالة') grocerySub += item.remaining;
+                else if(item.type === 'نت') internetSub += item.remaining;
+                else othersSub += item.remaining;
+            });
 
             let myOwnBalance = state.db.myAccount.balance || 0;
             let totalLiquidity = myOwnBalance + sumTrusts + sumLoansOnMe - sumLoansToThem;
             let myRealMoney = myOwnBalance + sumLoansToThem - sumLoansOnMe - totalGroceryDebt;
 
-            return { totalLiquidity, sumTrusts, sumLoansToThem, sumLoansOnMe, totalGroceryDebt, myRealMoney };
+            return { totalLiquidity, sumTrusts, sumLoansToThem, sumLoansOnMe, totalGroceryDebt, myRealMoney, grocerySub, internetSub, othersSub };
         }
 
         function initChartEngine() {
@@ -427,9 +451,7 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Tajawal' } } }
-                    }
+                    plugins: { legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Tajawal' } } } }
                 }
             });
         }
@@ -442,30 +464,33 @@
             document.getElementById('global-sum-loans-to-them').innerText = m.sumLoansToThem.toFixed(2) + " ر.س";
             document.getElementById('global-sum-loans-on-me').innerText = m.sumLoansOnMe.toFixed(2) + " ر.س";
             document.getElementById('global-grocery-debt').innerText = m.totalGroceryDebt.toFixed(2) + " ر.س";
-
             document.getElementById('drawer-my-real-money').innerText = m.myRealMoney.toFixed(2) + " ر.س";
+
+            // تحديث العدادات العلوية المخصصة في صفحة الفواتير
+            if(document.getElementById('counter-grocery-sum')) {
+                document.getElementById('counter-grocery-sum').innerText = m.grocerySub.toFixed(2) + " ر.س";
+                document.getElementById('counter-internet-sum').innerText = m.internetSub.toFixed(2) + " ر.س";
+                document.getElementById('counter-others-sum').innerText = m.othersSub.toFixed(2) + " ر.س";
+            }
 
             renderHamburgerPeopleList();
             renderGlobalRecentLogs();
             renderGroceryPage();
 
-            if(state.activePersonId) {
-                renderExclusivePersonProfilePage(state.activePersonId);
-            }
-
+            if(state.activePersonId) renderExclusivePersonProfilePage(state.activePersonId);
             if(globalChart) {
                 globalChart.data.datasets[0].data = [m.sumTrusts, m.sumLoansToThem, m.sumLoansOnMe + m.totalGroceryDebt];
                 globalChart.update();
             }
         }
 
-        // 🛒 BILLS LOGIC
+        // 🛒 BILLS SYSTEM
         function executeSaveGroceryItem() {
             const type = document.getElementById('g-item-type').value;
             const name = document.getElementById('g-item-name').value.trim();
             const price = parseFloat(document.getElementById('g-item-price').value);
 
-            if(!name) return alert("الرجاء كتابة البيان أو الوصف.");
+            if(!name) return alert("الرجاء كتابة وصف الفاتورة.");
             if(isNaN(price) || price <= 0) return alert("الرجاء إدخال مبلغ صحيح.");
 
             state.db.groceryDebtList.push({
@@ -474,7 +499,7 @@
                 name: name,
                 price: price,
                 remaining: price,
-                paymentsRegistry: [], // كشف حساب داخلي خاص بكل فاتورة لحالها
+                paymentsRegistry: [],
                 date: new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'})
             });
 
@@ -493,7 +518,7 @@
             document.getElementById('grocery-total-bill').innerText = totalRemaining.toFixed(2) + " ر.س";
 
             if(state.db.groceryDebtList.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">دفتر الديون نظيف ولا توجد فواتير معلقة 🎉</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">دفتر الفواتير نظيف تماماً ولا يوجد شيء معلق 🎉</p>`;
                 return;
             }
 
@@ -501,32 +526,33 @@
                 const realIndex = state.db.groceryDebtList.length - 1 - index;
                 const div = document.createElement('div');
                 div.className = "list-item";
-                div.style.borderRight = "4px solid var(--neon-yellow)";
+                
+                let accentColor = "var(--neon-yellow)";
+                let typeIcon = "📝";
+                if(item.type === "بقالة") { typeIcon = "🛒"; accentColor = "#ff9100"; }
+                if(item.type === "نت") { typeIcon = "🌐"; accentColor = "#00b0ff"; }
+                if(item.type === "كهرباء") { typeIcon = "⚡"; accentColor = "#ffd600"; }
+
+                div.style.borderRight = `4px solid ${accentColor}`;
                 div.style.cursor = "pointer";
                 div.setAttribute('onclick', `openPartialPaymentModal('${item.id}')`);
 
-                let typeIcon = "📑";
-                if(item.type === "بقالة") typeIcon = "🛒";
-                if(item.type === "نت") typeIcon = "🌐";
-                if(item.type === "كهرباء") typeIcon = "⚡";
-
                 div.innerHTML = `
                     <div style="max-width: 65%;">
-                        <h4 style="font-size:0.95rem; color:#fff;">${typeIcon} [${item.type}] - ${item.name}</h4>
+                        <h4 style="font-size:0.95rem; color:#fff;">${typeIcon} ${item.name}</h4>
                         <small style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-top:4px;"><i class="fa-regular fa-clock"></i> ${item.date}</small>
-                        <span class="bill-badge" style="background: rgba(0,176,255,0.1); color: var(--neon-blue);">الفاتورة الأصلية: ${item.price.toFixed(2)} ر.س</span>
+                        <span class="bill-badge" style="background: rgba(255,255,255,0.03); color: var(--text-secondary);">الدين الأصلي: ${item.price.toFixed(2)} ر.س</span>
                     </div>
-                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:6px;" onclick="event.stopPropagation();">
-                        <span style="font-size:0.75rem; color:var(--text-secondary);">المتبقي الحالي:</span>
-                        <span style="font-weight:900; color:var(--neon-yellow); font-family:'Plus Jakarta Sans'; font-size: 1.1rem;">${item.remaining.toFixed(2)} ر.س</span>
-                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.75rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> إلغاء الفاتورة</button>
+                    <div style="text-align:left; display:flex; flex-direction:column; align-items:flex-end; gap:4px;" onclick="event.stopPropagation();">
+                        <span style="font-size:0.7rem; color:var(--text-secondary);">المتبقي:</span>
+                        <span style="font-weight:900; color:${accentColor}; font-family:'Plus Jakarta Sans'; font-size: 1.1rem;">${item.remaining.toFixed(2)} ر.س</span>
+                        <button style="background:transparent; border:none; color:rgba(255,23,68,0.5); font-size:0.72rem; cursor:pointer; margin-top:4px;" onclick="executeDeleteGroceryItem(${realIndex})"><i class="fa-solid fa-trash-can"></i> إلغاء الفاتورة</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // فتح مودال تفاصيل الفاتورة وعرض كشف حسابها ودفعاتها
         function openPartialPaymentModal(id) {
             const item = state.db.groceryDebtList.find(x => x.id === id);
             if(!item) return;
@@ -534,112 +560,85 @@
             document.getElementById('pay-modal-bill-id').value = id;
             document.getElementById('pay-modal-bill-title').innerText = `فاتورة [${item.type}] - ${item.name}`;
             document.getElementById('pay-modal-bill-date').innerText = `تاريخ الإنشاء: ${item.date}`;
-            document.getElementById('pay-modal-bill-original').innerText = `قيمة الدَّين الأصلي الكلي: ${item.price.toFixed(2)} ر.س`;
-            document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي للـسداد حالياً: ${item.remaining.toFixed(2)} ر.س`;
+            document.getElementById('pay-modal-bill-original').innerText = `قيمة الدَّين الكلي الأصلي: ${item.price.toFixed(2)} ر.س`;
+            document.getElementById('pay-modal-bill-remaining').innerText = `المبلغ المتبقي حالياً: ${item.remaining.toFixed(2)} ر.س`;
             document.getElementById('pay-part-amount').value = '';
             
-            // رندر كشف الحساب الخاص بالفاتورة دي لحالها
             const logsContainer = document.getElementById('bill-individual-logs-target');
             logsContainer.innerHTML = '';
 
             if(!item.paymentsRegistry || item.paymentsRegistry.length === 0) {
-                logsContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.8rem; text-align:center; padding:10px;">لم يتم دفع أي دفعات لهذه الفاتورة بعد (جديدة).</p>`;
+                logsContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.8rem; text-align:center; padding:10px;">فاتورة جديدة، لم تسدد فيها دفعات سابقة بعد.</p>`;
             } else {
                 item.paymentsRegistry.forEach(p => {
                     const logDiv = document.createElement('div');
                     logDiv.className = "bill-log-item";
                     logDiv.innerHTML = `
-                        <span>💵 تم تسديد دفعة</span>
+                        <span>💵 تم سداد دفعة جزئية</span>
                         <strong style="color:var(--neon-green); font-family:'Plus Jakarta Sans';">${p.amount.toFixed(2)} ر.س</strong>
                         <span style="font-size:0.7rem; color:var(--text-secondary);">${p.time}</span>
                     `;
                     logsContainer.appendChild(logDiv);
                 });
             }
-
             openModal('modal-pay-part');
         }
 
-        // تنفيذ تسديد أي مبلغ (مفتوح جزئي أو كلي)
         function executeSubmitPartialPayment() {
             const id = document.getElementById('pay-modal-bill-id').value;
             const payAmount = parseFloat(document.getElementById('pay-part-amount').value);
 
-            if(isNaN(payAmount) || payAmount <= 0) return alert("الرجاء إدخال مبلغ صحيح للتسديد.");
+            if(isNaN(payAmount) || payAmount <= 0) return alert("الرجاء إدخال مبلغ تسديد صحيح.");
 
             let itemIndex = state.db.groceryDebtList.findIndex(x => x.id === id);
             if(itemIndex === -1) return;
 
             let item = state.db.groceryDebtList[itemIndex];
-
             if(payAmount > item.remaining) {
-                return alert(`المبلغ أكبر من المتبقي! المتبقي المطلوب هو فقط: ${item.remaining.toFixed(2)} ر.س`);
+                return alert(`المبلغ المكتوب يتجاوز المتبقي! المتبقي المطلوب فقط: ${item.remaining.toFixed(2)} ر.س`);
             }
 
-            // تخصيم المبلغ من المتبقي
             item.remaining -= payAmount;
-            
-            // توثيق الحركة بكشف الحساب الخاص بالفاتورة نفسها لحالها
             if(!item.paymentsRegistry) item.paymentsRegistry = [];
             const timestamp = new Date().toLocaleDateString('ar-SA') + ' ' + new Date().toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
-            item.paymentsRegistry.push({
-                amount: payAmount,
-                time: timestamp
-            });
+            item.paymentsRegistry.push({ amount: payAmount, time: timestamp });
             
-            // خصم الدفعة من محفظتك الحرة الشخصية تلقائياً
             state.db.myAccount.balance -= payAmount;
-
-            // توثيق في سجل المحفظة الرئيسي
             state.db.myAccount.history.push({
-                type: 'my_expense',
-                amt: payAmount,
-                reason: `💸 تسديد دفعة من فاتورة [${item.type}: ${item.name}]`,
-                displayDate: timestamp
+                type: 'my_expense', amt: payAmount,
+                reason: `💸 دفع جزء من فاتورة [${item.type}: ${item.name}]`, displayDate: timestamp
             });
 
-            // توثيق في السجل العام للرئيسية
             state.db.globalLogs.push({
-                name: `فاتورة ${item.type}`,
-                type: 'my_expense',
-                amt: payAmount,
+                name: `فاتورة ${item.type}`, type: 'my_expense', amt: payAmount,
                 reason: `تسديد دفعة بقيمة ${payAmount} ر.س من فاتورة: ${item.name}`
             });
 
-            // لو تسددت بالكامل (باقي 0) تقفل الفاتورة وتختفي بنجاح
             if(item.remaining <= 0) {
-                alert(`تم سداد الفاتورة بالكامل وقفلها بنجاح! 🎉`);
+                alert(`تم سداد الفاتورة كاملة وقفلها بنجاح! 🎉`);
                 state.db.groceryDebtList.splice(itemIndex, 1);
                 closeModal('modal-pay-part');
             } else {
-                alert(`تم تسجيل دفعة السداد بقيمة (${payAmount.toFixed(2)} ر.س) بنجاح داخل كشف الفاتورة ✅`);
-                // إنعاش بيانات المودال المفتوح عشان تشوف التحديث والجدول مباشرة
+                alert(`تم تسجيل الدفعة بنجاح (${payAmount.toFixed(2)} ر.س) داخل الفاتورة الحالية ✅`);
                 openPartialPaymentModal(id);
             }
-
             commit();
         }
 
         function executeDeleteGroceryItem(index) {
-            if(!confirm("هل تريد إلغاء وحذف هذه الفاتورة تماماً من النظام؟")) return;
+            if(!confirm("هل تريد مسح وإلغاء هذه الفاتورة نهائياً؟")) return;
             state.db.groceryDebtList.splice(index, 1);
             commit();
         }
 
-        // 👥 PEOPLE CORE
+        // 👥 PEOPLE CONTROLLERS
         function executeSaveNewPerson() {
             const name = document.getElementById('p-name-input').value.trim();
             if(!name) return alert("فضلاً اكتب اسم العضو أولاً.");
-            
             state.db.people.push({
-                id: 'p_' + Date.now(),
-                name: name,
-                trust_deposited: 0, trust_withdrawn: 0,
-                loan_given: 0, loan_repaid: 0,
-                borrowed_from_him: 0, repaid_to_him: 0,
-                history: []
+                id: 'p_' + Date.now(), name: name,
+                trust_deposited: 0, trust_withdrawn: 0, loan_given: 0, loan_repaid: 0, borrowed_from_him: 0, repaid_to_him: 0, history: []
             });
-
             document.getElementById('p-name-input').value = '';
             closeModal('modal-add-person');
             commit();
@@ -652,10 +651,7 @@
 
             const myItem = document.createElement('div');
             myItem.className = "person-menu-item my-own";
-            myItem.onclick = () => {
-                toggleDrawer(false);
-                navigateToPersonProfilePage('my_own_core_account');
-            };
+            myItem.onclick = () => { toggleDrawer(false); navigateToPersonProfilePage('my_own_core_account'); };
             myItem.innerHTML = `
                 <div style="display:flex; align-items:center; gap:12px;">
                     <i class="fa-solid fa-circle-user" style="color:var(--neon-purple); font-size:1.2rem;"></i>
@@ -668,10 +664,7 @@
             state.db.people.forEach(p => {
                 const item = document.createElement('div');
                 item.className = "person-menu-item";
-                item.onclick = () => {
-                    toggleDrawer(false);
-                    navigateToPersonProfilePage(p.id);
-                };
+                item.onclick = () => { toggleDrawer(false); navigateToPersonProfilePage(p.id); };
                 item.innerHTML = `
                     <div style="display:flex; align-items:center; gap:12px;">
                         <i class="fa-solid fa-user" style="color:var(--neon-blue); font-size:1.1rem;"></i>
@@ -701,7 +694,6 @@
             const balancesBox = document.getElementById('profile-box-balances-list');
             const ledgerContainer = document.getElementById('profile-exclusive-ledger-target');
             const cardFrame = document.getElementById('profile-main-card-frame');
-            
             ledgerContainer.innerHTML = '';
 
             if(personId === 'my_own_core_account') {
@@ -713,13 +705,13 @@
 
                 balancesBox.innerHTML = `
                     <div style="display:flex; justify-content:space-between; background:rgba(0,230,118,0.06); padding:14px; border-radius:14px; border: 1px solid rgba(0,230,118,0.2)">
-                        <span style="color:var(--text-secondary); font-size:0.95rem;">💵 رصيد أموالي الحرة الحالية داخل محفظتي:</span>
+                        <span style="color:var(--text-secondary); font-size:0.95rem;">💵 رصيد محفظتي الكاش الحر الحالية:</span>
                         <span style="color:var(--neon-green); font-weight:900; font-size:1.2rem;">${(me.balance || 0).toFixed(2)} ر.س</span>
                     </div>
                 `;
 
                 if(!me.history || me.history.length === 0) {
-                    ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا يوجد قيود مسجلة في محفظتك الشخصية بعد.</p>`;
+                    ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا توجد قيود مسجلة هنا بعد.</p>`;
                     return;
                 }
 
@@ -749,7 +741,6 @@
 
             document.getElementById('profile-page-header-title').innerText = `حساب: ${person.name}`;
             document.getElementById('profile-box-name').innerText = person.name;
-            document.getElementById('profile-icon-indicator').style.color = "var(--neon-purple)";
             cardFrame.style.borderColor = "rgba(255,255,255,0.06)";
 
             const netTrust = person.trust_deposited - person.trust_withdrawn;
@@ -775,7 +766,7 @@
             `;
 
             if(!person.history || person.history.length === 0) {
-                ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا يوجد قيود مسجلة في كشف حساب ${person.name}.</p>`;
+                ledgerContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:30px;">لا توجد حركات مسجلة بكشف الحساب.</p>`;
                 return;
             }
 
@@ -810,16 +801,16 @@
                 document.getElementById('transaction-modal-title').innerText = "تسجيل في محفظتي الشخصية";
                 select.innerHTML = `
                     <option value="my_income">📥 إيداع دخل / راتب شخصي لي (+)</option>
-                    <option value="my_expense">💸 سحب كاش / مصروفات شخصية ومشتريات (-)</option>
+                    <option value="my_expense">💸 سحب كاش / مصروف شخصي ومشتريات (-)</option>
                 `;
             } else {
                 document.getElementById('transaction-modal-title').innerText = "قيد حركة مالية على اسم الشخص";
                 select.innerHTML = `
                     <option value="deposit_trust">📥 هو وضع عندي أمانة / يجمع رواتبه (+)</option>
-                    <option value="withdraw_trust">💸 هو سحب من أمانته / صرفت له من فلوسه عندي (-)</option>
-                    <option value="give_loan">📤 أنا سلفته مبلّغ / سجلت عليه دين مستحق لي (+)</option>
+                    <option value="withdraw_trust">💸 هو سحب من أمانته عندي (-)</option>
+                    <option value="give_loan">📤 أنا سلفته مبلّغ / دين مستحق لي عليه (+)</option>
                     <option value="receive_loan_repay">💰 هو سددني ورجع لي الدين المستحق (-)</option>
-                    <option value="borrow_from_him">🫳 أنا استلفت منه مبلغ / هو سلفني فلوس قيد علي (+)</option>
+                    <option value="borrow_from_him">🫳 أنا استلفت منه مبلغ / دين علي له (+)</option>
                     <option value="pay_him_back">💳 أنا سددته ورجعت له سلفته المستحقة (-)</option>
                 `;
             }
@@ -837,7 +828,7 @@
             const dateInput = document.getElementById('adjust-date').value;
             const displayDate = dateInput ? dateInput.replace('T', ' ') : new Date().toLocaleString();
 
-            if(isNaN(amt) || amt <= 0) return alert("فضلاً أدخل مبلغاً صحيحاً أكبر من الصفر.");
+            if(isNaN(amt) || amt <= 0) return alert("فضلاً أدخل مبلغاً صحيحاً.");
 
             const logEntry = { type, amt, reason, displayDate };
 
@@ -866,7 +857,7 @@
         }
 
         function executeDeleteMyOwnTransaction(index) {
-            if(!confirm("هل أنت متأكد من حذف هذه الحركة؟")) return;
+            if(!confirm("هل تريد حذف هذه الحركة؟")) return;
             let h = state.db.myAccount.history[index];
             if(h.type === 'my_income') state.db.myAccount.balance -= h.amt;
             else state.db.myAccount.balance += h.amt;
@@ -875,7 +866,7 @@
         }
 
         function executeDeleteSingleTransaction(index) {
-            if(!confirm("هل أنت متأكد من حذف هذا القيد المالي؟")) return;
+            if(!confirm("هل تريد إزالة هذا القيد المالي؟")) return;
             let p = state.db.people.find(x => x.id === state.activePersonId);
             if(!p) return;
 
@@ -892,7 +883,7 @@
         }
 
         function executeDeleteEntirePerson(id) {
-            if(!confirm("⚠️ تحذير: هل أنت متأكد من حذف هذا الشخص وكافة سجلاته المالية نهائياً؟")) return;
+            if(!confirm("⚠️ هل أنت متأكد من حذف هذا العضو بالكامل؟")) return;
             state.db.people = state.db.people.filter(p => p.id !== id);
             navigateToDashboard();
         }
@@ -903,7 +894,7 @@
             container.innerHTML = '';
             
             if(!state.db.globalLogs || state.db.globalLogs.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا يوجد تحركات مسجلة بالسيستم بعد.</p>`;
+                container.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem; text-align:center; padding:15px;">لا توجد تحركات مسجلة.</p>`;
                 return;
             }
 
@@ -922,11 +913,9 @@
         }
 
         function executeSystemReset() {
-            if(confirm("⚠️ تنبيه شديد الخطورة:\nهل أنت متأكد تماماً من مسح وإعادة ضبط التطبيق؟")) {
-                if(confirm("🛑 تأكيد أخير:\nاضغط موافق لتأكيد الحذف الكامل والبدء من جديد الآن.")) {
-                    localStorage.removeItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA');
-                    location.reload();
-                }
+            if(confirm("⚠️ هل أنت متأكد تماماً من تصفير وإعادة ضبط النظام؟")) {
+                localStorage.removeItem('FAMILY_FINANCE_MY_OWN_ROUTER_DATA');
+                location.reload();
             }
         }
     </script>
