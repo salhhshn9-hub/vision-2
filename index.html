@@ -517,6 +517,26 @@
                 location.reload();
             }
         }
+        // 🔗 دالة فتح وإغلاق الهمبرجر من الكود الجديد
+function toggleSidebar(open) {
+    const overlay = document.getElementById('sidebar-overlay');
+    if (open) {
+        overlay.style.display = 'flex';
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
+// 🔄 دالة التنقل بين صفحاتك الفخمة القديمة والجديدة
+function switchPage(pageId) {
+    if (pageId === 'main') {
+        // هنا اكتب اسم المعرف (ID) حق شاشتك القديمة الأساسية عشان تظهر
+        // مثال: document.getElementById('main-dashboard').style.display = 'block';
+    } else if (pageId === 'grocery') {
+        // هنا اكتب اسم المعرف (ID) حق شاشة الديون والبقالة
+    }
+    toggleSidebar(false); // تسكر المنيو تلقائي بعد الضغط
+}
     </script>
 </body>
 </html>
