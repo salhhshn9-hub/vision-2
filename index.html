@@ -1506,3 +1506,159 @@ function showClaimView(d){
   <div><div style="font-size:.62rem;color:var(--txt3);">Trust held</div><div style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--b);">${tr.toFixed(2)}</div><div style="font-size:.58rem;color:var(--txt3);">${cr}</div></div>
   <div><div style="font-size:.62rem;color:var(--txt3);">Loan given</div><div style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--o);">${lt.toFixed(2)}</div><div style="font-size:.58rem;color:var(--txt3);">${cr}</div></div>
   <div><div style="font-size:.62rem;color:var(--txt3);">Debt left</div><div style
+  </div></div>
+  ${d.logs&&d.logs.length?`<div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:13px;"><p style="font-size:.78rem;font-weight:700;color:var(--txt2);margin-bottom:10px;">Recent transactions</p>${d.logs.slice().reverse().map(l=>{const m=logTypeIcon[l.type]||{icon:'fa-circle',col:'var(--txt2)',lbl:()=>l.type};return`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.76rem;"><div><div style="color:${m.col};font-weight:700;">${m.lbl()}</div><div style="color:var(--txt3);font-size:.66rem;">${l.reason} · ${l.date}${l.hasReceipt?' · 📎':''}</div></div><div style="font-family:var(--mono);font-weight:700;">${l.amount.toFixed(2)}</div></div>`;}).join('')}</div>`:''}
+  <button onclick="location.hash='';this.closest('[style*=fixed]').remove();" style="width:100%;padding:13px;border-radius:13px;background:var(--surface2);border:1px solid var(--border);color:var(--txt);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">← Back to app</button></div>`;
+  document.body.appendChild(ov);
+}
+
+// ── ANALYTICS ──
+function renderAnalytics(){
+  const tAmt=db.categories.reduce((a,c)=>a+c.added,0);
+  const tPaid=db.categories.reduce((a,c)=>a+c.paid,0);
+  const pct=tAmt>0?((tPaid/tAmt)*100).toFixed(1):0;
+  let mx=0,mxN='-';
+  db.categories.forEach(c=>{const r=ledgerRem(c);if(r>mx){mx=r;mxN=c.name;}});
+  document.getElementById('an-ledgers').textContent=db.categories.length;
+  document.getElementById('an-pct').textContent=pct+'%';
+  document.getElementById('an-max').textContent=fmt(mx);
+  document.getElementById('an-max-name').textContent=mxN.slice(0,18);
+  document.getElementById('an-people').textContent=db.people.filter(p=>p.id!=='p_own').length;
+  const ctx1=document.getElementById('chart-donut');
+  if(donutChart)donutChart.destroy();
+  const cd=db.categories.map(c=>ledgerRem(c));const has=cd.some(v=>v>0);
+  donutChart=new Chart(ctx1,{type:'doughnut',data:{labels:has?db.categories.map(c=>c.name):[lang==='ar'?'لا ديون':'No debt'],datasets:[{data:has?cd:[1],backgroundColor:has?db.categories.map(c=>c.color+'99'):['rgba(255,255,255,.04)'],borderColor:has?db.categories.map(c=>c.color):['rgba(255,255,255,.06)'],borderWidth:1.5,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'74%'}});
+  const lg=document.getElementById('chart-legend');
+  lg.innerHTML=has?db.categories.map(c=>`<div style="display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--txt2);"><div style="width:9px;height:9px;border-radius:3px;background:${c.color};"></div>${c.name}: <strong style="color:var(--txt)">${fmt(ledgerRem(c))}</strong></div>`).join(''):`<span style="font-size:.73rem;color:var(--txt3);">${lang==='ar'?'لا بيانات':'No data'}</span>`;
+  const ctx2=document.getElementById('chart-bar');
+  if(barChart)barChart.destroy();
+  barChart=new Chart(ctx2,{type:'bar',data:{labels:db.categories.map(c=>c.name),datasets:[{data:db.categories.map(c=>ledgerRem(c)),backgroundColor:db.categories.map(c=>c.color+'55'),borderColor:db.categories.map(c=>c.color),borderWidth:1.5,borderRadius:7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#8892a4',font:{family:lang==='ar'?'Tajawal':'Inter',size:10}}},y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#8892a4',font:{family:'JetBrains Mono',size:9}}}}}});
+}
+
+// ── BUDGET ──
+function openBudgetModal(){
+  set('f-total-budget',db.budget.total||'');
+  document.getElementById('cat-budget-inputs').innerHTML=db.categories.map(c=>`<div class="fg"><label class="fl">${t('f.budgetFor',c.name)}</label><input class="fi" id="bc-${c.id}" type="number" placeholder="0" value="${c.budget||''}"></div>`).join('');
+}
+function saveBudget(){
+  db.budget.total=parseFloat(v('f-total-budget'))||0;
+  db.categories.forEach(c=>{const el=document.getElementById('bc-'+c.id);if(el)c.budget=parseFloat(el.value)||0;});
+  closeModal('modal-budget');save();renderAll();
+}
+
+// ── PHOTOS & RECEIPTS ──
+function triggerAva(){document.getElementById('ava-input').click();}
+async function handleAvaUpload(e){
+  const p=db.people.find(x=>x.id===activePid);if(!p)return;
+  const data=await fr(e.target.files[0]);if(!data)return;
+  p.photo=data;save();renderBcAva(p);renderPeople();renderHome();
+}
+async function previewNewAva(e){
+  const data=await fr(e.target.files[0]);if(!data)return;
+  newAvaData=data;
+  const img=document.getElementById('new-ava-prev');
+  img.src=data;img.style.display='block';
+  document.getElementById('new-ava-ph').style.fontSize='0';
+}
+function resetNewAva(){
+  const img=document.getElementById('new-ava-prev');if(img){img.style.display='none';img.src='';}
+  const ph=document.getElementById('new-ava-ph');if(ph)ph.style.fontSize='';
+}
+async function previewReceipt(e){
+  const data=await fr(e.target.files[0]);if(!data)return;
+  pendingReceipt=data;
+  const img=document.getElementById('receipt-prev');const clr=document.getElementById('receipt-clear');
+  if(img){img.src=data;img.style.display='block';}if(clr)clr.style.display='block';
+}
+function clearReceipt(){
+  pendingReceipt=null;
+  const el=document.getElementById('receipt-input');if(el)el.value='';
+  const img=document.getElementById('receipt-prev');const clr=document.getElementById('receipt-clear');
+  if(img){img.style.display='none';img.src='';}if(clr)clr.style.display='none';
+}
+async function previewMyDebtReceipt(e){
+  const data=await fr(e.target.files[0]);if(!data)return;
+  pendingMyDebtReceipt=data;
+  const img=document.getElementById('mydebt-receipt-prev');const clr=document.getElementById('mydebt-receipt-clear');
+  if(img){img.src=data;img.style.display='block';}if(clr)clr.style.display='block';
+}
+function clearMyDebtReceipt(){
+  pendingMyDebtReceipt=null;
+  const el=document.getElementById('mydebt-receipt-input');if(el)el.value='';
+  const img=document.getElementById('mydebt-receipt-prev');const clr=document.getElementById('mydebt-receipt-clear');
+  if(img){img.style.display='none';img.src='';}if(clr)clr.style.display='none';
+}
+function viewReceipt(src){document.getElementById('receipt-view-img').src=src;openModal('modal-receipt');}
+function fr(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=()=>res(null);r.readAsDataURL(file);});}
+
+// ── GLOBAL LOG ──
+function tlRowHTML(l){
+  const pos=(l.amt||0)>=0;
+  return`<div class="tl-row"><div class="tl-dot" style="background:${pos?'rgba(0,245,160,.1)':'rgba(255,61,110,.1)'};color:${pos?'var(--g)':'var(--r)'}"><i class="fa-solid ${pos?'fa-arrow-down-to-line':'fa-arrow-up-from-line'}"></i></div><div class="tl-body"><div class="tl-title">${l.label||''}</div><div class="tl-meta">${l.reason||''} · ${l.date||''}</div></div><div class="tl-amt" style="color:${pos?'var(--g)':'var(--r)'}">${pos?'+':''}${(l.amt||0).toFixed(2)}</div></div>`;
+}
+
+// ── EXPORT/IMPORT ──
+function exportData(){const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='family-wallet-backup.json';a.click();}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(confirm(t('confirm.import'))){db=d;save();renderAll();}}catch{alert(t('err.invalidFile'));}};
+  r.readAsText(file);
+}
+function confirmReset(){if(confirm(t('confirm.reset'))){localStorage.removeItem(KEY);location.reload();}}
+
+// ── VIEW SWITCHER ──
+const navMap={'view-home':'nav-home','view-bills':'nav-bills','view-people':'nav-people','view-analytics':'nav-analytics'};
+function switchView(id,updateNav=true){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('scroll-area').scrollTop=0;
+  if(updateNav){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));if(navMap[id])document.getElementById(navMap[id]).classList.add('active');}
+  if(id==='view-bills')renderLedgers();
+  if(id==='view-analytics')renderAnalytics();
+}
+
+// ── MODALS ──
+function openModal(id){if(id==='modal-budget')openBudgetModal();document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+
+// ── UTILS ──
+function v(id){return document.getElementById(id).value.trim();}
+function set(id,val){const el=document.getElementById(id);if(el)el.value=val;}
+function ds(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+function pad(n){return String(n).padStart(2,'0');}
+function hr(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');const b=parseInt(hex,16);return`${(b>>16)&255},${(b>>8)&255},${b&255}`;}
+
+// ── PWA ──
+function setupManifest(){
+  try{
+    const c=document.createElement('canvas');c.width=192;c.height=192;
+    const cx=c.getContext('2d');const g=cx.createLinearGradient(0,0,192,192);
+    g.addColorStop(0,'#00f5a0');g.addColorStop(1,'#00c3ff');
+    cx.fillStyle='#080a12';cx.fillRect(0,0,192,192);
+    const r=42;cx.beginPath();cx.moveTo(r,0);cx.arcTo(192,0,192,192,r);cx.arcTo(192,192,0,192,r);cx.arcTo(0,192,0,0,r);cx.arcTo(0,0,192,0,r);cx.closePath();cx.fillStyle='#0d1020';cx.fill();
+    cx.fillStyle=g;cx.font='bold 96px Arial';cx.textAlign='center';cx.textBaseline='middle';cx.fillText('💰',96,98);
+    const icon=c.toDataURL('image/png');
+    const manifest={name:'Family Wallet Pro',short_name:'FamilyWallet',start_url:'.',display:'standalone',background_color:'#080a12',theme_color:'#080a12',orientation:'portrait',icons:[{src:icon,sizes:'192x192',type:'image/png'}]};
+    const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+    document.getElementById('manifest-link').href=URL.createObjectURL(blob);
+    document.getElementById('apple-touch-icon').href=icon;
+    document.getElementById('favicon-link').href=icon;
+  }catch(e){}
+}
+function registerSW(){
+  if(!('serviceWorker' in navigator))return;
+  try{
+    const sw=`const C='fw-v1';self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',()=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res&&res.status===200)caches.open(C).then(c=>c.put(e.request,res.clone()));return res;}).catch(()=>r)));});`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
+  }catch(e){}
+}
+
+// ── INIT ──
+lang=localStorage.getItem('FW_LANG')||'en';
+applyDir();load();applyI18n();renderAll();setupManifest();registerSW();checkClaimLink();
+</script>
+</body>
+</html>
