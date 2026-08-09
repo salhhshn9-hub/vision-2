@@ -18,27 +18,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg: #080a12;
-  --surface: #0d1020;
-  --surface2: #111526;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.10);
-  --g: #00f5a0;
-  --b: #00c3ff;
-  --o: #ff8c42;
-  --r: #ff3d6e;
-  --p: #c77dff;
-  --y: #ffd166;
-  --txt: #ffffff;
-  --txt2: #8892a4;
-  --txt3: #4a5568;
-  --font: 'Tajawal', sans-serif;
-  --font-en: 'Inter', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-  --ease: cubic-bezier(0.4,0,0.2,1);
-  --shadow: 0 20px 60px rgba(0,0,0,0.6);
-  --shadow-sm: 0 4px 20px rgba(0,0,0,0.4);
+:root{
+  --bg:#080a12;--surface:#0d1020;--surface2:#111526;--surface3:#161929;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.10);
+  --g:#00f5a0;--b:#00c3ff;--o:#ff8c42;--r:#ff3d6e;--p:#c77dff;--y:#ffd166;
+  --txt:#fff;--txt2:#8892a4;--txt3:#4a5568;
+  --font:'Tajawal',sans-serif;--font-en:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--txt);font-family:var(--font);min-height:100vh;display:flex;justify-content:center;overflow-x:hidden;}
@@ -46,237 +32,259 @@ html.lang-en body{font-family:var(--font-en);}
 body::before{content:"";position:fixed;top:-200px;right:20%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,245,160,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;}
 body::after{content:"";position:fixed;bottom:-100px;left:10%;width:400px;height:400px;background:radial-gradient(circle,rgba(0,195,255,0.03) 0%,transparent 70%);pointer-events:none;z-index:0;}
 
-/* ─── APP SHELL ─── */
-.app{width:100%;max-width:460px;min-height:100vh;background:rgba(8,10,18,0.97);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-left:1px solid var(--border);border-right:1px solid var(--border);display:flex;flex-direction:column;position:relative;z-index:1;box-shadow:0 0 80px rgba(0,0,0,0.9);}
+/* ── SHELL ── */
+.app{width:100%;max-width:460px;min-height:100vh;background:rgba(8,10,18,0.97);backdrop-filter:blur(30px);border-left:1px solid var(--border);border-right:1px solid var(--border);display:flex;flex-direction:column;position:relative;z-index:1;box-shadow:0 0 80px rgba(0,0,0,0.9);}
 
-/* ─── HEADER ─── */
-header{padding:16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;background:rgba(8,10,18,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+/* ── HEADER ── */
+header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;background:rgba(8,10,18,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .hdr-left{display:flex;align-items:center;gap:12px;}
-.hdr-title{font-size:1rem;font-weight:700;color:var(--txt);}
-.hdr-sub{font-size:0.68rem;color:var(--txt2);font-family:var(--mono);letter-spacing:1px;margin-top:2px;}
-.icon-btn{width:42px;height:42px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--txt);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s var(--ease);font-size:1rem;}
-.icon-btn:active{transform:scale(0.9);}
-.notif-dot{position:relative;}
-.notif-dot::after{content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--r);border:2px solid var(--bg);box-shadow:0 0 8px var(--r);}
+.hdr-title{font-size:1rem;font-weight:700;}
+.hdr-sub{font-size:0.65rem;color:var(--txt2);font-family:var(--mono);letter-spacing:1px;margin-top:1px;}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--txt);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s var(--ease);font-size:.95rem;flex-shrink:0;}
+.icon-btn:active{transform:scale(.9);}
+.hdr-right{display:flex;gap:8px;align-items:center;}
+.lang-btn{font-family:var(--mono);font-weight:700;font-size:.75rem;letter-spacing:.5px;}
+.notif-wrap{position:relative;}
+.notif-dot::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--r);border:2px solid var(--bg);box-shadow:0 0 6px var(--r);}
 
-/* ─── BOTTOM NAV ─── */
-.bottom-nav{position:sticky;bottom:0;z-index:200;background:rgba(8,10,18,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:10px 0 20px;display:flex;justify-content:space-around;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 20px;border-radius:14px;transition:all 0.2s var(--ease);color:var(--txt3);}
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:sticky;bottom:0;z-index:200;background:rgba(8,10,18,0.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 20px;display:flex;justify-content:space-around;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 18px;border-radius:12px;transition:all .2s var(--ease);color:var(--txt3);}
 .nav-item.active{color:var(--g);}
-.nav-item i{font-size:1.15rem;}
-.nav-item span{font-size:0.65rem;font-weight:700;}
-.nav-item.active span{text-shadow:0 0 10px var(--g);}
+.nav-item i{font-size:1.1rem;}
+.nav-item span{font-size:.62rem;font-weight:700;}
 
-/* ─── VIEWS ─── */
-.view{display:none;flex-direction:column;gap:0;animation:fadeUp 0.3s var(--ease);}
+/* ── VIEWS ── */
+.view{display:none;flex-direction:column;animation:fadeUp .28s var(--ease);}
 .view.active{display:flex;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.scroll-area{flex:1;overflow-y:auto;padding-bottom:8px;}
+.scroll-area::-webkit-scrollbar{width:2px;}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
 
-/* ─── SCROLLABLE CONTENT ─── */
-.scroll-area{flex:1;overflow-y:auto;padding-bottom:10px;}
-.scroll-area::-webkit-scrollbar{width:3px;}
-.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px;}
-
-/* ─── CARDS ─── */
+/* ── SHARED ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;margin:10px 14px;}
-.card-sm{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;}
-.card-title{font-size:0.82rem;font-weight:700;color:var(--txt2);display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.card-title i{font-size:0.9rem;}
+.card-sm{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 6px;}
+.sec-hdr h3{font-size:.88rem;font-weight:700;}
+.sec-hdr a{font-size:.75rem;color:var(--b);cursor:pointer;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:.65rem;font-weight:700;}
+.badge-g{background:rgba(0,245,160,.12);color:var(--g);border:1px solid rgba(0,245,160,.2);}
+.badge-b{background:rgba(0,195,255,.12);color:var(--b);border:1px solid rgba(0,195,255,.2);}
+.badge-o{background:rgba(255,140,66,.12);color:var(--o);border:1px solid rgba(255,140,66,.2);}
+.badge-r{background:rgba(255,61,110,.12);color:var(--r);border:1px solid rgba(255,61,110,.2);}
+.badge-y{background:rgba(255,209,102,.12);color:var(--y);border:1px solid rgba(255,209,102,.2);}
+.badge-n{background:rgba(255,255,255,.05);color:var(--txt2);border:1px solid var(--border);}
+.pbar{height:5px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden;margin-top:6px;}
+.pbar-fill{height:100%;border-radius:6px;transition:width .8s var(--ease);}
+.empty-state{text-align:center;padding:36px 20px;}
+.empty-state i{font-size:2rem;color:var(--txt3);margin-bottom:10px;display:block;}
+.empty-state p{color:var(--txt2);font-size:.83rem;}
 
-/* ─── HERO BALANCE ─── */
-.hero{background:linear-gradient(135deg,rgba(0,245,160,0.06) 0%,rgba(0,195,255,0.03) 60%,transparent 100%);border:1px solid rgba(0,245,160,0.12);border-radius:24px;padding:22px;margin:12px 14px;text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(0,245,160,0.08) 0%,transparent 70%);pointer-events:none;}
-.hero-label{font-size:0.78rem;color:var(--txt2);font-weight:500;margin-bottom:6px;}
-.hero-amount{font-family:var(--mono);font-size:2.6rem;font-weight:700;color:var(--g);text-shadow:0 0 30px rgba(0,245,160,0.3);letter-spacing:-1px;line-height:1;}
-.hero-sub{font-size:0.72rem;color:var(--txt3);margin-top:8px;font-family:var(--mono);}
-.hero-trend{display:inline-flex;align-items:center;gap:4px;background:rgba(0,245,160,0.1);border:1px solid rgba(0,245,160,0.2);border-radius:8px;padding:4px 10px;font-size:0.72rem;color:var(--g);margin-top:10px;}
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,rgba(0,245,160,.06),rgba(0,195,255,.03));border:1px solid rgba(0,245,160,.12);border-radius:22px;padding:20px;margin:12px 14px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(0,245,160,.07) 0%,transparent 70%);pointer-events:none;}
+.hero-label{font-size:.76rem;color:var(--txt2);margin-bottom:5px;}
+.hero-amt{font-family:var(--mono);font-size:2.5rem;font-weight:700;letter-spacing:-1px;line-height:1;}
+.hero-trend{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:4px 10px;font-size:.7rem;margin-top:9px;}
 
-/* ─── STATS ROW ─── */
+/* ── STATS ── */
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 14px;}
-.stat-pill{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:12px 10px;text-align:center;position:relative;overflow:hidden;}
+.stat-pill{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:11px 8px;text-align:center;position:relative;overflow:hidden;}
 .stat-pill::before{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;}
-.stat-pill.s-b::before{background:var(--b);box-shadow:0 0 8px var(--b);}
-.stat-pill.s-o::before{background:var(--o);box-shadow:0 0 8px var(--o);}
-.stat-pill.s-r::before{background:var(--r);box-shadow:0 0 8px var(--r);}
-.stat-pill p{font-size:0.65rem;color:var(--txt3);margin-bottom:4px;font-weight:500;}
-.stat-pill h4{font-family:var(--mono);font-size:0.95rem;font-weight:700;}
+.stat-pill.s-g::before{background:var(--g);box-shadow:0 0 6px var(--g);}
+.stat-pill.s-b::before{background:var(--b);box-shadow:0 0 6px var(--b);}
+.stat-pill.s-r::before{background:var(--r);box-shadow:0 0 6px var(--r);}
+.stat-pill p{font-size:.62rem;color:var(--txt3);margin-bottom:4px;font-weight:500;}
+.stat-pill h4{font-family:var(--mono);font-size:.9rem;font-weight:700;}
 
-/* ─── QUICK ACTIONS ─── */
-.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;margin-top:12px;}
-.qa-btn{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all 0.2s var(--ease);}
-.qa-btn:active{transform:scale(0.95);}
-.qa-btn .qa-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
-.qa-btn span{font-size:0.8rem;font-weight:700;color:var(--txt);}
+/* ── QA GRID ── */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px;margin-top:10px;}
+.qa-btn{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:13px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:all .2s var(--ease);}
+.qa-btn:active{transform:scale(.95);}
+.qa-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.qa-btn span{font-size:.78rem;font-weight:700;}
 
-/* ─── ALERTS ─── */
-.alert-bar{margin:8px 14px;background:rgba(255,61,110,0.08);border:1px solid rgba(255,61,110,0.2);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:0.8rem;color:var(--r);}
-.alert-bar i{font-size:1rem;flex-shrink:0;}
+/* ── ALERTS ── */
+.alert-bar{margin:8px 14px;background:rgba(255,61,110,.08);border:1px solid rgba(255,61,110,.2);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:.78rem;color:var(--r);}
 
-/* ─── SECTION HEADER ─── */
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 14px 6px;}
-.sec-hdr h3{font-size:0.9rem;font-weight:700;color:var(--txt);}
-.sec-hdr a{font-size:0.75rem;color:var(--b);cursor:pointer;}
+/* ── TIMELINE ── */
+.tl{display:flex;flex-direction:column;}
+.tl-row{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);}
+.tl-row:last-child{border-bottom:none;}
+.tl-dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
+.tl-body{flex:1;min-width:0;}
+.tl-title{font-size:.8rem;font-weight:700;}
+.tl-meta{font-size:.68rem;color:var(--txt3);margin-top:2px;}
+.tl-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.tl-amt{font-family:var(--mono);font-size:.85rem;font-weight:700;}
+.tl-icon-btn{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.66rem;border:1px solid;transition:all .18s;}
+.tl-icon-btn:active{transform:scale(.88);}
 
-/* ─── PERSON CARDS ─── */
-.person-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;margin:0 14px 10px;cursor:pointer;transition:all 0.2s var(--ease);}
-.person-card:active{transform:scale(0.98);}
-.person-card.active-card{border-color:rgba(0,195,255,0.3);background:rgba(0,195,255,0.04);}
-.avatar{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.person-info{flex:1;min-width:0;}
-.person-name{font-size:0.9rem;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.person-meta{font-size:0.72rem;color:var(--txt2);margin-top:2px;}
-.person-badge{font-family:var(--mono);font-size:0.85rem;font-weight:700;flex-shrink:0;}
-
-/* ─── BUDGET TRACK ─── */
-.budget-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;margin:10px 14px;}
-.budget-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.budget-label{font-size:0.82rem;color:var(--txt2);}
-.budget-pct{font-family:var(--mono);font-size:0.82rem;font-weight:700;}
-.track-bar{height:8px;background:rgba(255,255,255,0.04);border-radius:10px;overflow:hidden;margin-bottom:14px;}
-.track-fill{height:100%;border-radius:10px;transition:width 0.8s var(--ease);}
-
-/* ─── CHART CONTAINER ─── */
-.chart-wrap{height:180px;display:flex;align-items:center;justify-content:center;position:relative;}
-
-/* ─── TIMELINE ─── */
-.timeline{display:flex;flex-direction:column;gap:0;}
-.tl-item{display:flex;gap:12px;padding:10px 0;}
-.tl-item:not(:last-child){border-bottom:1px solid var(--border);}
-.tl-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;}
-.tl-body{flex:1;}
-.tl-title{font-size:0.82rem;font-weight:700;color:var(--txt);}
-.tl-meta{font-size:0.7rem;color:var(--txt3);margin-top:2px;}
-.tl-amt{font-family:var(--mono);font-size:0.88rem;font-weight:700;flex-shrink:0;}
-
-/* ─── BILL CARDS ─── */
-.bill-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;margin:0 14px 10px;transition:all 0.2s var(--ease);}
-.bill-top{display:flex;align-items:flex-start;gap:12px;}
-.bill-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+/* ── LEDGER CARDS (bill view) ── */
+.bill-card{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:14px;margin:0 14px 9px;cursor:pointer;transition:all .2s var(--ease);}
+.bill-card:active{transform:scale(.98);}
+.bill-top{display:flex;align-items:flex-start;gap:11px;}
+.bill-icon{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
 .bill-info{flex:1;}
-.bill-name{font-size:0.88rem;font-weight:700;color:var(--txt);}
-.bill-cat{font-size:0.7rem;color:var(--txt3);margin-top:2px;}
+.bill-name{font-size:.87rem;font-weight:700;}
+.bill-sub{font-size:.68rem;color:var(--txt3);margin-top:2px;}
 .bill-right{text-align:end;}
-.bill-rem{font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--r);}
-.bill-total{font-size:0.65rem;color:var(--txt3);margin-top:2px;font-family:var(--mono);}
-.bill-progress{margin-top:12px;}
-.bill-prog-top{display:flex;justify-content:space-between;margin-bottom:5px;}
-.bill-prog-label{font-size:0.68rem;color:var(--txt3);}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:0.65rem;font-weight:700;}
-.badge-red{background:rgba(255,61,110,0.1);color:var(--r);}
-.badge-yellow{background:rgba(255,209,102,0.1);color:var(--y);}
-.badge-green{background:rgba(0,245,160,0.1);color:var(--g);}
+.bill-rem{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--r);}
+.bill-of{font-size:.63rem;color:var(--txt3);font-family:var(--mono);margin-top:2px;}
+.bill-prog{margin-top:10px;}
+.bill-prog-hdr{display:flex;justify-content:space-between;margin-bottom:4px;font-size:.66rem;color:var(--txt3);}
 
-/* ─── PERSON PROFILE VIEW ─── */
-.profile-hero{background:linear-gradient(135deg,rgba(199,125,255,0.06) 0%,rgba(0,195,255,0.03) 100%);border:1px solid rgba(199,125,255,0.12);border-radius:20px;padding:20px;margin:10px 14px;text-align:center;}
-.profile-avatar-lg{width:64px;height:64px;border-radius:20px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;}
-.profile-name-lg{font-size:1.2rem;font-weight:900;color:var(--txt);}
-.profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;border-top:1px solid var(--border);padding-top:14px;}
-.profile-stat{text-align:center;}
-.profile-stat p{font-size:0.7rem;color:var(--txt2);}
-.profile-stat h3{font-family:var(--mono);font-size:1.2rem;font-weight:700;margin-top:4px;}
+/* ── PERSON CARD (list) ── */
+.person-card{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:13px;display:flex;align-items:center;gap:11px;margin:0 14px 9px;cursor:pointer;transition:all .2s var(--ease);}
+.person-card:active{transform:scale(.98);}
+.p-ava{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden;}
+.p-ava img{width:100%;height:100%;object-fit:cover;}
+.p-info{flex:1;min-width:0;}
+.p-name{font-size:.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.p-meta{font-size:.7rem;color:var(--txt2);margin-top:2px;}
+.p-badge{font-family:var(--mono);font-size:.83rem;font-weight:700;flex-shrink:0;}
 
-/* ─── ACTION BTNS ─── */
-.action-row{display:flex;gap:10px;padding:0 14px;margin:10px 0;}
-.action-btn{flex:1;padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--txt);font-family:var(--font);font-size:0.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s var(--ease);}
-.action-btn:active{transform:scale(0.97);}
-.action-btn.deposit-btn{background:rgba(0,195,255,0.06);border-color:rgba(0,195,255,0.2);color:var(--b);}
-.action-btn.withdraw-btn{background:rgba(255,140,66,0.06);border-color:rgba(255,140,66,0.2);color:var(--o);}
-.action-btn.danger-btn{background:rgba(255,61,110,0.06);border-color:rgba(255,61,110,0.2);color:var(--r);}
-.action-btn.primary-btn{background:linear-gradient(135deg,var(--g),var(--b));color:#000;border:none;font-weight:900;box-shadow:0 4px 20px rgba(0,245,160,0.2);}
-.action-btn.sec-btn{background:var(--surface2);border-color:var(--border);color:var(--txt2);}
+/* ── ANALYTICS ── */
+.an-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 14px;}
+.an-card{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:13px;}
+.an-label{font-size:.68rem;color:var(--txt2);margin-bottom:5px;}
+.an-val{font-family:var(--mono);font-size:1.25rem;font-weight:700;}
+.an-sub{font-size:.65rem;color:var(--txt3);margin-top:3px;font-family:var(--mono);}
+.an-full{grid-column:1/-1;}
+.chart-wrap{height:172px;display:flex;align-items:center;justify-content:center;}
 
-/* ─── FLOATING ADD BUTTON ─── */
-.fab{position:fixed;bottom:90px;left:50%;transform:translateX(calc(-50% - 230px + 14px));width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--g),var(--b));color:#000;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,245,160,0.3);transition:all 0.2s var(--ease);z-index:100;border:none;}
-.fab:active{transform:translateX(calc(-50% - 230px + 14px)) scale(0.92);}
+/* ═══════════════════════════════════════
+   PERSON PROFILE — BANK CARD STYLE
+═══════════════════════════════════════ */
+.bank-card{margin:10px 14px;border-radius:22px;overflow:hidden;background:var(--surface);border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.5);}
 
-/* ─── SIDEBAR ─── */
-.sidebar{position:fixed;top:0;right:-100%;width:300px;height:100%;background:#0a0c18;border-left:1px solid var(--border);z-index:1000;transition:right 0.35s var(--ease);padding:0;box-shadow:-20px 0 60px rgba(0,0,0,0.9);display:flex;flex-direction:column;}
+/* top hero strip */
+.bc-hero{position:relative;padding:20px;background:linear-gradient(135deg,rgba(199,125,255,.1),rgba(0,195,255,.06));display:flex;align-items:center;gap:16px;}
+.bc-hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(0,245,160,.06) 0%,transparent 60%);pointer-events:none;}
+.bc-ava{width:64px;height:64px;border-radius:18px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.9rem;cursor:pointer;position:relative;border:2px solid rgba(255,255,255,.08);}
+.bc-ava img{width:100%;height:100%;object-fit:cover;}
+.bc-ava .cam-ov{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:.18s;}
+.bc-ava:hover .cam-ov{opacity:1;}
+.bc-name{font-size:1.18rem;font-weight:900;line-height:1.2;}
+.bc-role{font-size:.7rem;color:var(--txt2);margin-top:3px;}
+.bc-net{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-family:var(--mono);font-size:.76rem;font-weight:700;margin-top:7px;}
+
+/* divider */
+.bc-div{height:1px;background:var(--border);}
+
+/* relation blocks */
+.bc-relations{display:flex;flex-direction:column;gap:0;}
+.bc-rel{padding:14px 18px;border-bottom:1px solid var(--border);position:relative;}
+.bc-rel:last-child{border-bottom:none;}
+.bc-rel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.bc-rel-title{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;}
+.bc-rel-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
+.bc-amounts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.bc-amt-cell{text-align:center;}
+.bc-amt-label{font-size:.6rem;color:var(--txt3);margin-bottom:3px;font-weight:600;}
+.bc-amt-val{font-family:var(--mono);font-size:.9rem;font-weight:700;}
+.bc-actions{display:flex;gap:7px;margin-top:11px;}
+.bc-btn{flex:1;padding:9px 4px;border-radius:10px;border:1px solid;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .18s;font-family:inherit;}
+.bc-btn:active{transform:scale(.95);}
+.bc-btn-g{background:rgba(0,245,160,.06);border-color:rgba(0,245,160,.2);color:var(--g);}
+.bc-btn-b{background:rgba(0,195,255,.06);border-color:rgba(0,195,255,.2);color:var(--b);}
+.bc-btn-o{background:rgba(255,140,66,.06);border-color:rgba(255,140,66,.2);color:var(--o);}
+.bc-btn-r{background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);}
+
+/* own-wallet debt section */
+.bc-debt{padding:14px 18px;border-bottom:1px solid var(--border);}
+.bc-debt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.debt-total{font-family:var(--mono);font-size:1.3rem;font-weight:800;}
+
+/* log section */
+.bc-log-section{padding:14px 18px 18px;}
+.bc-log-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.log-filters{display:flex;gap:5px;}
+.lf-pill{padding:3px 9px;border-radius:7px;font-size:.65rem;font-weight:700;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--txt3);transition:all .18s;}
+.lf-pill.on{background:rgba(0,195,255,.1);border-color:rgba(0,195,255,.3);color:var(--b);}
+
+/* claim link */
+.claim-zone{padding:12px 18px;border-top:1px solid var(--border);}
+.claim-link-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--mono);font-size:.68rem;color:var(--txt2);word-break:break-all;margin-top:8px;display:none;}
+.copy-btn{width:100%;margin-top:7px;padding:9px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--b);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:none;}
+
+/* sidebar + modals (same as before) */
+.sidebar{position:fixed;top:0;right:-100%;width:300px;height:100%;background:#0a0c18;border-left:1px solid var(--border);z-index:1000;transition:right .35s var(--ease);display:flex;flex-direction:column;}
 .sidebar.open{right:0;}
-html[dir="ltr"] .sidebar{right:auto;left:-100%;border-left:none;border-right:1px solid var(--border);box-shadow:20px 0 60px rgba(0,0,0,0.9);}
-html[dir="ltr"] .sidebar.open{left:0;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:999;display:none;}
+html[dir=ltr] .sidebar{right:auto;left:-100%;border-left:none;border-right:1px solid var(--border);}
+html[dir=ltr] .sidebar.open{left:0;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);z-index:999;display:none;}
 .overlay.open{display:block;}
-.sidebar-hdr{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.sidebar-body{flex:1;overflow-y:auto;padding:16px;}
-.sidebar-section{margin-bottom:20px;}
-.sidebar-section-title{font-size:0.7rem;font-weight:700;color:var(--txt3);letter-spacing:1px;margin-bottom:10px;padding:0 4px;}
-.sidebar-link{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;cursor:pointer;transition:all 0.2s var(--ease);color:var(--txt2);font-size:0.88rem;font-weight:600;border:1px solid transparent;margin-bottom:4px;}
-.sidebar-link:hover{background:var(--surface2);color:var(--txt);border-color:var(--border);}
-.sidebar-link i{width:20px;text-align:center;}
-
-/* ─── MODALS ─── */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);z-index:5000;display:none;align-items:flex-end;justify-content:center;}
-.modal.open{display:flex;animation:fadeIn 0.2s var(--ease);}
+.sb-hdr{padding:18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.sb-body{flex:1;overflow-y:auto;padding:14px;}
+.sb-section{margin-bottom:18px;}
+.sb-sec-title{font-size:.68rem;font-weight:700;color:var(--txt3);letter-spacing:1px;margin-bottom:8px;padding:0 4px;}
+.sb-link{display:flex;align-items:center;gap:11px;padding:11px;border-radius:12px;cursor:pointer;color:var(--txt2);font-size:.86rem;font-weight:600;border:1px solid transparent;margin-bottom:3px;transition:all .18s;}
+.sb-link:hover{background:var(--surface2);color:var(--txt);border-color:var(--border);}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(20px);z-index:5000;display:none;align-items:flex-end;justify-content:center;}
+.modal.open{display:flex;animation:fadeIn .2s var(--ease);}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.modal-sheet{width:100%;max-width:460px;background:#0d1020;border-top:1px solid var(--border2);border-radius:28px 28px 0 0;padding:24px 18px 40px;max-height:90vh;overflow-y:auto;}
-.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:4px;margin:0 auto 20px;}
-.modal-title{font-size:1.1rem;font-weight:900;margin-bottom:20px;}
-.form-group{margin-bottom:16px;}
-.form-label{font-size:0.78rem;color:var(--txt2);font-weight:600;margin-bottom:6px;display:block;}
-.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:13px 14px;color:var(--txt);font-family:var(--font);font-size:0.95rem;transition:all 0.2s var(--ease);}
-.form-input:focus{border-color:var(--b);outline:none;background:rgba(0,195,255,0.04);}
-.form-row{display:flex;gap:10px;}
-.form-row .form-group{flex:1;}
-.btn-row{display:flex;gap:10px;margin-top:20px;}
+.modal-sheet{width:100%;max-width:460px;background:#0d1020;border-top:1px solid var(--border2);border-radius:26px 26px 0 0;padding:22px 18px 40px;max-height:90vh;overflow-y:auto;}
+.mh{width:38px;height:4px;background:var(--border2);border-radius:4px;margin:0 auto 18px;}
+.mt{font-size:1.05rem;font-weight:900;margin-bottom:18px;}
+.fg{margin-bottom:14px;}
+.fl{font-size:.76rem;color:var(--txt2);font-weight:600;margin-bottom:5px;display:block;}
+.fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:12px 14px;color:var(--txt);font-family:var(--font);font-size:.93rem;transition:all .2s;}
+.fi:focus{border-color:var(--b);outline:none;background:rgba(0,195,255,.04);}
+.btn-row{display:flex;gap:9px;margin-top:18px;}
+.btn{padding:13px;border-radius:14px;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s;font-family:inherit;border:1px solid;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--g),var(--b));color:#000;border:none;font-weight:900;box-shadow:0 4px 18px rgba(0,245,160,.2);}
+.btn-sec{background:var(--surface2);border-color:var(--border);color:var(--txt2);}
+.btn-danger{background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);}
 
-/* ─── EMPTY STATE ─── */
-.empty-state{text-align:center;padding:40px 20px;}
-.empty-state i{font-size:2.5rem;color:var(--txt3);margin-bottom:12px;display:block;}
-.empty-state p{color:var(--txt2);font-size:0.85rem;}
+/* receipt upload */
+.receipt-zone{display:flex;align-items:center;gap:9px;padding:10px 13px;background:var(--surface2);border:1px dashed var(--border2);border-radius:12px;cursor:pointer;}
+.receipt-zone span{font-size:.8rem;color:var(--txt2);}
+.receipt-thumb{width:100%;border-radius:10px;margin-top:8px;max-height:140px;object-fit:cover;display:none;border:1px solid var(--border);}
 
-/* ─── ANALYTICS ─── */
-.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;}
-.analytics-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;}
-.analytics-card .ac-val{font-family:var(--mono);font-size:1.3rem;font-weight:700;margin:6px 0;}
-.analytics-card .ac-label{font-size:0.7rem;color:var(--txt2);}
-.analytics-card .ac-trend{font-size:0.68rem;font-family:var(--mono);}
-.full-width-card{grid-column:1/-1;}
-
-/* ─── BUDGET MODAL ─── */
-.budget-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
-.budget-item:last-child{border-bottom:none;}
-.bi-name{font-size:0.85rem;font-weight:600;}
-.bi-info{text-align:end;}
-.bi-spent{font-family:var(--mono);font-size:0.85rem;font-weight:700;}
-.bi-limit{font-size:0.68rem;color:var(--txt3);font-family:var(--mono);}
+/* avatar upload */
+.ava-zone{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--surface2);border:1px dashed var(--border2);border-radius:13px;cursor:pointer;}
+.ava-ph{width:50px;height:50px;border-radius:13px;background:rgba(0,195,255,.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;overflow:hidden;}
+.ava-ph img{width:100%;height:100%;object-fit:cover;}
 </style>
 </head>
 <body>
-
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-hdr">
+  <div class="sb-hdr">
     <div style="display:flex;align-items:center;gap:10px;">
-      <i class="fa-solid fa-wallet" style="color:var(--g);font-size:1.1rem;"></i>
-      <span style="font-weight:900;font-size:1rem;" data-i18n="sidebar.settingsTools">Settings & Tools</span>
+      <i class="fa-solid fa-wallet" style="color:var(--g)"></i>
+      <span style="font-weight:900;" data-i18n="sb.title">Settings & Tools</span>
     </div>
     <div class="icon-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></div>
   </div>
-  <div class="sidebar-body">
-    <div class="sidebar-section">
-      <div class="sidebar-section-title" data-i18n="sidebar.accountsPeople">ACCOUNTS & PEOPLE</div>
-      <div class="sidebar-link" onclick="openModal('modal-add-person');closeSidebar()">
-        <i class="fa-solid fa-user-plus" style="color:var(--b)"></i> <span data-i18n="sidebar.addNewPerson">Add new person</span>
+  <div class="sb-body">
+    <div class="sb-section">
+      <div class="sb-sec-title" data-i18n="sb.accounts">ACCOUNTS & PEOPLE</div>
+      <div class="sb-link" onclick="openModal('modal-add-person');closeSidebar()">
+        <i class="fa-solid fa-user-plus" style="color:var(--b)"></i> <span data-i18n="sb.addPerson">Add new person</span>
       </div>
-      <div class="sidebar-link" onclick="openModal('modal-budget');closeSidebar()">
-        <i class="fa-solid fa-sliders" style="color:var(--p)"></i> <span data-i18n="sidebar.setupBudget">Set up monthly budget</span>
+      <div class="sb-link" onclick="openModal('modal-budget');closeSidebar()">
+        <i class="fa-solid fa-sliders" style="color:var(--p)"></i> <span data-i18n="sb.budget">Monthly budget</span>
       </div>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-title" data-i18n="sidebar.data">DATA</div>
-      <div class="sidebar-link" onclick="exportData();closeSidebar()">
-        <i class="fa-solid fa-download" style="color:var(--g)"></i> <span data-i18n="sidebar.exportData">Export data (JSON)</span>
+    <div class="sb-section">
+      <div class="sb-sec-title" data-i18n="sb.data">DATA</div>
+      <div class="sb-link" onclick="exportData();closeSidebar()">
+        <i class="fa-solid fa-download" style="color:var(--g)"></i> <span data-i18n="sb.export">Export (JSON)</span>
       </div>
-      <div class="sidebar-link" onclick="document.getElementById('import-file').click();closeSidebar()">
-        <i class="fa-solid fa-upload" style="color:var(--y)"></i> <span data-i18n="sidebar.importData">Import saved data</span>
+      <div class="sb-link" onclick="document.getElementById('import-file').click();closeSidebar()">
+        <i class="fa-solid fa-upload" style="color:var(--y)"></i> <span data-i18n="sb.import">Import backup</span>
         <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
       </div>
     </div>
-    <div style="margin-top:auto;padding-top:20px;border-top:1px solid var(--border);">
-      <div class="sidebar-link" style="color:var(--r);" onclick="confirmReset()">
-        <i class="fa-solid fa-trash-arrow-up"></i> <span data-i18n="sidebar.clearAllData">Clear all data</span>
+    <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border);">
+      <div class="sb-link" style="color:var(--r)" onclick="confirmReset()">
+        <i class="fa-solid fa-trash-arrow-up"></i> <span data-i18n="sb.reset">Clear all data</span>
       </div>
     </div>
   </div>
@@ -288,231 +296,221 @@ html[dir="ltr"] .sidebar.open{left:0;}
     <div class="hdr-left">
       <div class="icon-btn" onclick="openSidebar()"><i class="fa-solid fa-bars"></i></div>
       <div>
-        <div class="hdr-title" id="hdr-title" data-i18n="app.title">Family Wallet</div>
-        <div class="hdr-sub" id="hdr-sub" data-i18n="app.subtitle">FAMILY WALLET PRO</div>
+        <div class="hdr-title" data-i18n="app.title">Family Wallet</div>
+        <div class="hdr-sub">FAMILY WALLET PRO</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div class="icon-btn" id="lang-toggle-btn" onclick="toggleLanguage()" style="font-family:var(--mono);font-weight:700;font-size:0.78rem;width:42px;">
-        <span id="lang-toggle-label">AR</span>
-      </div>
-      <div class="icon-btn notif-dot" id="notif-btn" onclick="showAlerts()"><i class="fa-solid fa-bell"></i></div>
+    <div class="hdr-right">
+      <div class="icon-btn lang-btn" onclick="toggleLang()"><span id="lang-lbl">AR</span></div>
+      <div class="icon-btn notif-wrap" id="notif-btn" onclick="showAlerts()"><i class="fa-solid fa-bell"></i></div>
     </div>
   </header>
 
   <div class="scroll-area" id="scroll-area">
 
-    <!-- ══ VIEW: DASHBOARD ══ -->
+    <!-- ══ HOME ══ -->
     <div class="view active" id="view-home">
       <div class="hero">
-        <div class="hero-label" data-i18n="home.netLiquidity">💰 Net Total Liquidity</div>
-        <div class="hero-amount" id="hero-amount">0.00</div>
-        <div class="hero-sub" data-i18n="common.currency">Saudi Riyal</div>
-        <div class="hero-trend" id="hero-trend"><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="home.updatedNow">Updated now</span></div>
+        <div class="hero-label" data-i18n="home.netLiq">💰 Net Total Liquidity</div>
+        <div class="hero-amt" id="hero-amt">0.00</div>
+        <div style="font-size:.7rem;color:var(--txt3);margin-top:6px;font-family:var(--mono);" data-i18n="common.sar">Saudi Riyal</div>
+        <div class="hero-trend" id="hero-trend"><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="home.updated">Updated now</span></div>
       </div>
 
       <div class="stats-row">
-        <div class="stat-pill s-b">
-          <p data-i18n="home.trusts">Trusts</p>
-          <h4 id="stat-trusts" style="color:var(--b)">0</h4>
-        </div>
-        <div class="stat-pill s-o">
-          <p data-i18n="home.loans">Loans</p>
-          <h4 id="stat-loans" style="color:var(--o)">0</h4>
-        </div>
-        <div class="stat-pill s-r">
-          <p data-i18n="home.bills">Bills</p>
-          <h4 id="stat-bills" style="color:var(--r)">0</h4>
-        </div>
+        <div class="stat-pill s-g"><p data-i18n="home.myMoney">My funds</p><h4 id="stat-my" style="color:var(--g)">0</h4></div>
+        <div class="stat-pill s-b"><p data-i18n="home.trusts">Trusts</p><h4 id="stat-trusts" style="color:var(--b)">0</h4></div>
+        <div class="stat-pill s-r"><p data-i18n="home.bills">Bills</p><h4 id="stat-bills" style="color:var(--r)">0</h4></div>
       </div>
 
       <div id="alerts-zone"></div>
 
-      <!-- Quick actions -->
-      <div class="sec-hdr"><h3 data-i18n="home.quickActions">Quick Actions</h3></div>
+      <div class="sec-hdr"><h3 data-i18n="home.quick">Quick Actions</h3></div>
       <div class="qa-grid">
-        <div class="qa-btn" onclick="openModal('modal-quick-add')">
-          <div class="qa-icon" style="background:rgba(255,140,66,0.1);color:var(--o)"><i class="fa-solid fa-file-circle-plus"></i></div>
-          <span data-i18n="home.addToLedger">Add to ledger</span>
+        <div class="qa-btn" onclick="quickAction('ledger-add')">
+          <div class="qa-icon" style="background:rgba(255,140,66,.1);color:var(--o)"><i class="fa-solid fa-file-circle-plus"></i></div>
+          <span data-i18n="home.addLedger">Add to ledger</span>
         </div>
-        <div class="qa-btn" onclick="openModal('modal-quick-pay')">
-          <div class="qa-icon" style="background:rgba(0,245,160,0.1);color:var(--g)"><i class="fa-solid fa-money-bill-wave"></i></div>
+        <div class="qa-btn" onclick="quickAction('ledger-pay')">
+          <div class="qa-icon" style="background:rgba(0,245,160,.1);color:var(--g)"><i class="fa-solid fa-money-bill-wave"></i></div>
           <span data-i18n="home.payLedger">Pay ledger</span>
         </div>
         <div class="qa-btn" onclick="openModal('modal-add-person')">
-          <div class="qa-icon" style="background:rgba(0,195,255,0.1);color:var(--b)"><i class="fa-solid fa-user-plus"></i></div>
+          <div class="qa-icon" style="background:rgba(0,195,255,.1);color:var(--b)"><i class="fa-solid fa-user-plus"></i></div>
           <span data-i18n="home.newPerson">New person</span>
         </div>
         <div class="qa-btn" onclick="openModal('modal-add-cat')">
-          <div class="qa-icon" style="background:rgba(199,125,255,0.1);color:var(--p)"><i class="fa-solid fa-folder-plus"></i></div>
-          <span data-i18n="home.newCategory">New category</span>
+          <div class="qa-icon" style="background:rgba(199,125,255,.1);color:var(--p)"><i class="fa-solid fa-folder-plus"></i></div>
+          <span data-i18n="home.newCat">New category</span>
         </div>
       </div>
 
-      <!-- People -->
-      <div class="sec-hdr"><h3 data-i18n="home.peopleAccounts">People & Accounts</h3><a onclick="switchView('view-people')" data-i18n="common.viewAll">View all</a></div>
-      <div id="home-people-list"></div>
+      <div class="sec-hdr"><h3 data-i18n="home.people">People</h3><a onclick="switchView('view-people')" data-i18n="common.all">View all</a></div>
+      <div id="home-people"></div>
 
-      <!-- Recent Activity -->
       <div class="card">
-        <div class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--b)"></i> <span data-i18n="home.recentActivity">Recent activity</span></div>
-        <div class="timeline" id="home-timeline"></div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+          <i class="fa-solid fa-clock-rotate-left" style="color:var(--b)"></i> <span data-i18n="home.recent">Recent activity</span>
+        </div>
+        <div class="tl" id="home-tl"></div>
       </div>
 
-      <!-- Budget summary -->
-      <div class="budget-card" id="budget-summary-card">
-        <div class="card-title"><i class="fa-solid fa-chart-pie" style="color:var(--p)"></i> <span data-i18n="home.monthlyBudget">Monthly Budget</span></div>
-        <div id="budget-summary-content"></div>
+      <div class="card" id="budget-card">
+        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+          <i class="fa-solid fa-chart-pie" style="color:var(--p)"></i> <span data-i18n="home.budgetTitle">Monthly Budget</span>
+        </div>
+        <div id="budget-content"></div>
       </div>
     </div>
 
-    <!-- ══ VIEW: BILLS (دفاتر الحسابات المفتوحة) ══ -->
+    <!-- ══ BILLS ══ -->
     <div class="view" id="view-bills">
-      <div style="padding:12px 14px 4px;">
-        <div class="card-sm" style="display:flex;align-items:center;gap:10px;margin-bottom:2px;">
-          <i class="fa-solid fa-circle-info" style="color:var(--b);font-size:0.9rem;"></i>
-          <span id="bills-summary-text" style="font-size:0.8rem;color:var(--txt2);"></span>
-        </div>
+      <div style="padding:10px 14px 2px;">
+        <div class="card-sm"><span id="bills-summary" style="font-size:.78rem;color:var(--txt2);"></span></div>
       </div>
-      <div class="sec-hdr"><h3 data-i18n="bills.ledgers">Account Ledgers</h3><a onclick="openModal('modal-add-cat')" data-i18n="bills.newCategoryPlus">+ New category</a></div>
+      <div class="sec-hdr"><h3 data-i18n="bills.title">Account Ledgers</h3><a onclick="openModal('modal-add-cat')" data-i18n="common.newPlus">+ New</a></div>
       <div id="ledgers-list"></div>
     </div>
 
-    <!-- ══ VIEW: LEDGER DETAIL (تفاصيل دفتر فئة واحدة) ══ -->
+    <!-- ══ LEDGER DETAIL ══ -->
     <div class="view" id="view-ledger">
-      <button class="action-btn sec-btn" style="margin:12px 14px;width:calc(100% - 28px);" onclick="switchView('view-bills')">
-        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="ledger.backToLedgers">Back to ledgers</span>
+      <button class="btn btn-sec" style="margin:12px 14px;width:calc(100% - 28px);" onclick="switchView('view-bills')">
+        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="common.back">Back</span>
       </button>
-      <div class="profile-hero" id="ledger-hero">
-        <div class="profile-avatar-lg" id="ledger-icon" style="font-size:1.5rem;"><i class="fa-solid fa-folder-open"></i></div>
-        <div class="profile-name-lg" id="ledger-name">-</div>
-        <div style="font-size:0.75rem;color:var(--txt2);margin-top:4px;" data-i18n="ledger.openAccount">Open account ledger</div>
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <p data-i18n="ledger.totalAdded">Total added</p>
-            <h3 style="color:var(--o)" id="ledger-added">0.00</h3>
-          </div>
-          <div class="profile-stat">
-            <p data-i18n="ledger.totalPaid">Total paid</p>
-            <h3 style="color:var(--g)" id="ledger-paid">0.00</h3>
+      <div class="bank-card" id="ledger-card">
+        <div class="bc-hero">
+          <div style="width:52px;height:52px;border-radius:16px;background:rgba(0,195,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;" id="ledger-icon-el"></div>
+          <div style="flex:1;">
+            <div style="font-size:1.1rem;font-weight:900;" id="ledger-name-el"></div>
+            <div style="font-size:.7rem;color:var(--txt2);margin-top:3px;" data-i18n="ledger.openAccount">Open account ledger</div>
           </div>
         </div>
-        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
-          <p style="font-size:0.75rem;color:var(--txt2);" data-i18n="ledger.remainingOnYou">Remaining on this ledger</p>
-          <h2 id="ledger-remaining" style="font-family:var(--mono);font-size:1.8rem;font-weight:800;color:var(--r);margin-top:4px;">0.00</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--border);">
+          <div style="background:var(--surface);padding:14px 16px;border-bottom:1px solid var(--border);">
+            <div style="font-size:.65rem;color:var(--txt3);margin-bottom:4px;" data-i18n="ledger.added">Total added</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--o);" id="ledger-added"></div>
+          </div>
+          <div style="background:var(--surface);padding:14px 16px;border-bottom:1px solid var(--border);border-right:none;">
+            <div style="font-size:.65rem;color:var(--txt3);margin-bottom:4px;" data-i18n="ledger.paid">Total paid</div>
+            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--g);" id="ledger-paid"></div>
+          </div>
+          <div style="grid-column:1/-1;background:var(--surface);padding:12px 16px;">
+            <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--txt3);">
+              <span data-i18n="ledger.remaining">Remaining on this ledger</span>
+              <span id="ledger-rem-pct" style="font-family:var(--mono);font-weight:700;"></span>
+            </div>
+            <div class="pbar" style="margin-top:5px;"><div class="pbar-fill" id="ledger-rem-bar"></div></div>
+            <div style="font-family:var(--mono);font-size:1.5rem;font-weight:800;margin-top:8px;" id="ledger-remaining"></div>
+          </div>
         </div>
       </div>
-      <div class="action-row">
-        <button class="action-btn withdraw-btn" onclick="openLedgerAddModal()"><i class="fa-solid fa-plus"></i> <span data-i18n="ledger.addAmount">Add amount</span></button>
-        <button class="action-btn deposit-btn" onclick="openLedgerPayModal()"><i class="fa-solid fa-money-bill-wave"></i> <span data-i18n="ledger.payAmount">Pay amount</span></button>
+      <div style="display:flex;gap:8px;padding:8px 14px;">
+        <button class="btn bc-btn-o" style="flex:1;padding:11px;border-radius:12px;" onclick="openLedgerAdd()"><i class="fa-solid fa-plus"></i> <span data-i18n="ledger.addAmt">Add</span></button>
+        <button class="btn bc-btn-g" style="flex:1;padding:11px;border-radius:12px;" onclick="openLedgerPay()"><i class="fa-solid fa-money-bill-wave"></i> <span data-i18n="ledger.payAmt">Pay</span></button>
+        <button class="btn btn-sec" style="padding:11px 14px;border-radius:12px;" onclick="openEditCat()"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-danger" style="padding:11px 14px;border-radius:12px;" onclick="deleteActiveLedger()"><i class="fa-solid fa-trash"></i></button>
       </div>
       <div class="card">
-        <div class="card-title"><i class="fa-solid fa-list-check"></i> <span data-i18n="ledger.activityLog">Ledger activity log</span></div>
-        <div class="timeline" id="ledger-timeline"></div>
-      </div>
-      <div style="padding:0 14px 20px;display:flex;gap:10px;">
-        <button class="action-btn sec-btn" onclick="openEditCatModal()" style="flex:1;">
-          <i class="fa-solid fa-pen"></i> <span data-i18n="ledger.editCategory">Edit category</span>
-        </button>
-        <button class="action-btn danger-btn" onclick="deleteActiveLedger()" style="flex:1;">
-          <i class="fa-solid fa-trash"></i> <span data-i18n="ledger.deleteCategory">Delete category</span>
-        </button>
+        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;" data-i18n="ledger.log">Activity log</div>
+        <div class="tl" id="ledger-tl"></div>
       </div>
     </div>
 
-    <!-- ══ VIEW: PEOPLE ══ -->
+    <!-- ══ PEOPLE ══ -->
     <div class="view" id="view-people">
-      <div class="sec-hdr"><h3 data-i18n="people.allPeople">All People</h3><a onclick="openModal('modal-add-person')" data-i18n="common.addPlus">+ Add</a></div>
-      <div id="people-full-list"></div>
+      <div class="sec-hdr"><h3 data-i18n="people.all">All People</h3><a onclick="openModal('modal-add-person')" data-i18n="common.newPlus">+ Add</a></div>
+      <div id="people-list"></div>
     </div>
 
-    <!-- ══ VIEW: ANALYTICS ══ -->
+    <!-- ══ PERSON PROFILE — BANK CARD ══ -->
+    <div class="view" id="view-person">
+      <input type="file" id="ava-input" accept="image/*" style="display:none" onchange="handleAvaUpload(event)">
+      <button class="btn btn-sec" style="margin:12px 14px;width:calc(100% - 28px);" onclick="switchView('view-people')">
+        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="common.back">Back</span>
+      </button>
+
+      <!-- BANK CARD -->
+      <div class="bank-card" id="person-bank-card">
+
+        <!-- HERO -->
+        <div class="bc-hero">
+          <div class="bc-ava" id="bc-ava" onclick="triggerAva()">
+            <span id="bc-ava-emoji">👤</span>
+            <img id="bc-ava-img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" alt="">
+            <div class="cam-ov"><i class="fa-solid fa-camera" style="color:#fff;font-size:.9rem;"></i></div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div class="bc-name" id="bc-name">-</div>
+            <div class="bc-role" id="bc-role"></div>
+            <div id="bc-net" class="bc-net badge-n">—</div>
+          </div>
+        </div>
+        <div class="bc-div"></div>
+
+        <!-- RELATIONS (dynamic, injected by JS) -->
+        <div class="bc-relations" id="bc-relations"></div>
+
+        <!-- CLAIM LINK (for non-own people) -->
+        <div class="claim-zone" id="claim-zone" style="display:none;">
+          <button class="btn bc-btn-b" style="width:100%;padding:10px;border-radius:11px;" onclick="generateClaimLink()">
+            <i class="fa-solid fa-link"></i> <span data-i18n="person.claimLink">Generate claim link</span>
+          </button>
+          <div class="claim-link-box" id="claim-link-box"></div>
+          <button class="copy-btn" id="claim-copy-btn" onclick="copyClaimLink()">
+            <i class="fa-solid fa-copy"></i> <span data-i18n="person.copyLink">Copy link</span>
+          </button>
+          <p id="claim-note" style="font-size:.68rem;color:var(--txt3);margin-top:6px;display:none;" data-i18n="person.claimNote">Share so they can view their balance</p>
+        </div>
+
+        <!-- LOG -->
+        <div class="bc-log-section">
+          <div class="bc-log-hdr">
+            <span style="font-size:.82rem;font-weight:700;" data-i18n="person.log">Transaction log</span>
+            <div class="log-filters">
+              <div class="lf-pill on" id="lf-all" onclick="setLogFilter('all')" data-i18n="log.all">All</div>
+              <div class="lf-pill" id="lf-deposit" onclick="setLogFilter('deposit')">📥</div>
+              <div class="lf-pill" id="lf-withdraw" onclick="setLogFilter('withdraw')">📤</div>
+              <div class="lf-pill" id="lf-return" onclick="setLogFilter('return')">✅</div>
+            </div>
+          </div>
+          <div class="tl" id="person-tl"></div>
+        </div>
+
+      </div><!-- /bank-card -->
+
+      <div style="padding:4px 14px 24px;display:flex;gap:8px;">
+        <button class="btn btn-danger" id="p-delete-btn" onclick="deleteActivePerson()" style="flex:1;">
+          <i class="fa-solid fa-user-xmark"></i> <span data-i18n="person.delete">Delete profile</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ ANALYTICS ══ -->
     <div class="view" id="view-analytics">
       <div class="card">
-        <div class="card-title"><i class="fa-solid fa-chart-donut" style="color:var(--p)"></i> <span data-i18n="analytics.distribution">Ledger Distribution</span></div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+          <i class="fa-solid fa-chart-donut" style="color:var(--p)"></i> <span data-i18n="an.dist">Ledger Distribution</span>
+        </div>
         <div class="chart-wrap"><canvas id="chart-donut"></canvas></div>
-        <div id="chart-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center;"></div>
+        <div id="chart-legend" style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;justify-content:center;"></div>
       </div>
-      <div class="analytics-grid">
-        <div class="analytics-card">
-          <div class="ac-label" data-i18n="analytics.totalLedgersLogged">Ledgers tracked</div>
-          <div class="ac-val" id="an-total-bills" style="color:var(--o)">0</div>
-          <div class="ac-trend" style="color:var(--txt3)" data-i18n="analytics.ledgerUnit">ledgers</div>
-        </div>
-        <div class="analytics-card">
-          <div class="ac-label" data-i18n="analytics.paidRate">Payment rate</div>
-          <div class="ac-val" id="an-paid-pct" style="color:var(--g)">0%</div>
-          <div class="ac-trend" style="color:var(--txt3)" data-i18n="analytics.ofTotal">of total</div>
-        </div>
-        <div class="analytics-card">
-          <div class="ac-label" data-i18n="analytics.biggestDebt">Largest remaining debt</div>
-          <div class="ac-val" id="an-max-debt" style="color:var(--r)">0</div>
-          <div class="ac-trend" id="an-max-debt-name" style="color:var(--txt3)">-</div>
-        </div>
-        <div class="analytics-card">
-          <div class="ac-label" data-i18n="analytics.totalPeople">Total people</div>
-          <div class="ac-val" id="an-people-count" style="color:var(--b)">0</div>
-          <div class="ac-trend" style="color:var(--txt3)" data-i18n="analytics.peopleUnit">people</div>
-        </div>
-        <div class="analytics-card full-width-card">
-          <div class="ac-label" style="margin-bottom:10px;" data-i18n="analytics.categoryChart">Category breakdown</div>
-          <div style="height:160px;"><canvas id="chart-bar"></canvas></div>
-        </div>
+      <div class="an-grid">
+        <div class="an-card"><div class="an-label" data-i18n="an.ledgers">Ledgers tracked</div><div class="an-val" id="an-ledgers" style="color:var(--o)">0</div></div>
+        <div class="an-card"><div class="an-label" data-i18n="an.paidPct">Payment rate</div><div class="an-val" id="an-pct" style="color:var(--g)">0%</div></div>
+        <div class="an-card"><div class="an-label" data-i18n="an.bigDebt">Largest remaining</div><div class="an-val" id="an-max" style="color:var(--r)">0</div><div class="an-sub" id="an-max-name"></div></div>
+        <div class="an-card"><div class="an-label" data-i18n="an.people">People tracked</div><div class="an-val" id="an-people" style="color:var(--b)">0</div></div>
+        <div class="an-card an-full"><div class="an-label" style="margin-bottom:8px;" data-i18n="an.cats">Category breakdown</div><div style="height:150px;"><canvas id="chart-bar"></canvas></div></div>
       </div>
       <div style="height:20px;"></div>
     </div>
 
-    <!-- ══ VIEW: PERSON PROFILE ══ -->
-    <div class="view" id="view-person">
-      <button class="action-btn sec-btn" style="margin:12px 14px;width:calc(100% - 28px);" onclick="switchView('view-people')">
-        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="person.backToList">Back to list</span>
-      </button>
-      <div class="profile-hero">
-        <div class="profile-avatar-lg" id="p-avatar-lg">👤</div>
-        <div class="profile-name-lg" id="p-name-lg">-</div>
-        <div style="font-size:0.75rem;color:var(--txt2);margin-top:4px;" id="p-role" data-i18n="person.financialProfile">Financial profile</div>
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <p data-i18n="person.trustsHeld">Trusts held for them</p>
-            <h3 style="color:var(--b)" id="p-trust">0.00</h3>
-          </div>
-          <div class="profile-stat">
-            <p data-i18n="person.loansOwed">Loans owed by them</p>
-            <h3 style="color:var(--o)" id="p-loan">0.00</h3>
-          </div>
-        </div>
-      </div>
-      <div class="action-row">
-        <button class="action-btn deposit-btn" onclick="openModal('modal-p-deposit')"><i class="fa-solid fa-box-archive"></i> <span data-i18n="person.deposit">Deposit</span></button>
-        <button class="action-btn withdraw-btn" onclick="openModal('modal-p-withdraw')"><i class="fa-solid fa-hand-holding-dollar"></i> <span data-i18n="person.withdraw">Withdraw</span></button>
-      </div>
-      <div class="card">
-        <div class="card-title"><i class="fa-solid fa-list-check"></i> <span data-i18n="person.transactionLog">Transaction log</span></div>
-        <div class="timeline" id="p-timeline"></div>
-      </div>
-      <div style="padding:0 14px 20px;">
-        <button class="action-btn danger-btn" id="p-delete-btn" onclick="deleteActivePerson()" style="width:100%;">
-          <i class="fa-solid fa-user-xmark"></i> <span data-i18n="person.deletePermanently">Delete this profile permanently</span>
-        </button>
-      </div>
-    </div>
-
   </div><!-- /scroll-area -->
 
-  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="switchView('view-home')">
-      <i class="fa-solid fa-house"></i><span data-i18n="nav.home">Home</span>
-    </div>
-    <div class="nav-item" id="nav-bills" onclick="switchView('view-bills')">
-      <i class="fa-solid fa-receipt"></i><span data-i18n="nav.bills">Bills</span>
-    </div>
-    <div class="nav-item" id="nav-people" onclick="switchView('view-people')">
-      <i class="fa-solid fa-users"></i><span data-i18n="nav.people">People</span>
-    </div>
-    <div class="nav-item" id="nav-analytics" onclick="switchView('view-analytics')">
-      <i class="fa-solid fa-chart-column"></i><span data-i18n="nav.analytics">Stats</span>
-    </div>
+    <div class="nav-item active" id="nav-home" onclick="switchView('view-home')"><i class="fa-solid fa-house"></i><span data-i18n="nav.home">Home</span></div>
+    <div class="nav-item" id="nav-bills" onclick="switchView('view-bills')"><i class="fa-solid fa-receipt"></i><span data-i18n="nav.bills">Bills</span></div>
+    <div class="nav-item" id="nav-people" onclick="switchView('view-people')"><i class="fa-solid fa-users"></i><span data-i18n="nav.people">People</span></div>
+    <div class="nav-item" id="nav-analytics" onclick="switchView('view-analytics')"><i class="fa-solid fa-chart-column"></i><span data-i18n="nav.stats">Stats</span></div>
   </nav>
 </div>
 
@@ -521,127 +519,15 @@ html[dir="ltr"] .sidebar.open{left:0;}
 <!-- ADD CATEGORY -->
 <div class="modal" id="modal-add-cat">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.newCategoryTitle">📁 New bill category</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.categoryName">Category name</label>
-      <input class="form-input" id="f-cat-name" placeholder="e.g. Groceries, Electricity, Rent..." data-i18n-placeholder="form.categoryNamePh">
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.categoryBudget">Monthly budget for this category (optional)</label>
-      <input class="form-input" id="f-cat-budget" type="number" placeholder="0">
-    </div>
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.addCat">📁 New bill category</div>
+    <div class="fg"><label class="fl" data-i18n="f.catName">Category name</label>
+      <input class="fi" id="f-cat-name" placeholder="e.g. Groceries, Electricity..."></div>
+    <div class="fg"><label class="fl" data-i18n="f.catBudget">Monthly budget (optional)</label>
+      <input class="fi" id="f-cat-budget" type="number" placeholder="0"></div>
     <div class="btn-row">
-      <button class="action-btn primary-btn" onclick="addCategory()" data-i18n="common.saveCategory">Save category</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-add-cat')" data-i18n="common.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD PERSON -->
-<div class="modal" id="modal-add-person">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.newPersonTitle">👥 Add new person</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.fullName">Full name</label>
-      <input class="form-input" id="f-person-name" placeholder="Type the name here..." data-i18n-placeholder="form.fullNamePh">
-    </div>
-    <div class="btn-row">
-      <button class="action-btn primary-btn" onclick="addPerson()" data-i18n="common.add">Add</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-add-person')" data-i18n="common.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- QUICK ADD TO LEDGER (from home) -->
-<div class="modal" id="modal-quick-add">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.quickAddTitle">📥 Add amount to a ledger</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.chooseLedger">Choose the ledger / category</label>
-      <select class="form-input" id="qa-cat-select"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.amount">Amount (SAR)</label>
-      <input class="form-input" id="qa-amt" type="number" placeholder="0.00">
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.details">Description / details</label>
-      <input class="form-input" id="qa-reason" placeholder="e.g. This week's groceries..." data-i18n-placeholder="form.weeklyGroceriesPh">
-    </div>
-    <div class="btn-row">
-      <button class="action-btn primary-btn" onclick="quickAddToLedger()" data-i18n="common.addToLedgerBtn">Add to ledger</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-quick-add')" data-i18n="common.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- QUICK PAY FROM LEDGER (from home) -->
-<div class="modal" id="modal-quick-pay">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.quickPayTitle">💸 Pay from a ledger</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.chooseLedger">Choose the ledger / category</label>
-      <select class="form-input" id="qp-cat-select" onchange="updateQuickPayInfo()"></select>
-    </div>
-    <div class="card-sm" id="qp-info-box" style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
-        <span style="color:var(--txt2)" data-i18n="form.remainingOnLedger">Remaining on this ledger:</span>
-        <span id="qp-remaining" style="font-family:var(--mono);color:var(--r);font-weight:700;"></span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.amountToPay">Amount to pay</label>
-      <input class="form-input" id="qp-amt" type="number" placeholder="0.00">
-    </div>
-    <div class="btn-row">
-      <button class="action-btn primary-btn" style="background:linear-gradient(135deg,var(--g),#00c3ff);" onclick="quickPayFromLedger()" data-i18n="common.confirmPayment">Confirm payment</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-quick-pay')" data-i18n="common.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- LEDGER DETAIL: ADD AMOUNT -->
-<div class="modal" id="modal-ledger-add">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.ledgerAddTitle">📥 Add amount to the ledger</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.amount">Amount (SAR)</label>
-      <input class="form-input" id="la-amt" type="number" placeholder="0.00">
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.details">Description / details</label>
-      <input class="form-input" id="la-reason" placeholder="e.g. Today's grocery bill..." data-i18n-placeholder="form.todayGroceryPh">
-    </div>
-    <div class="btn-row">
-      <button class="action-btn primary-btn" onclick="ledgerAdd()" data-i18n="common.addToLedgerBtn">Add to ledger</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-ledger-add')" data-i18n="common.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- LEDGER DETAIL: PAY AMOUNT -->
-<div class="modal" id="modal-ledger-pay">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.ledgerPayTitle">💸 Pay amount from the ledger</div>
-    <div class="card-sm" style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
-        <span style="color:var(--txt2)" data-i18n="form.currentlyRemaining">Currently remaining:</span>
-        <span id="la-pay-remaining" style="font-family:var(--mono);color:var(--r);font-weight:700;"></span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.amountToPay">Amount to pay</label>
-      <input class="form-input" id="la-pay-amt" type="number" placeholder="0.00">
-    </div>
-    <div class="btn-row">
-      <button class="action-btn primary-btn" style="background:linear-gradient(135deg,var(--g),#00c3ff);" onclick="ledgerPay()" data-i18n="common.confirmPayment">Confirm payment</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-ledger-pay')" data-i18n="common.cancel">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="addCategory()" data-i18n="c.save">Save</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-add-cat')" data-i18n="c.cancel">Cancel</button>
     </div>
   </div>
 </div>
@@ -649,1033 +535,974 @@ html[dir="ltr"] .sidebar.open{left:0;}
 <!-- EDIT CATEGORY -->
 <div class="modal" id="modal-edit-cat">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.editCategoryTitle">✏️ Edit category</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.categoryName">Category name</label>
-      <input class="form-input" id="ec-name" placeholder="Category name" data-i18n-placeholder="form.categoryNameSimplePh">
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.monthlyBudgetOptional">Monthly budget (optional)</label>
-      <input class="form-input" id="ec-budget" type="number" placeholder="0">
-    </div>
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.editCat">✏️ Edit category</div>
+    <div class="fg"><label class="fl" data-i18n="f.catName">Name</label><input class="fi" id="ec-name"></div>
+    <div class="fg"><label class="fl" data-i18n="f.catBudget">Monthly budget (optional)</label><input class="fi" id="ec-budget" type="number" placeholder="0"></div>
     <div class="btn-row">
-      <button class="action-btn primary-btn" onclick="saveEditCat()" data-i18n="common.saveChanges">Save changes</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-edit-cat')" data-i18n="common.cancel">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveEditCat()" data-i18n="c.save">Save</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-edit-cat')" data-i18n="c.cancel">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- PERSON DEPOSIT -->
-<div class="modal" id="modal-p-deposit">
+<!-- LEDGER ADD -->
+<div class="modal" id="modal-ledger-add">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.depositTitle">📥 Deposit / trust transaction</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.amount">Amount (SAR)</label>
-      <input class="form-input" id="f-dep-amt" type="number" placeholder="0.00">
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.description">Description</label>
-      <input class="form-input" id="f-dep-reason" placeholder="Deposit details..." data-i18n-placeholder="form.depositDetailsPh">
-    </div>
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.ledgerAdd">📥 Add amount to ledger</div>
+    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="la-amt" type="number" placeholder="0.00"></div>
+    <div class="fg"><label class="fl" data-i18n="f.desc">Description</label><input class="fi" id="la-reason" placeholder="Details..."></div>
     <div class="btn-row">
-      <button class="action-btn deposit-btn" onclick="personAction('deposit')" data-i18n="common.confirmDeposit">Confirm deposit</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-p-deposit')" data-i18n="common.cancel">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="ledgerAdd()" data-i18n="c.add">Add</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-ledger-add')" data-i18n="c.cancel">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- PERSON WITHDRAW -->
-<div class="modal" id="modal-p-withdraw">
+<!-- LEDGER PAY -->
+<div class="modal" id="modal-ledger-pay">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.withdrawTitle">📤 Withdraw / loan transaction</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.amount">Amount (SAR)</label>
-      <input class="form-input" id="f-wit-amt" type="number" placeholder="0.00">
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.ledgerPay">💸 Pay from ledger</div>
+    <div class="card-sm" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+        <span style="color:var(--txt2)" data-i18n="f.remaining">Remaining:</span>
+        <span id="lp-rem" style="font-family:var(--mono);color:var(--r);font-weight:700;"></span>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.description">Description</label>
-      <input class="form-input" id="f-wit-reason" placeholder="Reason for withdrawal..." data-i18n-placeholder="form.withdrawReasonPh">
-    </div>
+    <div class="fg"><label class="fl" data-i18n="f.amt">Amount</label><input class="fi" id="lp-amt" type="number" placeholder="0.00"></div>
     <div class="btn-row">
-      <button class="action-btn withdraw-btn" onclick="personAction('withdraw')" data-i18n="common.confirmWithdraw">Confirm withdrawal</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-p-withdraw')" data-i18n="common.cancel">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;background:linear-gradient(135deg,var(--g),var(--b));" onclick="ledgerPay()" data-i18n="c.confirm">Confirm</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-ledger-pay')" data-i18n="c.cancel">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- BUDGET SETUP -->
+<!-- QUICK ADD/PAY -->
+<div class="modal" id="modal-quick">
+  <div class="modal-sheet">
+    <div class="mh"></div>
+    <div class="mt" id="quick-title"></div>
+    <div class="fg"><label class="fl" data-i18n="f.chooseLedger">Choose ledger</label><select class="fi" id="quick-cat-select" onchange="updateQuickRem()"></select></div>
+    <div class="card-sm" id="quick-rem-box" style="margin-bottom:12px;display:none;">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+        <span style="color:var(--txt2)" data-i18n="f.remaining">Remaining:</span>
+        <span id="quick-rem" style="font-family:var(--mono);color:var(--r);font-weight:700;"></span>
+      </div>
+    </div>
+    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="quick-amt" type="number" placeholder="0.00"></div>
+    <div class="fg"><label class="fl" data-i18n="f.desc">Description</label><input class="fi" id="quick-reason" placeholder="Details..."></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" style="flex:1" id="quick-confirm-btn" onclick="confirmQuick()" data-i18n="c.confirm">Confirm</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-quick')" data-i18n="c.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PERSON -->
+<div class="modal" id="modal-add-person">
+  <div class="modal-sheet">
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.addPerson">👤 Add new person</div>
+    <div class="fg"><label class="fl" data-i18n="f.name">Full name</label><input class="fi" id="f-pname" placeholder="Name..."></div>
+    <div class="fg">
+      <label class="fl" data-i18n="f.photo">Photo <span style="color:var(--txt3);font-weight:400;">(optional)</span></label>
+      <div class="ava-zone" onclick="document.getElementById('new-ava-input').click()">
+        <div class="ava-ph" id="new-ava-ph">👤<img id="new-ava-prev" style="display:none;width:100%;height:100%;object-fit:cover;" alt=""></div>
+        <div><div style="font-size:.83rem;font-weight:600;" data-i18n="f.tapPhoto">Tap to upload photo</div><div style="font-size:.7rem;color:var(--txt3);margin-top:2px;">Optional · JPG, PNG</div></div>
+      </div>
+      <input type="file" id="new-ava-input" accept="image/*" style="display:none" onchange="previewNewAva(event)">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" style="flex:1" onclick="addPerson()" data-i18n="c.add">Add</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-add-person')" data-i18n="c.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- PERSON ACTION MODAL (deposit/withdraw/return) -->
+<div class="modal" id="modal-person-action">
+  <div class="modal-sheet">
+    <div class="mh"></div>
+    <div class="mt" id="paction-title"></div>
+    <div class="card-sm" id="paction-info-box" style="margin-bottom:12px;display:none;">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;">
+        <span style="color:var(--txt2);" id="paction-info-label"></span>
+        <span id="paction-info-val" style="font-family:var(--mono);font-weight:700;"></span>
+      </div>
+    </div>
+    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="paction-amt" type="number" placeholder="0.00"></div>
+    <div class="fg"><label class="fl" data-i18n="f.desc">Description</label><input class="fi" id="paction-reason" placeholder="Details..."></div>
+    <div class="fg" id="paction-receipt-group">
+      <label class="fl">🧾 <span data-i18n="f.receipt">Receipt</span> <span style="color:var(--txt3);font-weight:400;">(optional)</span></label>
+      <div class="receipt-zone" onclick="document.getElementById('receipt-input').click()">
+        <i class="fa-solid fa-camera" style="color:var(--p);font-size:.95rem;"></i>
+        <span data-i18n="f.tapReceipt">Tap to attach photo</span>
+      </div>
+      <input type="file" id="receipt-input" accept="image/*" style="display:none" onchange="previewReceipt(event)">
+      <img id="receipt-prev" class="receipt-thumb" alt="">
+      <button id="receipt-clear" style="display:none;background:none;border:none;color:var(--r);font-size:.7rem;cursor:pointer;margin-top:4px;" onclick="clearReceipt()">✕ Remove</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" style="flex:1" id="paction-confirm" onclick="confirmPersonAction()" data-i18n="c.confirm">Confirm</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-person-action')" data-i18n="c.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MY WALLET DEBT MODAL -->
+<div class="modal" id="modal-my-debt">
+  <div class="modal-sheet">
+    <div class="mh"></div>
+    <div class="mt" id="mydebt-title"></div>
+    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="mydebt-amt" type="number" placeholder="0.00"></div>
+    <div class="fg"><label class="fl" data-i18n="f.desc">Description (from whom / to whom)</label><input class="fi" id="mydebt-reason" placeholder="e.g. Borrowed from Ahmed..."></div>
+    <div class="fg" id="mydebt-receipt-group">
+      <label class="fl">🧾 <span data-i18n="f.receipt">Receipt</span> <span style="color:var(--txt3);font-weight:400;">(optional)</span></label>
+      <div class="receipt-zone" onclick="document.getElementById('mydebt-receipt-input').click()">
+        <i class="fa-solid fa-camera" style="color:var(--p);font-size:.95rem;"></i>
+        <span data-i18n="f.tapReceipt">Tap to attach photo</span>
+      </div>
+      <input type="file" id="mydebt-receipt-input" accept="image/*" style="display:none" onchange="previewMyDebtReceipt(event)">
+      <img id="mydebt-receipt-prev" class="receipt-thumb" alt="">
+      <button id="mydebt-receipt-clear" style="display:none;background:none;border:none;color:var(--r);font-size:.7rem;cursor:pointer;margin-top:4px;" onclick="clearMyDebtReceipt()">✕ Remove</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" style="flex:1" id="mydebt-confirm" onclick="confirmMyDebt()" data-i18n="c.confirm">Confirm</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-my-debt')" data-i18n="c.cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUDGET -->
 <div class="modal" id="modal-budget">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.budgetTitle">📊 Monthly budget</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form.totalMonthlyBudget">Total monthly budget (SAR)</label>
-      <input class="form-input" id="f-total-budget" type="number" placeholder="e.g. 5000" data-i18n-placeholder="form.budgetExamplePh">
-    </div>
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.budget">📊 Monthly Budget</div>
+    <div class="fg"><label class="fl" data-i18n="f.totalBudget">Total monthly budget (SAR)</label><input class="fi" id="f-total-budget" type="number" placeholder="5000"></div>
     <div id="cat-budget-inputs"></div>
     <div class="btn-row">
-      <button class="action-btn primary-btn" onclick="saveBudget()" data-i18n="common.saveBudget">Save budget</button>
-      <button class="action-btn sec-btn" onclick="closeModal('modal-budget')" data-i18n="common.cancel">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveBudget()" data-i18n="c.save">Save</button>
+      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-budget')" data-i18n="c.cancel">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- ALERTS MODAL -->
+<!-- ALERTS -->
 <div class="modal" id="modal-alerts">
   <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" data-i18n="modal.alertsTitle">🔔 Smart alerts</div>
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.alerts">🔔 Smart Alerts</div>
     <div id="alerts-list"></div>
-    <div class="btn-row"><button class="action-btn sec-btn" style="width:100%;" onclick="closeModal('modal-alerts')" data-i18n="common.close">Close</button></div>
+    <div class="btn-row"><button class="btn btn-sec" style="width:100%" onclick="closeModal('modal-alerts')" data-i18n="c.close">Close</button></div>
+  </div>
+</div>
+
+<!-- RECEIPT VIEWER -->
+<div class="modal" id="modal-receipt">
+  <div class="modal-sheet" style="text-align:center;">
+    <div class="mh"></div>
+    <div class="mt" data-i18n="m.receipt">🧾 Receipt</div>
+    <img id="receipt-view-img" style="width:100%;border-radius:12px;max-height:55vh;object-fit:contain;" alt="">
+    <div class="btn-row"><button class="btn btn-sec" style="width:100%;margin-top:12px;" onclick="closeModal('modal-receipt')" data-i18n="c.close">Close</button></div>
   </div>
 </div>
 
 <script>
-// ═══════════════ I18N ═══════════════
+// ═══════════ I18N ═══════════
 const I18N = {
-en: {
-  'app.title':'Family Wallet', 'app.subtitle':'FAMILY WALLET PRO',
-  'common.currency':'Saudi Riyal', 'common.viewAll':'View all', 'common.addPlus':'+ Add',
-  'common.cancel':'Cancel', 'common.add':'Add', 'common.close':'Close',
-  'common.saveCategory':'Save category', 'common.saveChanges':'Save changes', 'common.saveBudget':'Save budget',
-  'common.addToLedgerBtn':'Add to ledger', 'common.confirmPayment':'Confirm payment',
-  'common.confirmDeposit':'Confirm deposit', 'common.confirmWithdraw':'Confirm withdrawal',
-  'home.netLiquidity':'💰 Net Total Liquidity', 'home.updatedNow':'Updated now', 'home.negativeBalance':'Negative balance!',
-  'home.trusts':'Trusts', 'home.loans':'Loans', 'home.bills':'Bills',
-  'home.quickActions':'Quick Actions', 'home.addToLedger':'Add to ledger', 'home.payLedger':'Pay ledger',
-  'home.newPerson':'New person', 'home.newCategory':'New category', 'home.peopleAccounts':'People & Accounts',
-  'home.recentActivity':'Recent activity', 'home.monthlyBudget':'Monthly Budget', 'home.noBudgetYet':'No budget set yet',
-  'home.activateBudget':'Set up budget', 'home.noActivityYet':'No activity yet', 'home.alertsSuffix':'alert(s) need your attention -',
-  'home.spent':'Spent', 'home.budgetLabel':'Budget', 'home.remainingTotal':'Total remaining',
-  'bills.ledgers':'Account Ledgers', 'bills.newCategoryPlus':'+ New category',
-  'bills.summary':(n,a,r)=>`${n} ledger(s) | Total added: ${a} SAR | Remaining: ${r} SAR`,
-  'bills.noLedgers':'No account ledgers yet', 'bills.fullyPaid':'✓ Fully paid', 'bills.partiallyPaid':'◑ Partially paid',
-  'bills.unpaid':'○ Unpaid', 'bills.overBudget':'⚠ Over budget', 'bills.noBudgetSet':'No budget set',
-  'bills.budgetColon':(b)=>`Budget: ${b} SAR`, 'bills.fromTotal':(t)=>`of ${t} SAR`, 'bills.paymentPct':(p)=>`Payment rate ${p}%`,
-  'ledger.backToLedgers':'Back to ledgers', 'ledger.openAccount':'Open account ledger',
-  'ledger.totalAdded':'Total added', 'ledger.totalPaid':'Total paid', 'ledger.remainingOnYou':'Remaining on this ledger',
-  'ledger.addAmount':'Add amount', 'ledger.payAmount':'Pay amount', 'ledger.activityLog':'Ledger activity log',
-  'ledger.editCategory':'Edit category', 'ledger.deleteCategory':'Delete category', 'ledger.noActivity':'No activity in this ledger yet',
-  'ledger.addedToLedger':'Added to ledger', 'ledger.paidFromLedger':'Paid from ledger',
-  'people.allPeople':'All People',
-  'analytics.distribution':'Ledger Distribution', 'analytics.totalLedgersLogged':'Ledgers tracked', 'analytics.ledgerUnit':'ledgers',
-  'analytics.paidRate':'Payment rate', 'analytics.ofTotal':'of total', 'analytics.biggestDebt':'Largest remaining debt',
-  'analytics.totalPeople':'Total people', 'analytics.peopleUnit':'people', 'analytics.categoryChart':'Category breakdown',
-  'analytics.noDebt':'No debt', 'analytics.noData':'No data available',
-  'person.backToList':'Back to list', 'person.financialProfile':'Financial profile', 'person.ownAccount':'⚙️ Your personal account',
-  'person.externalProfile':'👤 External profile', 'person.trustsHeld':'Trusts held for them', 'person.loansOwed':'Loans owed by them',
-  'person.deposit':'Deposit', 'person.withdraw':'Withdraw', 'person.transactionLog':'Transaction log',
-  'person.deletePermanently':'Delete this profile permanently', 'person.noTransactions':'No transactions recorded yet',
-  'person.netFreeLiquidity':(v)=>`Net free liquidity: ${v} SAR`, 'person.trustsLoans':(t,l)=>`Trusts: ${t} | Loans: ${l}`,
-  'person.depositLabel':'Deposit', 'person.withdrawLabel':'Withdraw',
-  'nav.home':'Home', 'nav.bills':'Bills', 'nav.people':'People', 'nav.analytics':'Stats',
-  'modal.newCategoryTitle':'📁 New bill category', 'modal.newPersonTitle':'👥 Add new person',
-  'modal.quickAddTitle':'📥 Add amount to a ledger', 'modal.quickPayTitle':'💸 Pay from a ledger',
-  'modal.ledgerAddTitle':'📥 Add amount to the ledger', 'modal.ledgerPayTitle':'💸 Pay amount from the ledger',
-  'modal.editCategoryTitle':'✏️ Edit category', 'modal.depositTitle':'📥 Deposit / trust transaction',
-  'modal.withdrawTitle':'📤 Withdraw / loan transaction', 'modal.budgetTitle':'📊 Monthly budget',
-  'modal.alertsTitle':'🔔 Smart alerts',
-  'form.categoryName':'Category name', 'form.categoryNamePh':'e.g. Groceries, Electricity, Rent...',
-  'form.categoryBudget':'Monthly budget for this category (optional)', 'form.fullName':'Full name',
-  'form.fullNamePh':'Type the name here...', 'form.chooseLedger':'Choose the ledger / category',
-  'form.amount':'Amount (SAR)', 'form.details':'Description / details', 'form.weeklyGroceriesPh':"e.g. This week's groceries...",
-  'form.remainingOnLedger':'Remaining on this ledger:', 'form.amountToPay':'Amount to pay',
-  'form.todayGroceryPh':"e.g. Today's grocery bill...", 'form.currentlyRemaining':'Currently remaining:',
-  'form.categoryNameSimplePh':'Category name', 'form.monthlyBudgetOptional':'Monthly budget (optional)',
-  'form.description':'Description', 'form.depositDetailsPh':'Deposit details...', 'form.withdrawReasonPh':'Reason for withdrawal...',
-  'form.totalMonthlyBudget':'Total monthly budget (SAR)', 'form.budgetExamplePh':'e.g. 5000', 'form.budgetForCat':(n)=>`Budget for "${n}"`,
-  'sidebar.settingsTools':'Settings & Tools', 'sidebar.accountsPeople':'ACCOUNTS & PEOPLE', 'sidebar.addNewPerson':'Add new person',
-  'sidebar.setupBudget':'Set up monthly budget', 'sidebar.data':'DATA', 'sidebar.exportData':'Export data (JSON)',
-  'sidebar.importData':'Import saved data', 'sidebar.clearAllData':'Clear all data',
-  'alert.noAlerts':'No alerts, everything looks great! 🎉',
-  'alert.totalDebtAccrued':(v)=>`You've accrued ${v} SAR in debt across your ledgers`,
-  'alert.ledgerAccrued':(n,v)=>`Ledger "${n}" has accrued ${v} SAR`,
-  'alert.budgetExceeded80':'Your debts exceed 80% of your monthly budget!',
-  'alert.ledgerOverBudget':(n,b)=>`Ledger "${n}" exceeded its set budget (${b} SAR)`,
-  'alert.bigLoan':(n,v)=>`${n} owes a large loan: ${v} SAR`,
+en:{
+  'app.title':'Family Wallet','sb.title':'Settings & Tools','sb.accounts':'ACCOUNTS & PEOPLE',
+  'sb.addPerson':'Add new person','sb.budget':'Monthly budget','sb.data':'DATA',
+  'sb.export':'Export (JSON)','sb.import':'Import backup','sb.reset':'Clear all data',
+  'home.netLiq':'💰 Net Total Liquidity','home.updated':'Updated now','home.negBal':'Negative balance!',
+  'common.sar':'Saudi Riyal','common.all':'View all','common.back':'Back','common.newPlus':'+ New',
+  'home.myMoney':'My funds','home.trusts':'Trusts','home.bills':'Bills',
+  'home.quick':'Quick Actions','home.addLedger':'Add to ledger','home.payLedger':'Pay ledger',
+  'home.newPerson':'New person','home.newCat':'New category',
+  'home.people':'People','home.recent':'Recent activity','home.budgetTitle':'Monthly Budget',
+  'home.noBudget':'No budget set','home.setBudget':'Set up budget',
+  'home.spent':'Spent','home.budgetOf':'Budget','home.totalRem':'Total remaining',
+  'bills.title':'Account Ledgers','ledger.openAccount':'Open account ledger',
+  'ledger.added':'Total added','ledger.paid':'Total paid','ledger.remaining':'Remaining',
+  'ledger.addAmt':'Add','ledger.payAmt':'Pay','ledger.log':'Activity log',
+  'ledger.noActivity':'No activity yet','ledger.addedOp':'Added to ledger','ledger.paidOp':'Paid from ledger',
+  'ledger.fullyPaid':'✓ Fully paid','ledger.partial':'◑ Partial','ledger.unpaid':'○ Unpaid',
+  'ledger.overBudget':'⚠ Over budget','ledger.payRate':'Payment rate',
+  'people.all':'All People',
+  'rel.trust':'🏦 Trust','rel.trustDesc':'Funds they deposited with me',
+  'rel.loanToThem':'📤 Loan to them','rel.loanToThemDesc':'I gave them a loan',
+  'rel.loanFromThem':'📥 Loan from them','rel.loanFromThemDesc':'They gave me a loan',
+  'rel.col.deposited':'Deposited','rel.col.withdrawn':'Withdrawn','rel.col.remaining':'Remaining',
+  'rel.col.given':'Given','rel.col.returned':'Returned','rel.col.owed':'Owed',
+  'rel.col.borrowed':'Borrowed','rel.col.repaid':'Repaid','rel.col.left':'Left to pay',
+  'rel.addTrust':'＋ Deposit','rel.returnTrust':'↩ Return trust',
+  'rel.giveLoan':'＋ Give loan','rel.markRepaid':'✓ Repaid',
+  'rel.takeLoan':'＋ Take loan','rel.payBack':'↩ Pay back',
+  'rel.myFunds':'💼 My Wallet','rel.myFundsDesc':'My personal free funds',
+  'rel.myDebt':'📋 My Debts','rel.myDebtDesc':'Debts I owe to others',
+  'rel.myDebtAmt':'Total I owe','rel.myDebtPaid':'Paid back','rel.myDebtLeft':'Still owe',
+  'rel.addDebt':'＋ Add debt','rel.payDebt':'↩ Pay back debt',
+  'rel.addFunds':'＋ Add funds','rel.removeFunds':'− Deduct funds',
+  'person.log':'Transaction log','person.delete':'Delete profile',
+  'person.ownAcc':'⚙️ My personal account','person.extProfile':'👤 External profile',
+  'person.claimLink':'Generate claim link','person.copyLink':'Copy link',
+  'person.claimNote':'Share so they can view their balance',
+  'person.noTx':'No transactions yet',
+  'log.all':'All','log.trustDeposit':'Trust deposit','log.trustReturn':'Trust returned',
+  'log.loanGiven':'Loan given','log.loanRepaid':'Loan repaid',
+  'log.loanTaken':'Loan taken','log.loanPaidBack':'Paid back loan',
+  'log.addFunds':'Funds added','log.deductFunds':'Funds deducted',
+  'log.addDebt':'Debt added','log.payDebt':'Debt paid back',
+  'an.dist':'Ledger Distribution','an.ledgers':'Ledgers','an.paidPct':'Payment rate',
+  'an.bigDebt':'Largest remaining','an.people':'People','an.cats':'Category breakdown',
+  'm.addCat':'📁 New bill category','m.editCat':'✏️ Edit category',
+  'm.ledgerAdd':'📥 Add to ledger','m.ledgerPay':'💸 Pay from ledger',
+  'm.addPerson':'👤 Add new person','m.budget':'📊 Monthly Budget',
+  'm.alerts':'🔔 Smart Alerts','m.receipt':'🧾 Receipt',
+  'f.catName':'Category name','f.catBudget':'Monthly budget (optional)',
+  'f.amt':'Amount (SAR)','f.desc':'Description','f.chooseLedger':'Choose ledger',
+  'f.remaining':'Remaining:','f.name':'Full name','f.photo':'Photo',
+  'f.tapPhoto':'Tap to upload photo','f.receipt':'Receipt','f.tapReceipt':'Tap to attach photo',
+  'f.totalBudget':'Total monthly budget (SAR)','f.budgetFor':(n)=>`Budget for "${n}"`,
+  'c.save':'Save','c.cancel':'Cancel','c.add':'Add','c.confirm':'Confirm','c.close':'Close',
+  'nav.home':'Home','nav.bills':'Bills','nav.people':'People','nav.stats':'Stats',
+  'alert.none':'No alerts — all good! 🎉',
+  'alert.totalDebt':(v)=>`You have ${v} SAR in unpaid ledger balances`,
+  'alert.ledgerHigh':(n,v)=>`Ledger "${n}" has ${v} SAR remaining`,
+  'alert.over80':'Your ledger debts exceed 80% of your monthly budget!',
+  'alert.catOver':(n,b)=>`"${n}" exceeded its budget of ${b} SAR`,
+  'alert.bigLoan':(n,v)=>`${n} owes you a large loan: ${v} SAR`,
+  'alert.myDebt':(v)=>`You have ${v} SAR in personal debts to pay back`,
   'confirm.deleteLedger':(n)=>`Delete ledger "${n}" permanently?`,
-  'confirm.deleteLedgerWithBalance':(v)=>`⚠️ This ledger still has ${v} SAR remaining. Deleting it will erase all its records permanently!\n\nDo you want to continue?`,
+  'confirm.deleteLedgerBal':(v)=>`⚠️ This ledger has ${v} SAR remaining. Delete anyway?`,
   'confirm.deletePerson':(n)=>`Delete "${n}" permanently?`,
-  'confirm.undoOperation':'Undo this operation?', 'confirm.undoTransaction':'Undo this transaction?',
-  'confirm.replaceData':'Replace current data with the imported file?', 'confirm.resetAll':'⚠️ Permanently erase all data?',
-  'alert.enterAmount':'Please enter a valid amount', 'alert.enterCategoryName':'Please enter a category name',
-  'alert.enterName':'Please enter the name', 'alert.enterReason':'Please enter the description',
-  'alert.chooseLedger':'Please choose a ledger', 'alert.invalidFile':'Invalid file', 'alert.noLedgersYet':'No ledgers yet',
-  'misc.quickPayment':'Quick payment', 'misc.paymentFromLedger':'Payment from ledger',
-  'misc.addedDash':(n)=>`Added - ${n}`, 'misc.paidDash':(n)=>`Paid - ${n}`, 'misc.ledgerPayment':(n)=>`Ledger payment: ${n}`,
-  'misc.depositDash':(n)=>`Deposit - ${n}`, 'misc.withdrawDash':(n)=>`Withdraw - ${n}`,
-  'misc.remainingLabel':(v)=>`(remaining: ${v})`,
+  'confirm.undo':'Undo this operation?',
+  'confirm.import':'Replace current data with imported file?',
+  'confirm.reset':'⚠️ Permanently erase ALL data?',
+  'err.enterAmt':'Please enter a valid amount','err.enterName':'Please enter a name',
+  'err.enterDesc':'Please enter a description','err.chooseLedger':'Please choose a ledger',
+  'err.invalidFile':'Invalid file',
+  'misc.addedTo':(n)=>`Added → ${n}`,'misc.paidFrom':(n)=>`Paid ← ${n}`,
 },
-ar: {
-  'app.title':'محفظة العائلة', 'app.subtitle':'FAMILY WALLET PRO',
-  'common.currency':'ريال سعودي', 'common.viewAll':'عرض الكل', 'common.addPlus':'+ إضافة',
-  'common.cancel':'إلغاء', 'common.add':'إضافة', 'common.close':'إغلاق',
-  'common.saveCategory':'حفظ الفئة', 'common.saveChanges':'حفظ التعديل', 'common.saveBudget':'حفظ الميزانية',
-  'common.addToLedgerBtn':'إضافة للدفتر', 'common.confirmPayment':'تأكيد التسديد',
-  'common.confirmDeposit':'تأكيد الإيداع', 'common.confirmWithdraw':'تأكيد السحب',
-  'home.netLiquidity':'💰 السيولة الكلية الصافية', 'home.updatedNow':'محدّث الآن', 'home.negativeBalance':'رصيد سالب!',
-  'home.trusts':'أمانات', 'home.loans':'سُلف', 'home.bills':'فواتير',
-  'home.quickActions':'إجراءات سريعة', 'home.addToLedger':'إضافة لدفتر', 'home.payLedger':'تسديد دفتر',
-  'home.newPerson':'شخص جديد', 'home.newCategory':'فئة جديدة', 'home.peopleAccounts':'الأشخاص والحسابات',
-  'home.recentActivity':'آخر الحركات', 'home.monthlyBudget':'الميزانية الشهرية', 'home.noBudgetYet':'لم تحدد ميزانية بعد',
-  'home.activateBudget':'تفعيل الميزانية', 'home.noActivityYet':'لا يوجد حركات بعد', 'home.alertsSuffix':'تنبيه يستحق انتباهك -',
-  'home.spent':'مُنفق', 'home.budgetLabel':'الميزانية', 'home.remainingTotal':'الإجمالي المتبقي',
-  'bills.ledgers':'دفاتر الحسابات', 'bills.newCategoryPlus':'+ فئة جديدة',
-  'bills.summary':(n,a,r)=>`${n} دفتر | إجمالي مُضاف: ${a} ر.س | متبقي: ${r} ر.س`,
-  'bills.noLedgers':'لا توجد دفاتر حسابات بعد', 'bills.fullyPaid':'✓ مسدد بالكامل', 'bills.partiallyPaid':'◑ مسدد جزئياً',
-  'bills.unpaid':'○ غير مسدد', 'bills.overBudget':'⚠ تجاوز الميزانية', 'bills.noBudgetSet':'بدون ميزانية محددة',
-  'bills.budgetColon':(b)=>`ميزانية: ${b} ر.س`, 'bills.fromTotal':(t)=>`من ${t} ر.س`, 'bills.paymentPct':(p)=>`نسبة التسديد ${p}%`,
-  'ledger.backToLedgers':'رجوع لدفاتر الحسابات', 'ledger.openAccount':'دفتر حساب مفتوح',
-  'ledger.totalAdded':'إجمالي مُضاف', 'ledger.totalPaid':'إجمالي مُسدد', 'ledger.remainingOnYou':'المتبقي عليك في هذا الدفتر',
-  'ledger.addAmount':'إضافة مبلغ', 'ledger.payAmount':'تسديد مبلغ', 'ledger.activityLog':'سجل عمليات هذا الدفتر',
-  'ledger.editCategory':'تعديل الفئة', 'ledger.deleteCategory':'حذف الفئة', 'ledger.noActivity':'لا توجد عمليات بعد في هذا الدفتر',
-  'ledger.addedToLedger':'إضافة للدفتر', 'ledger.paidFromLedger':'تسديد من الدفتر',
-  'people.allPeople':'جميع الأشخاص',
-  'analytics.distribution':'توزيع الديون', 'analytics.totalLedgersLogged':'إجمالي الدفاتر المسجلة', 'analytics.ledgerUnit':'دفتر',
-  'analytics.paidRate':'نسبة السداد', 'analytics.ofTotal':'من الإجمالي', 'analytics.biggestDebt':'أكبر دين متبقي',
-  'analytics.totalPeople':'إجمالي الأشخاص', 'analytics.peopleUnit':'شخص', 'analytics.categoryChart':'مخطط الفئات',
-  'analytics.noDebt':'لا يوجد ديون', 'analytics.noData':'لا توجد بيانات',
-  'person.backToList':'رجوع للقائمة', 'person.financialProfile':'ملف مالي', 'person.ownAccount':'⚙️ حسابك الشخصي',
-  'person.externalProfile':'👤 ملف خارجي', 'person.trustsHeld':'أمانات عندك', 'person.loansOwed':'سُلف عليه',
-  'person.deposit':'إيداع', 'person.withdraw':'سحب', 'person.transactionLog':'سجل الحركات',
-  'person.deletePermanently':'حذف هذا الملف نهائياً', 'person.noTransactions':'لا توجد حركات',
-  'person.netFreeLiquidity':(v)=>`صافي السيولة الحرة: ${v} ر.س`, 'person.trustsLoans':(t,l)=>`أمانات: ${t} | سُلف: ${l}`,
-  'person.depositLabel':'إيداع', 'person.withdrawLabel':'سحب',
-  'nav.home':'الرئيسية', 'nav.bills':'الفواتير', 'nav.people':'الأشخاص', 'nav.analytics':'إحصائيات',
-  'modal.newCategoryTitle':'📁 فئة فواتير جديدة', 'modal.newPersonTitle':'👥 إضافة شخص جديد',
-  'modal.quickAddTitle':'📥 إضافة مبلغ لدفتر', 'modal.quickPayTitle':'💸 تسديد من دفتر',
-  'modal.ledgerAddTitle':'📥 إضافة مبلغ للدفتر', 'modal.ledgerPayTitle':'💸 تسديد مبلغ من الدفتر',
-  'modal.editCategoryTitle':'✏️ تعديل الفئة', 'modal.depositTitle':'📥 إيداع / أمانة',
-  'modal.withdrawTitle':'📤 سحب / سُلفة', 'modal.budgetTitle':'📊 الميزانية الشهرية',
-  'modal.alertsTitle':'🔔 التنبيهات الذكية',
-  'form.categoryName':'اسم الفئة', 'form.categoryNamePh':'مثال: بقالة، كهرباء، إيجار...',
-  'form.categoryBudget':'الميزانية الشهرية لهذه الفئة (اختياري)', 'form.fullName':'الاسم الكامل',
-  'form.fullNamePh':'اكتب الاسم هنا...', 'form.chooseLedger':'اختر الدفتر / الفئة',
-  'form.amount':'المبلغ (ر.س)', 'form.details':'البيان / التفاصيل', 'form.weeklyGroceriesPh':'مثال: مقاضي الأسبوع...',
-  'form.remainingOnLedger':'المتبقي على هذا الدفتر:', 'form.amountToPay':'المبلغ المراد تسديده',
-  'form.todayGroceryPh':'مثال: فاتورة بقالة اليوم...', 'form.currentlyRemaining':'المتبقي حالياً:',
-  'form.categoryNameSimplePh':'اسم الفئة', 'form.monthlyBudgetOptional':'الميزانية الشهرية (اختياري)',
-  'form.description':'البيان', 'form.depositDetailsPh':'تفاصيل الإيداع...', 'form.withdrawReasonPh':'سبب السحب...',
-  'form.totalMonthlyBudget':'الميزانية الإجمالية الشهرية (ر.س)', 'form.budgetExamplePh':'مثال: 5000', 'form.budgetForCat':(n)=>`ميزانية "${n}"`,
-  'sidebar.settingsTools':'الإعدادات والأدوات', 'sidebar.accountsPeople':'الحسابات والأشخاص', 'sidebar.addNewPerson':'إضافة شخص جديد',
-  'sidebar.setupBudget':'إعداد الميزانية الشهرية', 'sidebar.data':'البيانات', 'sidebar.exportData':'تصدير البيانات (JSON)',
-  'sidebar.importData':'استيراد بيانات محفوظة', 'sidebar.clearAllData':'مسح كل البيانات',
-  'alert.noAlerts':'لا توجد تنبيهات، كل شيء على ما يرام! 🎉',
-  'alert.totalDebtAccrued':(v)=>`تراكمت عليك ديون بقيمة ${v} ر.س في دفاترك`,
-  'alert.ledgerAccrued':(n,v)=>`دفتر "${n}" متراكم عليه ${v} ر.س`,
-  'alert.budgetExceeded80':'ديونك تتجاوز 80% من ميزانيتك الشهرية!',
-  'alert.ledgerOverBudget':(n,b)=>`دفتر "${n}" تجاوز ميزانيته المحددة (${b} ر.س)`,
+ar:{
+  'app.title':'محفظة العائلة','sb.title':'الإعدادات والأدوات','sb.accounts':'الحسابات والأشخاص',
+  'sb.addPerson':'إضافة شخص جديد','sb.budget':'الميزانية الشهرية','sb.data':'البيانات',
+  'sb.export':'تصدير (JSON)','sb.import':'استيراد نسخة','sb.reset':'مسح كل البيانات',
+  'home.netLiq':'💰 السيولة الكلية الصافية','home.updated':'محدّث الآن','home.negBal':'رصيد سالب!',
+  'common.sar':'ريال سعودي','common.all':'عرض الكل','common.back':'رجوع','common.newPlus':'+ جديد',
+  'home.myMoney':'محفظتي','home.trusts':'أمانات','home.bills':'فواتير',
+  'home.quick':'إجراءات سريعة','home.addLedger':'إضافة لدفتر','home.payLedger':'تسديد دفتر',
+  'home.newPerson':'شخص جديد','home.newCat':'فئة جديدة',
+  'home.people':'الأشخاص','home.recent':'آخر الحركات','home.budgetTitle':'الميزانية الشهرية',
+  'home.noBudget':'لم تحدد ميزانية','home.setBudget':'تفعيل الميزانية',
+  'home.spent':'مُنفق','home.budgetOf':'الميزانية','home.totalRem':'الإجمالي المتبقي',
+  'bills.title':'دفاتر الحسابات','ledger.openAccount':'دفتر حساب مفتوح',
+  'ledger.added':'إجمالي مُضاف','ledger.paid':'إجمالي مُسدد','ledger.remaining':'المتبقي',
+  'ledger.addAmt':'إضافة','ledger.payAmt':'تسديد','ledger.log':'سجل العمليات',
+  'ledger.noActivity':'لا توجد عمليات بعد','ledger.addedOp':'إضافة للدفتر','ledger.paidOp':'تسديد من الدفتر',
+  'ledger.fullyPaid':'✓ مسدد بالكامل','ledger.partial':'◑ مسدد جزئياً','ledger.unpaid':'○ غير مسدد',
+  'ledger.overBudget':'⚠ تجاوز الميزانية','ledger.payRate':'نسبة التسديد',
+  'people.all':'جميع الأشخاص',
+  'rel.trust':'🏦 الأمانة','rel.trustDesc':'فلوس أودعها عندي',
+  'rel.loanToThem':'📤 سُلفة أعطيتها','rel.loanToThemDesc':'أعطيته سُلفة',
+  'rel.loanFromThem':'📥 دين أخذته منه','rel.loanFromThemDesc':'أخذت منه دين',
+  'rel.col.deposited':'أودع','rel.col.withdrawn':'سُحب','rel.col.remaining':'المتبقي',
+  'rel.col.given':'أعطيت','rel.col.returned':'رجع','rel.col.owed':'المطلوب',
+  'rel.col.borrowed':'أخذت','rel.col.repaid':'رجعت','rel.col.left':'المتبقي عليك',
+  'rel.addTrust':'＋ إيداع','rel.returnTrust':'↩ رجّع الأمانة',
+  'rel.giveLoan':'＋ أعطه سُلفة','rel.markRepaid':'✓ رجّع السُلفة',
+  'rel.takeLoan':'＋ خذ منه دين','rel.payBack':'↩ سدّد الدين',
+  'rel.myFunds':'💼 محفظتي','rel.myFundsDesc':'سيولتي الحرة الشخصية',
+  'rel.myDebt':'📋 ديوني','rel.myDebtDesc':'ديون عليّ لآخرين',
+  'rel.myDebtAmt':'إجمالي ما عليّ','rel.myDebtPaid':'سددت منه','rel.myDebtLeft':'المتبقي عليّ',
+  'rel.addDebt':'＋ دين جديد عليّ','rel.payDebt':'↩ سدّد دين',
+  'rel.addFunds':'＋ أضف رصيد','rel.removeFunds':'− خصم رصيد',
+  'person.log':'سجل الحركات','person.delete':'حذف الملف نهائياً',
+  'person.ownAcc':'⚙️ حسابي الشخصي','person.extProfile':'👤 ملف خارجي',
+  'person.claimLink':'رابط كشف الأمانة','person.copyLink':'نسخ الرابط',
+  'person.claimNote':'شارك الرابط مع صاحبه ليشوف رصيده',
+  'person.noTx':'لا توجد حركات بعد',
+  'log.all':'الكل','log.trustDeposit':'إيداع أمانة','log.trustReturn':'استرداد أمانة',
+  'log.loanGiven':'سُلفة أعطيتها','log.loanRepaid':'سُلفة رجعت',
+  'log.loanTaken':'دين أخذته منه','log.loanPaidBack':'سددت الدين',
+  'log.addFunds':'إضافة رصيد','log.deductFunds':'خصم رصيد',
+  'log.addDebt':'دين جديد عليّ','log.payDebt':'سداد دين',
+  'an.dist':'توزيع الدفاتر','an.ledgers':'دفاتر','an.paidPct':'نسبة السداد',
+  'an.bigDebt':'أكبر دين متبقي','an.people':'أشخاص','an.cats':'مخطط الفئات',
+  'm.addCat':'📁 فئة جديدة','m.editCat':'✏️ تعديل الفئة',
+  'm.ledgerAdd':'📥 إضافة للدفتر','m.ledgerPay':'💸 تسديد من الدفتر',
+  'm.addPerson':'👤 إضافة شخص جديد','m.budget':'📊 الميزانية الشهرية',
+  'm.alerts':'🔔 التنبيهات الذكية','m.receipt':'🧾 الفاتورة',
+  'f.catName':'اسم الفئة','f.catBudget':'الميزانية الشهرية (اختياري)',
+  'f.amt':'المبلغ (ر.س)','f.desc':'البيان','f.chooseLedger':'اختر الدفتر',
+  'f.remaining':'المتبقي:','f.name':'الاسم الكامل','f.photo':'الصورة الشخصية',
+  'f.tapPhoto':'اضغط لرفع صورة','f.receipt':'الفاتورة','f.tapReceipt':'اضغط لإرفاق صورة',
+  'f.totalBudget':'الميزانية الإجمالية الشهرية (ر.س)','f.budgetFor':(n)=>`ميزانية "${n}"`,
+  'c.save':'حفظ','c.cancel':'إلغاء','c.add':'إضافة','c.confirm':'تأكيد','c.close':'إغلاق',
+  'nav.home':'الرئيسية','nav.bills':'الفواتير','nav.people':'الأشخاص','nav.stats':'إحصائيات',
+  'alert.none':'لا توجد تنبيهات — كل شيء تمام! 🎉',
+  'alert.totalDebt':(v)=>`عليك ${v} ر.س ديون دفاتر غير مسددة`,
+  'alert.ledgerHigh':(n,v)=>`دفتر "${n}" عليه ${v} ر.س متبقي`,
+  'alert.over80':'ديونك تتجاوز 80% من ميزانيتك!',
+  'alert.catOver':(n,b)=>`"${n}" تجاوز ميزانيته (${b} ر.س)`,
   'alert.bigLoan':(n,v)=>`${n} عليه سُلفة كبيرة: ${v} ر.س`,
-  'confirm.deleteLedger':(n)=>`هل تريد حذف دفتر "${n}" نهائياً؟`,
-  'confirm.deleteLedgerWithBalance':(v)=>`⚠️ هذا الدفتر فيه ${v} ر.س متبقي. حذفه سيمحي كل سجلاته نهائياً!\n\nهل تريد الاستمرار؟`,
-  'confirm.deletePerson':(n)=>`هل أنت متأكد من حذف "${n}" نهائياً؟`,
-  'confirm.undoOperation':'التراجع عن هذه العملية؟', 'confirm.undoTransaction':'التراجع عن هذه الحركة؟',
-  'confirm.replaceData':'استبدال البيانات الحالية بالملف المستورد؟', 'confirm.resetAll':'⚠️ مسح كل البيانات نهائياً؟',
-  'alert.enterAmount':'أدخل مبلغاً صحيحاً', 'alert.enterCategoryName':'أدخل اسم الفئة',
-  'alert.enterName':'أدخل الاسم', 'alert.enterReason':'أدخل البيان',
-  'alert.chooseLedger':'اختر دفتراً', 'alert.invalidFile':'ملف غير صالح', 'alert.noLedgersYet':'لا توجد فئات بعد',
-  'misc.quickPayment':'تسديد سريع', 'misc.paymentFromLedger':'تسديد من الدفتر',
-  'misc.addedDash':(n)=>`إضافة - ${n}`, 'misc.paidDash':(n)=>`تسديد - ${n}`, 'misc.ledgerPayment':(n)=>`تسديد دفتر: ${n}`,
-  'misc.depositDash':(n)=>`إيداع - ${n}`, 'misc.withdrawDash':(n)=>`سحب - ${n}`,
-  'misc.remainingLabel':(v)=>`(متبقي: ${v})`,
-}
-};
-let currentLang = 'en';
-function t(key, ...args) {
-  const entry = I18N[currentLang][key];
-  if(typeof entry === 'function') return entry(...args);
-  return entry !== undefined ? entry : key;
-}
+  'alert.myDebt':(v)=>`عليك ${v} ر.س ديون شخصية لم تسددها`,
+  'confirm.deleteLedger':(n)=>`حذف دفتر "${n}" نهائياً؟`,
+  'confirm.deleteLedgerBal':(v)=>`⚠️ الدفتر فيه ${v} ر.س متبقي. تكمل الحذف؟`,
+  'confirm.deletePerson':(n)=>`حذف "${n}" نهائياً؟`,
+  'confirm.undo':'تراجع عن هذه العملية؟',
+  'confirm.import':'استبدال البيانات الحالية بالملف المستورد؟',
+  'confirm.reset':'⚠️ مسح كل البيانات نهائياً؟',
+  'err.enterAmt':'أدخل مبلغاً صحيحاً','err.enterName':'أدخل الاسم',
+  'err.enterDesc':'أدخل البيان','err.chooseLedger':'اختر دفتراً','err.invalidFile':'ملف غير صالح',
+  'misc.addedTo':(n)=>`إضافة → ${n}`,'misc.paidFrom':(n)=>`تسديد ← ${n}`,
+}};
 
-function applyStaticTranslations() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const val = t(key);
-    if(typeof val === 'string') el.textContent = val;
+let lang='en';
+function t(k,...a){const e=I18N[lang][k];return typeof e==='function'?e(...a):e||k;}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const val=t(el.dataset.i18n);if(typeof val==='string')el.textContent=val;
   });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    const val = t(key);
-    if(typeof val === 'string') el.setAttribute('placeholder', val);
-  });
-  document.getElementById('page-title').textContent = t('app.title') + ' Pro';
-  document.getElementById('lang-toggle-label').textContent = currentLang === 'en' ? 'AR' : 'EN';
+  document.getElementById('page-title').textContent=t('app.title')+' Pro';
+  document.getElementById('lang-lbl').textContent=lang==='en'?'AR':'EN';
+}
+function applyDir(){
+  const h=document.getElementById('html-root');
+  if(lang==='ar'){h.lang='ar';h.dir='rtl';h.classList.remove('lang-en');}
+  else{h.lang='en';h.dir='ltr';h.classList.add('lang-en');}
+}
+function toggleLang(){
+  lang=lang==='en'?'ar':'en';
+  localStorage.setItem('FW_LANG',lang);
+  applyDir();applyI18n();renderAll();
 }
 
-function applyDirection() {
-  const html = document.getElementById('html-root');
-  if(currentLang === 'ar') {
-    html.setAttribute('lang','ar'); html.setAttribute('dir','rtl'); html.classList.remove('lang-en');
-  } else {
-    html.setAttribute('lang','en'); html.setAttribute('dir','ltr'); html.classList.add('lang-en');
-  }
-}
-
-function toggleLanguage() {
-  currentLang = currentLang === 'en' ? 'ar' : 'en';
-  localStorage.setItem('FAM_WALLET_LANG', currentLang);
-  applyDirection();
-  applyStaticTranslations();
-  render();
-  // Re-render any open detail view to refresh its translated text
-  if(activePersonId) renderPersonProfile();
-  if(activeCatId && document.getElementById('view-ledger').classList.contains('active')) renderLedgerDetail();
-}
-
-function loadLangPreference() {
-  const saved = localStorage.getItem('FAM_WALLET_LANG');
-  currentLang = saved === 'ar' ? 'ar' : 'en';
-  applyDirection();
-}
-
-// ═══════════════ STATE ═══════════════
-const KEY = 'FAM_WALLET_PRO_V5';
-let db = {
-  myBalance: 0,
-  people: [{ id:'p_own', name:'My Personal Wallet', emoji:'💼', trust:0, loan:0, logs:[] }],
-  categories: [
-    { id:'cat1', name:'Groceries', color:'#ff8c42', icon:'fa-cart-shopping', added:0, paid:0, budget:0, logs:[] },
-    { id:'cat2', name:'Household Bills', color:'#00c3ff', icon:'fa-house', added:0, paid:0, budget:0, logs:[] }
+// ═══════════ STATE ═══════════
+const KEY='FW_PRO_V6';
+let db={
+  people:[{id:'p_own',name:'My Wallet',emoji:'💼',funds:0,debts:[],logs:[]}],
+  categories:[
+    {id:'c1',name:'Groceries',color:'#ff8c42',icon:'fa-cart-shopping',added:0,paid:0,budget:0,logs:[]},
+    {id:'c2',name:'Household',color:'#00c3ff',icon:'fa-house',added:0,paid:0,budget:0,logs:[]}
   ],
-  logs: [],
-  budget: { total: 0 }
+  logs:[],budget:{total:0}
 };
-let activePersonId = null;
-let activeCatId = null;
-let donutChart = null, barChart = null;
+let activePid=null,activeCatId=null,logFilter='all';
+let pendingReceipt=null,pendingMyDebtReceipt=null,newAvaData=null;
+let donutChart=null,barChart=null,quickMode=null,currentAction=null,myDebtMode='add';
 
-// ═══════════════ PERSISTENCE ═══════════════
-function save() { localStorage.setItem(KEY, JSON.stringify(db)); }
-function load() {
-  try {
-    const r = localStorage.getItem(KEY);
-    if(r) {
-      db = JSON.parse(r);
-      if(!db.people) db.people = [];
-      if(!db.categories) db.categories = [];
-      if(!db.logs) db.logs = [];
-      if(!db.budget) db.budget = { total: 0 };
-      db.people.forEach(p => { if(!p.logs) p.logs = []; if(!p.emoji) p.emoji = '👤'; });
-      db.categories.forEach(c => {
-        if(!c.budget) c.budget = 0;
-        if(typeof c.added !== 'number') c.added = 0;
-        if(typeof c.paid !== 'number') c.paid = 0;
-        if(!c.logs) c.logs = [];
-        if(!c.icon) c.icon = 'fa-folder-open';
-      });
-      // Migrate legacy bills[] (old per-bill model) into the ledger model once
-      if(Array.isArray(db.bills) && db.bills.length > 0) {
-        db.bills.forEach(b => {
-          const cat = db.categories.find(c => c.id === b.catId);
-          if(cat) {
-            cat.added += b.amount;
-            cat.paid += b.paid;
-            cat.logs.push({ type:'add', amount:b.amount, reason:b.reason, date:b.date||dateStr() });
-            if(b.paid > 0) cat.logs.push({ type:'pay', amount:b.paid, reason:b.reason, date:b.date||dateStr() });
-          }
-        });
-        delete db.bills;
+// ═══════════ PERSISTENCE ═══════════
+function save(){localStorage.setItem(KEY,JSON.stringify(db));}
+function load(){
+  try{
+    const r=localStorage.getItem(KEY);if(!r)return;
+    const d=JSON.parse(r);
+    if(!d.people)d.people=[];if(!d.categories)d.categories=[];
+    if(!d.logs)d.logs=[];if(!d.budget)d.budget={total:0};
+    d.people.forEach(p=>{
+      if(!p.logs)p.logs=[];
+      if(p.id==='p_own'){
+        if(typeof p.funds!=='number')p.funds=0;
+        if(!p.debts)p.debts=[];
+      } else {
+        if(!p.trust||typeof p.trust==='number'){const old=typeof p.trust==='number'?p.trust:0;p.trust={deposited:old,withdrawn:0,logs:[]};}
+        if(!p.loanToThem||typeof p.loanToThem==='number'){const old=typeof p.loanToThem==='number'?p.loanToThem:0;p.loanToThem={given:old,returned:0,logs:[]};delete p.loan;}
+        if(!p.loanFromThem)p.loanFromThem={borrowed:0,repaid:0,logs:[]};
+        if(!p.trust.logs)p.trust.logs=[];
+        if(!p.loanToThem.logs)p.loanToThem.logs=[];
+        if(!p.loanFromThem.logs)p.loanFromThem.logs=[];
       }
-    }
-  } catch(e) { console.log(e); }
+    });
+    d.categories.forEach(c=>{
+      if(!c.logs)c.logs=[];if(typeof c.added!=='number')c.added=0;
+      if(typeof c.paid!=='number')c.paid=0;if(!c.budget)c.budget=0;
+      if(!c.icon)c.icon='fa-folder-open';
+    });
+    db=d;
+  }catch(e){console.log(e);}
 }
 
-// ═══════════════ CALCULATIONS ═══════════════
-function recalc() {
-  const own = db.people.find(p => p.id === 'p_own');
-  const myFree = own ? (own.trust - own.loan) : 0;
-  let sumTrusts = 0, sumLoans = 0;
-  db.people.forEach(p => { if(p.id !== 'p_own') { sumTrusts += p.trust; sumLoans += p.loan; } });
-  db.myBalance = myFree + sumTrusts - sumLoans;
-}
-function ledgerRemaining(c) { return Math.max(0, c.added - c.paid); }
+// ═══════════ CALC ═══════════
+function ledgerRem(c){return Math.max(0,c.added-c.paid);}
+function own(){return db.people.find(p=>p.id==='p_own');}
+function totalTrusts(){return db.people.filter(p=>p.id!=='p_own').reduce((a,p)=>a+(p.trust.deposited-p.trust.withdrawn),0);}
+function totalLoansFromThem(){return db.people.filter(p=>p.id!=='p_own').reduce((a,p)=>a+(p.loanFromThem.borrowed-p.loanFromThem.repaid),0);}
+function totalMyDebts(){const o=own();if(!o)return 0;return o.debts.reduce((a,d)=>a+Math.max(0,d.amount-d.paid),0);}
+function totalLedgerDebt(){return db.categories.reduce((a,c)=>a+ledgerRem(c),0);}
+function netBalance(){const o=own()||{funds:0};return o.funds+totalTrusts()-totalLoansFromThem()-totalMyDebts();}
+const curr=()=>lang==='ar'?'ر.س':'SAR';
+const fmt=(n)=>(n||0).toLocaleString(lang==='ar'?'ar-SA':'en-US',{minimumFractionDigits:0,maximumFractionDigits:1});
 
-// ═══════════════ ALERTS ═══════════════
-function getAlerts() {
-  const alerts = [];
-  const totalUnpaid = db.categories.reduce((a,c) => a + ledgerRemaining(c), 0);
-  if(totalUnpaid > 1000) alerts.push({ icon:'fa-file-invoice-dollar', color:'var(--r)', text:t('alert.totalDebtAccrued', totalUnpaid.toFixed(0)) });
-  db.categories.forEach(c => { const rem = ledgerRemaining(c); if(rem > 500) alerts.push({ icon:'fa-exclamation-triangle', color:'var(--y)', text:t('alert.ledgerAccrued', c.name, rem.toFixed(0)) }); });
-  if(db.budget.total > 0 && totalUnpaid > db.budget.total * 0.8) alerts.push({ icon:'fa-chart-line', color:'var(--o)', text:t('alert.budgetExceeded80') });
-  db.categories.forEach(c => { if(c.budget > 0 && ledgerRemaining(c) > c.budget) alerts.push({ icon:'fa-circle-exclamation', color:'var(--r)', text:t('alert.ledgerOverBudget', c.name, c.budget) }); });
-  db.people.forEach(p => { if(p.id !== 'p_own' && p.loan > 2000) alerts.push({ icon:'fa-user-slash', color:'var(--o)', text:t('alert.bigLoan', p.name, p.loan.toFixed(0)) }); });
-  return alerts;
+// ═══════════ ALERTS ═══════════
+function getAlerts(){
+  const al=[];
+  const ld=totalLedgerDebt();
+  if(ld>1000)al.push({icon:'fa-receipt',col:'var(--r)',txt:t('alert.totalDebt',fmt(ld))});
+  db.categories.forEach(c=>{const r=ledgerRem(c);if(r>500)al.push({icon:'fa-exclamation-triangle',col:'var(--y)',txt:t('alert.ledgerHigh',c.name,fmt(r))});});
+  if(db.budget.total>0&&ld>db.budget.total*0.8)al.push({icon:'fa-chart-line',col:'var(--o)',txt:t('alert.over80')});
+  db.categories.forEach(c=>{if(c.budget>0&&ledgerRem(c)>c.budget)al.push({icon:'fa-circle-exclamation',col:'var(--r)',txt:t('alert.catOver',c.name,fmt(c.budget))});});
+  db.people.filter(p=>p.id!=='p_own').forEach(p=>{
+    const ln=p.loanToThem.given-p.loanToThem.returned;
+    if(ln>2000)al.push({icon:'fa-user-slash',col:'var(--o)',txt:t('alert.bigLoan',p.name,fmt(ln))});
+  });
+  const md=totalMyDebts();
+  if(md>0)al.push({icon:'fa-triangle-exclamation',col:'var(--r)',txt:t('alert.myDebt',fmt(md))});
+  return al;
 }
-
-function showAlerts() {
-  const alerts = getAlerts();
-  const el = document.getElementById('alerts-list');
-  if(alerts.length === 0) {
-    el.innerHTML = `<div class="empty-state"><i class="fa-solid fa-check-circle" style="color:var(--g)"></i><p>${t('alert.noAlerts')}</p></div>`;
-  } else {
-    el.innerHTML = alerts.map(a => `
-      <div style="display:flex;gap:10px;padding:12px;background:var(--surface2);border-radius:14px;margin-bottom:8px;border:1px solid var(--border);">
-        <i class="fa-solid ${a.icon}" style="color:${a.color};font-size:1rem;flex-shrink:0;margin-top:2px;"></i>
-        <span style="font-size:0.85rem;color:var(--txt);">${a.text}</span>
-      </div>
-    `).join('');
-  }
+function showAlerts(){
+  const al=getAlerts();
+  document.getElementById('alerts-list').innerHTML=al.length===0
+    ?`<div class="empty-state" style="padding:20px 0;"><i class="fa-solid fa-check-circle" style="color:var(--g)"></i><p>${t('alert.none')}</p></div>`
+    :al.map(a=>`<div style="display:flex;gap:10px;padding:11px;background:var(--surface2);border-radius:12px;margin-bottom:7px;border:1px solid var(--border);"><i class="fa-solid ${a.icon}" style="color:${a.col};font-size:.9rem;flex-shrink:0;margin-top:2px;"></i><span style="font-size:.83rem;">${a.txt}</span></div>`).join('');
   openModal('modal-alerts');
 }
 
-// ═══════════════ RENDER ═══════════════
-function render() {
-  recalc();
-  renderHome();
-  renderLedgers();
-  renderPeopleList();
-  renderAnalytics();
-  renderNotifDot();
+// ═══════════ RENDER ═══════════
+function renderAll(){renderHome();renderLedgers();renderPeople();renderAnalytics();renderNotifDot();}
+function renderNotifDot(){
+  const nb=document.getElementById('notif-btn');
+  nb.className='icon-btn notif-wrap'+(getAlerts().length?' notif-dot':'');
 }
 
-function renderNotifDot() {
-  const nb = document.getElementById('notif-btn');
-  const alerts = getAlerts();
-  nb.className = 'icon-btn' + (alerts.length > 0 ? ' notif-dot' : '');
-}
-
-function renderHome() {
-  const neg = db.myBalance < 0;
-  document.getElementById('hero-amount').textContent = Math.abs(db.myBalance).toFixed(2);
-  document.getElementById('hero-amount').style.color = neg ? 'var(--r)' : 'var(--g)';
-  document.getElementById('hero-trend').innerHTML = neg
-    ? `<i class="fa-solid fa-arrow-trend-down"></i> ${t('home.negativeBalance')}`
-    : `<i class="fa-solid fa-arrow-trend-up"></i> ${t('home.updatedNow')}`;
-  document.getElementById('hero-trend').style.color = neg ? 'var(--r)' : 'var(--g)';
-  document.getElementById('hero-trend').style.background = neg ? 'rgba(255,61,110,0.1)' : 'rgba(0,245,160,0.1)';
-  document.getElementById('hero-trend').style.borderColor = neg ? 'rgba(255,61,110,0.2)' : 'rgba(0,245,160,0.2)';
-
-  let sumT = 0, sumL = 0;
-  db.people.forEach(p => { if(p.id!=='p_own'){sumT+=p.trust;sumL+=p.loan;} });
-  const unpaid = db.categories.reduce((a,c)=>a+ledgerRemaining(c),0);
-  document.getElementById('stat-trusts').textContent = fmt(sumT);
-  document.getElementById('stat-loans').textContent = fmt(sumL);
-  document.getElementById('stat-bills').textContent = fmt(unpaid);
-
-  const alerts = getAlerts();
-  const az = document.getElementById('alerts-zone');
-  if(alerts.length > 0) {
-    az.innerHTML = `<div class="alert-bar"><i class="fa-solid fa-triangle-exclamation"></i><span>${alerts.length} ${t('home.alertsSuffix')} <strong onclick="showAlerts()" style="cursor:pointer;text-decoration:underline;">${t('common.viewAll')}</strong></span></div>`;
-  } else { az.innerHTML = ''; }
-
-  const hp = document.getElementById('home-people-list');
-  const top3 = db.people.slice(0, 3);
-  hp.innerHTML = top3.map(p => personCardHTML(p)).join('');
-
-  const tl = document.getElementById('home-timeline');
-  if(db.logs.length === 0) {
-    tl.innerHTML = `<div class="empty-state" style="padding:20px 0;"><i class="fa-solid fa-inbox"></i><p>${t('home.noActivityYet')}</p></div>`;
-  } else {
-    tl.innerHTML = db.logs.slice().reverse().slice(0,5).map(l => timelineItemHTML(l)).join('');
-  }
-
+// ── HOME ──
+function renderHome(){
+  const net=netBalance();
+  const amtEl=document.getElementById('hero-amt');
+  amtEl.textContent=Math.abs(net).toFixed(2);
+  amtEl.style.color=net<0?'var(--r)':'var(--g)';
+  const trend=document.getElementById('hero-trend');
+  trend.innerHTML=net<0?`<i class="fa-solid fa-arrow-trend-down"></i> ${t('home.negBal')}`:`<i class="fa-solid fa-arrow-trend-up"></i> ${t('home.updated')}`;
+  trend.style.cssText=`background:${net<0?'rgba(255,61,110,.1)':'rgba(0,245,160,.1)'};border:1px solid ${net<0?'rgba(255,61,110,.2)':'rgba(0,245,160,.2)'};color:${net<0?'var(--r)':'var(--g)'};display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:4px 10px;font-size:.7rem;margin-top:9px;`;
+  const o=own()||{funds:0};
+  document.getElementById('stat-my').textContent=fmt(o.funds);
+  document.getElementById('stat-trusts').textContent=fmt(totalTrusts());
+  document.getElementById('stat-bills').textContent=fmt(totalLedgerDebt());
+  const al=getAlerts();
+  document.getElementById('alerts-zone').innerHTML=al.length?`<div class="alert-bar"><i class="fa-solid fa-triangle-exclamation"></i>${al.length} ${lang==='ar'?'تنبيه':'alert(s)'} — <strong style="cursor:pointer;text-decoration:underline;" onclick="showAlerts()">${lang==='ar'?'عرض':'View'}</strong></div>`:'';
+  document.getElementById('home-people').innerHTML=db.people.slice(0,3).map(personCardHTML).join('');
+  const tl=document.getElementById('home-tl');
+  tl.innerHTML=!db.logs.length?`<div class="empty-state" style="padding:16px 0;"><i class="fa-solid fa-inbox"></i><p>${lang==='ar'?'لا يوجد حركات بعد':'No activity yet'}</p></div>`:db.logs.slice().reverse().slice(0,5).map(tlRowHTML).join('');
   renderBudgetSummary();
 }
-
-function renderBudgetSummary() {
-  const el = document.getElementById('budget-summary-content');
-  if(db.budget.total <= 0 && db.categories.every(c=>c.budget<=0)) {
-    el.innerHTML = `<div style="text-align:center;padding:10px;"><p style="color:var(--txt2);font-size:0.8rem;">${t('home.noBudgetYet')}</p><button class="action-btn sec-btn" style="margin:10px auto 0;display:flex;width:auto;padding:8px 16px;font-size:0.8rem;" onclick="openModal('modal-budget')">${t('home.activateBudget')}</button></div>`;
+function renderBudgetSummary(){
+  const el=document.getElementById('budget-content');
+  if(db.budget.total<=0&&db.categories.every(c=>c.budget<=0)){
+    el.innerHTML=`<div style="text-align:center;padding:8px;"><p style="color:var(--txt2);font-size:.8rem;">${t('home.noBudget')}</p><button onclick="openModal('modal-budget')" style="margin-top:9px;padding:7px 14px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);color:var(--b);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;">${t('home.setBudget')}</button></div>`;
     return;
   }
-  const totalSpent = db.categories.reduce((a,c)=>a+ledgerRemaining(c),0);
-  const pct = db.budget.total > 0 ? Math.min((totalSpent/db.budget.total)*100,100) : 0;
-  const color = pct > 80 ? 'var(--r)' : pct > 50 ? 'var(--y)' : 'var(--g)';
-  el.innerHTML = `
-    <div class="budget-row"><span class="budget-label">${t('home.remainingTotal')}</span><span class="budget-pct" style="color:${color}">${pct.toFixed(0)}%</span></div>
-    <div class="track-bar"><div class="track-fill" style="width:${pct}%;background:${color};box-shadow:0 0 8px ${color};"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--txt3);font-family:var(--mono);">
-      <span>${t('home.spent')}: ${fmt(totalSpent)} ${t('common.currency')==='ريال سعودي'?'ر.س':'SAR'}</span>
-      <span>${t('home.budgetLabel')}: ${fmt(db.budget.total)} ${t('common.currency')==='ريال سعودي'?'ر.س':'SAR'}</span>
-    </div>
-  `;
+  const spent=totalLedgerDebt();
+  const pct=db.budget.total>0?Math.min((spent/db.budget.total)*100,100):0;
+  const col=pct>80?'var(--r)':pct>50?'var(--y)':'var(--g)';
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--txt2);margin-bottom:6px;"><span>${t('home.totalRem')}</span><span style="font-family:var(--mono);font-weight:700;color:${col}">${pct.toFixed(0)}%</span></div><div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${col};box-shadow:0 0 6px ${col};"></div></div><div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--txt3);font-family:var(--mono);margin-top:6px;"><span>${t('home.spent')}: ${fmt(spent)} ${curr()}</span><span>${t('home.budgetOf')}: ${fmt(db.budget.total)} ${curr()}</span></div>`;
 }
 
-function personCardHTML(p) {
-  const curr = currentLang === 'ar' ? 'ر.س' : 'SAR';
-  const metaText = p.id === 'p_own' ? t('person.netFreeLiquidity', fmt(p.trust - p.loan)) : t('person.trustsLoans', fmt(p.trust), fmt(p.loan));
-  const valColor = p.id === 'p_own' ? 'var(--g)' : (p.trust > p.loan ? 'var(--b)' : 'var(--o)');
-  const dispVal = p.id === 'p_own' ? fmt(p.trust-p.loan) : fmt(p.trust);
-  return `
-    <div class="person-card ${activePersonId===p.id?'active-card':''}" onclick="openPersonProfile('${p.id}')">
-      <div class="avatar" style="background:rgba(0,195,255,0.08);">${p.emoji||'👤'}</div>
-      <div class="person-info">
-        <div class="person-name">${p.name}</div>
-        <div class="person-meta">${metaText}</div>
-      </div>
-      <div class="person-badge" style="color:${valColor}">${dispVal}</div>
-    </div>
-  `;
-}
-
-function timelineItemHTML(l) {
-  const pos = l.amt >= 0;
-  return `
-    <div class="tl-item">
-      <div class="tl-dot" style="background:${pos?'rgba(0,245,160,0.1)':'rgba(255,61,110,0.1)'};color:${pos?'var(--g)':'var(--r)'}">
-        <i class="fa-solid ${pos?'fa-arrow-down-to-line':'fa-arrow-up-from-line'}"></i>
-      </div>
-      <div class="tl-body">
-        <div class="tl-title">${l.name}</div>
-        <div class="tl-meta">${l.reason} · ${l.date}</div>
-      </div>
-      <div class="tl-amt" style="color:${pos?'var(--g)':'var(--r)'}">${pos?'+':''}${l.amt.toFixed(2)}</div>
-    </div>
-  `;
-}
-
-function renderLedgers() {
-  const el = document.getElementById('ledgers-list');
-  const summary = document.getElementById('bills-summary-text');
-  const totalAdded = db.categories.reduce((a,c)=>a+c.added,0);
-  const totalPaid = db.categories.reduce((a,c)=>a+c.paid,0);
-  summary.textContent = t('bills.summary', db.categories.length, fmt(totalAdded), fmt(totalAdded-totalPaid));
-
-  if(db.categories.length === 0) {
-    el.innerHTML = `<div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>${t('bills.noLedgers')}</p></div>`;
-    return;
-  }
-  el.innerHTML = db.categories.map(c => {
-    const rem = ledgerRemaining(c);
-    const pct = c.added > 0 ? Math.min((c.paid/c.added)*100,100).toFixed(0) : 0;
-    const badge = rem <= 0 && c.added > 0 ? `<span class="badge badge-green">${t('bills.fullyPaid')}</span>` : c.paid > 0 ? `<span class="badge badge-yellow">${t('bills.partiallyPaid')}</span>` : c.added > 0 ? `<span class="badge badge-red">${t('bills.unpaid')}</span>` : '';
-    const fillColor = rem <= 0 && c.added>0 ? 'var(--g)' : c.paid > 0 ? 'var(--y)' : 'var(--r)';
-    const overBudget = c.budget > 0 && rem > c.budget;
-    return `
-      <div class="bill-card" onclick="openLedgerDetail('${c.id}')" style="cursor:pointer;">
-        <div class="bill-top">
-          <div class="bill-icon" style="background:rgba(${hexRgb(c.color)},0.1);color:${c.color}">
-            <i class="fa-solid ${c.icon||'fa-folder-open'}"></i>
-          </div>
-          <div class="bill-info">
-            <div class="bill-name">${c.name}</div>
-            <div class="bill-cat">${c.budget>0?t('bills.budgetColon',fmt(c.budget)):t('bills.noBudgetSet')}</div>
-            ${badge} ${overBudget?`<span class="badge badge-red">${t('bills.overBudget')}</span>`:''}
-          </div>
-          <div class="bill-right">
-            <div class="bill-rem">${fmt(rem)}</div>
-            <div class="bill-total">${t('bills.fromTotal',fmt(c.added))}</div>
-          </div>
-        </div>
-        <div class="bill-progress">
-          <div class="bill-prog-top">
-            <span class="bill-prog-label">${t('bills.paymentPct',pct)}</span>
-          </div>
-          <div class="track-bar"><div class="track-fill" style="width:${pct}%;background:${fillColor};box-shadow:0 0 6px ${fillColor};"></div></div>
-        </div>
-      </div>
-    `;
+// ── LEDGERS ──
+function renderLedgers(){
+  const total=db.categories.reduce((a,c)=>a+c.added,0);
+  const paid=db.categories.reduce((a,c)=>a+c.paid,0);
+  document.getElementById('bills-summary').textContent=`${db.categories.length} ${lang==='ar'?'دفتر':'ledger(s)'} · ${lang==='ar'?'مُضاف':'added'}: ${fmt(total)} ${curr()} · ${lang==='ar'?'متبقي':'rem.'}: ${fmt(total-paid)} ${curr()}`;
+  const el=document.getElementById('ledgers-list');
+  if(!db.categories.length){el.innerHTML=`<div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>${lang==='ar'?'لا توجد دفاتر بعد':'No ledgers yet'}</p></div>`;return;}
+  el.innerHTML=db.categories.map(c=>{
+    const rem=ledgerRem(c);
+    const pct=c.added>0?Math.min((c.paid/c.added)*100,100).toFixed(0):0;
+    const col=rem<=0&&c.added>0?'var(--g)':c.paid>0?'var(--y)':'var(--r)';
+    const badge=rem<=0&&c.added>0?`<span class="badge badge-g">${t('ledger.fullyPaid')}</span>`:c.paid>0?`<span class="badge badge-y">${t('ledger.partial')}</span>`:c.added>0?`<span class="badge badge-r">${t('ledger.unpaid')}</span>`:'';
+    return`<div class="bill-card" onclick="openLedger('${c.id}')"><div class="bill-top"><div class="bill-icon" style="background:rgba(${hr(c.color)},.1);color:${c.color};"><i class="fa-solid ${c.icon}"></i></div><div class="bill-info"><div class="bill-name">${c.name}</div><div class="bill-sub">${c.budget>0?`${lang==='ar'?'ميزانية':'Budget'}: ${fmt(c.budget)} ${curr()}`:lang==='ar'?'بدون ميزانية':'No budget'}</div>${badge}${c.budget>0&&rem>c.budget?` <span class="badge badge-r">${t('ledger.overBudget')}</span>`:''}</div><div class="bill-right"><div class="bill-rem">${fmt(rem)}</div><div class="bill-of">${lang==='ar'?'من':'of'} ${fmt(c.added)} ${curr()}</div></div></div><div class="bill-prog"><div class="bill-prog-hdr"><span>${t('ledger.payRate')} ${pct}%</span></div><div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${col};"></div></div></div></div>`;
   }).join('');
 }
-
-function renderPeopleList() {
-  const el = document.getElementById('people-full-list');
-  el.innerHTML = db.people.map(p => personCardHTML(p)).join('');
+function openLedger(id){activeCatId=id;renderLedgerDetail();switchView('view-ledger',false);}
+function renderLedgerDetail(){
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  const rem=ledgerRem(c);
+  const pct=c.added>0?Math.min((c.paid/c.added)*100,100):0;
+  const col=pct>=100?'var(--g)':pct>50?'var(--y)':'var(--r)';
+  document.getElementById('ledger-icon-el').innerHTML=`<i class="fa-solid ${c.icon}" style="color:${c.color}"></i>`;
+  document.getElementById('ledger-name-el').textContent=c.name;
+  document.getElementById('ledger-added').textContent=`${fmt(c.added)} ${curr()}`;
+  document.getElementById('ledger-paid').textContent=`${fmt(c.paid)} ${curr()}`;
+  document.getElementById('ledger-remaining').textContent=`${fmt(rem)} ${curr()}`;
+  document.getElementById('ledger-remaining').style.color=rem<=0?'var(--g)':'var(--r)';
+  document.getElementById('ledger-rem-pct').textContent=pct.toFixed(0)+'%';
+  document.getElementById('ledger-rem-pct').style.color=col;
+  document.getElementById('ledger-rem-bar').style.cssText=`width:${pct}%;background:${col};`;
+  const tl=document.getElementById('ledger-tl');
+  if(!c.logs.length){tl.innerHTML=`<div class="empty-state" style="padding:16px 0;"><i class="fa-solid fa-inbox"></i><p>${t('ledger.noActivity')}</p></div>`;return;}
+  tl.innerHTML=c.logs.slice().reverse().map((l,ri)=>{
+    const realIdx=c.logs.length-1-ri;
+    const isAdd=l.type==='add';
+    return`<div class="tl-row"><div class="tl-dot" style="background:${isAdd?'rgba(255,140,66,.1)':'rgba(0,245,160,.1)'};color:${isAdd?'var(--o)':'var(--g)'}"><i class="fa-solid ${isAdd?'fa-plus':'fa-money-bill-wave'}"></i></div><div class="tl-body"><div class="tl-title">${t(isAdd?'ledger.addedOp':'ledger.paidOp')}</div><div class="tl-meta">${l.reason} · ${l.date}</div></div><div class="tl-right"><div class="tl-amt" style="color:${isAdd?'var(--o)':'var(--g)'}">${isAdd?'+':'−'}${l.amount.toFixed(2)}</div><div class="tl-icon-btn" style="background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);" onclick="deleteLedgerLog(${realIdx})"><i class="fa-solid fa-xmark"></i></div></div></div>`;
+  }).join('');
 }
-
-function renderAnalytics() {
-  const totalLedgers = db.categories.length;
-  const totalAmt = db.categories.reduce((a,c)=>a+c.added,0);
-  const paidAmt = db.categories.reduce((a,c)=>a+c.paid,0);
-  const pct = totalAmt > 0 ? ((paidAmt/totalAmt)*100).toFixed(1) : 0;
-  let maxDebt = 0, maxName = '-';
-  db.categories.forEach(c => { const rem=ledgerRemaining(c); if(rem>maxDebt){maxDebt=rem;maxName=c.name;} });
-  const externalPpl = db.people.filter(p=>p.id!=='p_own').length;
-
-  document.getElementById('an-total-bills').textContent = totalLedgers;
-  document.getElementById('an-paid-pct').textContent = pct + '%';
-  document.getElementById('an-max-debt').textContent = fmt(maxDebt);
-  document.getElementById('an-max-debt-name').textContent = maxName.slice(0,20);
-  document.getElementById('an-people-count').textContent = externalPpl;
-
-  const ctx1 = document.getElementById('chart-donut');
-  if(donutChart) donutChart.destroy();
-  const catData = db.categories.map(c=>ledgerRemaining(c));
-  const hasData = catData.some(v=>v>0);
-  donutChart = new Chart(ctx1, {
-    type: 'doughnut',
-    data: {
-      labels: hasData ? db.categories.map(c=>c.name) : [t('analytics.noDebt')],
-      datasets: [{ data: hasData ? catData : [1], backgroundColor: hasData ? db.categories.map(c=>c.color+'99') : ['rgba(255,255,255,0.04)'], borderColor: hasData ? db.categories.map(c=>c.color) : ['rgba(255,255,255,0.06)'], borderWidth: 1.5, hoverOffset: 6 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-  });
-  const legend = document.getElementById('chart-legend');
-  if(hasData) {
-    legend.innerHTML = db.categories.map(c=>`<div style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--txt2);"><div style="width:10px;height:10px;border-radius:3px;background:${c.color};flex-shrink:0;"></div>${c.name}: <strong style="color:var(--txt)">${fmt(ledgerRemaining(c))}</strong></div>`).join('');
-  } else { legend.innerHTML = `<span style="color:var(--txt3);font-size:0.75rem;">${t('analytics.noData')}</span>`; }
-
-  const ctx2 = document.getElementById('chart-bar');
-  if(barChart) barChart.destroy();
-  barChart = new Chart(ctx2, {
-    type: 'bar',
-    data: {
-      labels: db.categories.map(c=>c.name),
-      datasets: [{ label: t('ledger.remainingOnYou'), data: db.categories.map(c=>ledgerRemaining(c)), backgroundColor: db.categories.map(c=>c.color+'55'), borderColor: db.categories.map(c=>c.color), borderWidth: 1.5, borderRadius: 8 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#8892a4', font: { family: currentLang==='ar'?'Tajawal':'Inter', size: 10 } } },
-        y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#8892a4', font: { family: 'JetBrains Mono', size: 9 } } }
-      }
-    }
-  });
+function deleteLedgerLog(idx){
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c||!c.logs[idx])return;
+  if(!confirm(t('confirm.undo')))return;
+  const l=c.logs[idx];
+  if(l.type==='add')c.added=Math.max(0,c.added-l.amount);else c.paid=Math.max(0,c.paid-l.amount);
+  c.logs.splice(idx,1);save();renderAll();renderLedgerDetail();
 }
-
-// ═══════════════ ACTIONS: CATEGORIES (LEDGERS) ═══════════════
-function addCategory() {
-  const name = v('f-cat-name');
-  if(!name) return alert(t('alert.enterCategoryName'));
-  const budget = parseFloat(v('f-cat-budget'))||0;
-  const colors = ['#ff8c42','#00c3ff','#c77dff','#ff3d6e','#00f5a0','#ffd166'];
-  const icons = ['fa-cart-shopping','fa-house','fa-bolt','fa-wifi','fa-pump-medical','fa-gas-pump','fa-soap','fa-mobile-screen'];
-  db.categories.push({ id:'cat_'+Date.now(), name, color: colors[db.categories.length % colors.length], icon: icons[db.categories.length % icons.length], added:0, paid:0, budget, logs:[] });
-  closeModal('modal-add-cat'); set('f-cat-name',''); set('f-cat-budget','');
-  save(); render();
+function openLedgerAdd(){set('la-amt','');set('la-reason','');openModal('modal-ledger-add');}
+function openLedgerPay(){
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  document.getElementById('lp-rem').textContent=`${fmt(ledgerRem(c))} ${curr()}`;
+  set('lp-amt','');openModal('modal-ledger-pay');
 }
-
-function openEditCatModal() {
-  const c = db.categories.find(x=>x.id===activeCatId);
-  if(!c) return;
-  set('ec-name', c.name);
-  set('ec-budget', c.budget||'');
-  openModal('modal-edit-cat');
+function ledgerAdd(){
+  const amt=parseFloat(v('la-amt'));const reason=v('la-reason');
+  if(!amt||amt<=0)return alert(t('err.enterAmt'));
+  if(!reason)return alert(t('err.enterDesc'));
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  c.added+=amt;c.logs.push({type:'add',amount:amt,reason,date:ds()});
+  db.logs.push({label:t('misc.addedTo',c.name),reason,amt:-amt,date:ds()});
+  closeModal('modal-ledger-add');save();renderAll();renderLedgerDetail();
 }
-
-function saveEditCat() {
-  const c = db.categories.find(x=>x.id===activeCatId);
-  if(!c) return;
-  const name = v('ec-name');
-  if(!name) return alert(t('alert.enterCategoryName'));
-  c.name = name;
-  c.budget = parseFloat(v('ec-budget'))||0;
-  closeModal('modal-edit-cat');
-  save(); render(); renderLedgerDetail();
+function ledgerPay(){
+  const amt=parseFloat(v('lp-amt'));if(!amt||amt<=0)return alert(t('err.enterAmt'));
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  const actual=Math.min(amt,ledgerRem(c));
+  c.paid+=actual;c.logs.push({type:'pay',amount:actual,reason:lang==='ar'?'تسديد':'Payment',date:ds()});
+  db.logs.push({label:t('misc.paidFrom',c.name),reason:lang==='ar'?'تسديد':'Payment',amt:actual,date:ds()});
+  closeModal('modal-ledger-pay');save();renderAll();renderLedgerDetail();
 }
-
-function deleteActiveLedger() {
-  const c = db.categories.find(x=>x.id===activeCatId);
-  if(!c) return;
-  let msg = t('confirm.deleteLedger', c.name);
-  if(c.added > 0) msg = t('confirm.deleteLedgerWithBalance', fmt(ledgerRemaining(c)));
-  if(!confirm(msg)) return;
-  db.categories = db.categories.filter(x=>x.id!==activeCatId);
-  activeCatId = null;
-  switchView('view-bills');
-  save(); render();
+function openEditCat(){
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  set('ec-name',c.name);set('ec-budget',c.budget||'');openModal('modal-edit-cat');
 }
-
-// ═══════════════ LEDGER OPERATIONS (core "open account" logic) ═══════════════
-function ledgerAddTo(catId, amount, reason) {
-  const c = db.categories.find(x=>x.id===catId);
-  if(!c) return false;
-  c.added += amount;
-  c.logs.push({ type:'add', amount, reason, date:dateStr() });
-  db.logs.push({ name:t('misc.addedDash', c.name), reason, amt:-amount, date:dateStr() });
-  return true;
+function saveEditCat(){
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  const name=v('ec-name');if(!name)return alert(t('err.enterName'));
+  c.name=name;c.budget=parseFloat(v('ec-budget'))||0;
+  closeModal('modal-edit-cat');save();renderAll();renderLedgerDetail();
 }
-
-function ledgerPayFrom(catId, amount, reason) {
-  const c = db.categories.find(x=>x.id===catId);
-  if(!c) return false;
-  const rem = ledgerRemaining(c);
-  const actual = Math.min(amount, rem);
-  c.paid += actual;
-  c.logs.push({ type:'pay', amount:actual, reason: reason || t('misc.paymentFromLedger'), date:dateStr() });
-  const own = db.people.find(p=>p.id==='p_own');
-  if(own) { own.loan += actual; own.logs.push({ type:'withdraw', amount:actual, reason:t('misc.ledgerPayment', c.name), date:dateStr() }); }
-  db.logs.push({ name:t('misc.paidDash', c.name), reason: reason || t('misc.paymentFromLedger'), amt:actual, date:dateStr() });
-  return actual;
+function deleteActiveLedger(){
+  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
+  const msg=ledgerRem(c)>0?t('confirm.deleteLedgerBal',fmt(ledgerRem(c))):t('confirm.deleteLedger',c.name);
+  if(!confirm(msg))return;
+  db.categories=db.categories.filter(x=>x.id!==activeCatId);activeCatId=null;
+  switchView('view-bills');save();renderAll();
 }
-
-function quickAddToLedger() {
-  const catId = v('qa-cat-select');
-  const amt = parseFloat(v('qa-amt'));
-  const reason = v('qa-reason');
-  if(!catId) return alert(t('alert.chooseLedger'));
-  if(!amt||amt<=0) return alert(t('alert.enterAmount'));
-  if(!reason) return alert(t('alert.enterReason'));
-  ledgerAddTo(catId, amt, reason);
-  closeModal('modal-quick-add'); set('qa-amt',''); set('qa-reason','');
-  save(); render();
+function addCategory(){
+  const name=v('f-cat-name');if(!name)return alert(t('err.enterName'));
+  const budget=parseFloat(v('f-cat-budget'))||0;
+  const colors=['#ff8c42','#00c3ff','#c77dff','#ff3d6e','#00f5a0','#ffd166'];
+  const icons=['fa-cart-shopping','fa-house','fa-bolt','fa-wifi','fa-pump-medical','fa-gas-pump','fa-soap','fa-mobile-screen'];
+  db.categories.push({id:'c'+Date.now(),name,color:colors[db.categories.length%colors.length],icon:icons[db.categories.length%icons.length],added:0,paid:0,budget,logs:[]});
+  closeModal('modal-add-cat');set('f-cat-name','');set('f-cat-budget','');save();renderAll();
 }
-
-function updateQuickPayInfo() {
-  const catId = v('qp-cat-select');
-  const c = db.categories.find(x=>x.id===catId);
-  const curr = currentLang === 'ar' ? 'ر.س' : 'SAR';
-  document.getElementById('qp-remaining').textContent = c ? fmt(ledgerRemaining(c)) + ' ' + curr : '0.00 ' + curr;
+function quickAction(mode){
+  quickMode=mode;
+  const sel=document.getElementById('quick-cat-select');
+  sel.innerHTML=db.categories.map(c=>`<option value="${c.id}">${c.name} (${lang==='ar'?'متبقي':'rem'}: ${fmt(ledgerRem(c))})</option>`).join('');
+  document.getElementById('quick-title').textContent=mode==='ledger-add'?t('m.ledgerAdd'):t('m.ledgerPay');
+  document.getElementById('quick-rem-box').style.display=mode==='ledger-pay'?'block':'none';
+  updateQuickRem();set('quick-amt','');set('quick-reason','');openModal('modal-quick');
 }
-
-function quickPayFromLedger() {
-  const catId = v('qp-cat-select');
-  const amt = parseFloat(v('qp-amt'));
-  if(!catId) return alert(t('alert.chooseLedger'));
-  if(!amt||amt<=0) return alert(t('alert.enterAmount'));
-  ledgerPayFrom(catId, amt, t('misc.quickPayment'));
-  closeModal('modal-quick-pay'); set('qp-amt','');
-  save(); render();
+function updateQuickRem(){
+  const c=db.categories.find(x=>x.id===v('quick-cat-select'));
+  document.getElementById('quick-rem').textContent=c?`${fmt(ledgerRem(c))} ${curr()}`:'-';
 }
-
-function openLedgerAddModal() { set('la-amt',''); set('la-reason',''); openModal('modal-ledger-add'); }
-function openLedgerPayModal() {
-  const c = db.categories.find(x=>x.id===activeCatId);
-  const curr = currentLang === 'ar' ? 'ر.س' : 'SAR';
-  document.getElementById('la-pay-remaining').textContent = c ? fmt(ledgerRemaining(c)) + ' ' + curr : '0.00 ' + curr;
-  set('la-pay-amt','');
-  openModal('modal-ledger-pay');
-}
-
-function ledgerAdd() {
-  const amt = parseFloat(v('la-amt'));
-  const reason = v('la-reason');
-  if(!amt||amt<=0) return alert(t('alert.enterAmount'));
-  if(!reason) return alert(t('alert.enterReason'));
-  ledgerAddTo(activeCatId, amt, reason);
-  closeModal('modal-ledger-add');
-  save(); render(); renderLedgerDetail();
-}
-
-function ledgerPay() {
-  const amt = parseFloat(v('la-pay-amt'));
-  if(!amt||amt<=0) return alert(t('alert.enterAmount'));
-  ledgerPayFrom(activeCatId, amt, t('misc.paymentFromLedger'));
-  closeModal('modal-ledger-pay');
-  save(); render(); renderLedgerDetail();
-}
-
-function openLedgerDetail(catId) {
-  activeCatId = catId;
-  renderLedgerDetail();
-  switchView('view-ledger', false);
-}
-
-function renderLedgerDetail() {
-  const c = db.categories.find(x=>x.id===activeCatId);
-  if(!c) return;
-  const curr = currentLang === 'ar' ? 'ر.س' : 'SAR';
-  const rem = ledgerRemaining(c);
-  document.getElementById('ledger-icon').innerHTML = `<i class="fa-solid ${c.icon||'fa-folder-open'}" style="color:${c.color}"></i>`;
-  document.getElementById('ledger-name').textContent = c.name;
-  document.getElementById('ledger-added').textContent = fmt(c.added) + ' ' + curr;
-  document.getElementById('ledger-paid').textContent = fmt(c.paid) + ' ' + curr;
-  document.getElementById('ledger-remaining').textContent = fmt(rem) + ' ' + curr;
-  document.getElementById('ledger-remaining').style.color = rem <= 0 ? 'var(--g)' : 'var(--r)';
-
-  const tl = document.getElementById('ledger-timeline');
-  if(!c.logs || c.logs.length === 0) {
-    tl.innerHTML = `<div class="empty-state" style="padding:20px 0;"><i class="fa-solid fa-inbox"></i><p>${t('ledger.noActivity')}</p></div>`;
+function confirmQuick(){
+  const catId=v('quick-cat-select');const amt=parseFloat(v('quick-amt'));const reason=v('quick-reason');
+  if(!catId)return alert(t('err.chooseLedger'));
+  if(!amt||amt<=0)return alert(t('err.enterAmt'));
+  if(!reason)return alert(t('err.enterDesc'));
+  const c=db.categories.find(x=>x.id===catId);if(!c)return;
+  if(quickMode==='ledger-add'){
+    c.added+=amt;c.logs.push({type:'add',amount:amt,reason,date:ds()});
+    db.logs.push({label:t('misc.addedTo',c.name),reason,amt:-amt,date:ds()});
   } else {
-    tl.innerHTML = c.logs.slice().reverse().map((l, ri) => {
-      const realIdx = c.logs.length - 1 - ri;
-      const isAdd = l.type === 'add';
-      return `
-        <div class="tl-item">
-          <div class="tl-dot" style="background:${isAdd?'rgba(255,61,110,0.1)':'rgba(0,245,160,0.1)'};color:${isAdd?'var(--r)':'var(--g)'}">
-            <i class="fa-solid ${isAdd?'fa-plus':'fa-money-bill-wave'}"></i>
-          </div>
-          <div class="tl-body">
-            <div class="tl-title">${isAdd?t('ledger.addedToLedger'):t('ledger.paidFromLedger')}</div>
-            <div class="tl-meta">${l.reason} · ${l.date}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div class="tl-amt" style="color:${isAdd?'var(--r)':'var(--g)'}">${isAdd?'+':'-'}${l.amount.toFixed(2)}</div>
-            <button onclick="deleteLedgerLog(${realIdx})" style="background:rgba(255,61,110,0.08);border:1px solid rgba(255,61,110,0.15);color:var(--r);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:0.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('');
+    const actual=Math.min(amt,ledgerRem(c));
+    c.paid+=actual;c.logs.push({type:'pay',amount:actual,reason,date:ds()});
+    db.logs.push({label:t('misc.paidFrom',c.name),reason,amt:actual,date:ds()});
+  }
+  closeModal('modal-quick');save();renderAll();
+}
+
+// ── PEOPLE ──
+function renderPeople(){
+  document.getElementById('home-people').innerHTML=db.people.slice(0,3).map(personCardHTML).join('');
+  document.getElementById('people-list').innerHTML=db.people.map(personCardHTML).join('');
+}
+function personCardHTML(p){
+  const isOwn=p.id==='p_own';
+  let meta,badge,badgeCol;
+  if(isOwn){
+    const md=totalMyDebts();
+    meta=`${lang==='ar'?'رصيد':'Balance'}: ${fmt(p.funds)} ${curr()} · ${lang==='ar'?'ديون':'Debts'}: ${fmt(md)} ${curr()}`;
+    badge=fmt(p.funds-md);badgeCol=p.funds-md>=0?'var(--g)':'var(--r)';
+  } else {
+    const tr=p.trust.deposited-p.trust.withdrawn;
+    const ln=p.loanToThem.given-p.loanToThem.returned;
+    meta=`${lang==='ar'?'أمانة':'Trust'}: ${fmt(tr)} · ${lang==='ar'?'سُلفة':'Loan'}: ${fmt(ln)}`;
+    badge=fmt(tr);badgeCol='var(--b)';
+  }
+  const ava=p.photo?`<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;">`:(p.emoji||'👤');
+  return`<div class="person-card" onclick="openPersonProfile('${p.id}')"><div class="p-ava">${ava}</div><div class="p-info"><div class="p-name">${p.name}</div><div class="p-meta">${meta}</div></div><div class="p-badge" style="color:${badgeCol}">${badge}</div></div>`;
+}
+function addPerson(){
+  const name=v('f-pname');if(!name)return alert(t('err.enterName'));
+  const emojis=['👤','👦','👩','👴','👵','🧑','👨','🙍'];
+  const p={id:'p'+Date.now(),name,emoji:emojis[Math.floor(Math.random()*emojis.length)],
+    trust:{deposited:0,withdrawn:0,logs:[]},
+    loanToThem:{given:0,returned:0,logs:[]},
+    loanFromThem:{borrowed:0,repaid:0,logs:[]},logs:[]};
+  if(newAvaData)p.photo=newAvaData;
+  db.people.push(p);
+  closeModal('modal-add-person');set('f-pname','');newAvaData=null;resetNewAva();save();renderAll();
+}
+function deleteActivePerson(){
+  if(!activePid||activePid==='p_own')return;
+  const p=db.people.find(x=>x.id===activePid);if(!p)return;
+  if(!confirm(t('confirm.deletePerson',p.name)))return;
+  db.people=db.people.filter(x=>x.id!==activePid);activePid=null;
+  switchView('view-people');save();renderAll();
+}
+
+// ── PERSON PROFILE BANK CARD ──
+function openPersonProfile(id){
+  activePid=id;logFilter='all';
+  ['all','deposit','withdraw','return'].forEach(x=>{
+    const el=document.getElementById('lf-'+x);if(el)el.classList.toggle('on',x==='all');
+  });
+  const p=db.people.find(x=>x.id===id);if(!p)return;
+  renderBcAva(p);
+  document.getElementById('bc-name').textContent=p.name;
+  document.getElementById('bc-role').textContent=p.id==='p_own'?t('person.ownAcc'):t('person.extProfile');
+  document.getElementById('p-delete-btn').style.display=p.id==='p_own'?'none':'flex';
+  renderBcNet(p);
+  renderBcRelations(p);
+  const claimZone=document.getElementById('claim-zone');
+  const clBox=document.getElementById('claim-link-box');
+  const clCopy=document.getElementById('claim-copy-btn');
+  const clNote=document.getElementById('claim-note');
+  if(claimZone)claimZone.style.display=p.id!=='p_own'&&p.trust.deposited>0?'block':'none';
+  if(clBox){clBox.style.display='none';clBox.textContent='';}
+  if(clCopy)clCopy.style.display='none';
+  if(clNote)clNote.style.display='none';
+  renderPersonLog(p);
+  switchView('view-person',false);
+}
+function renderBcAva(p){
+  const emoji=document.getElementById('bc-ava-emoji');
+  const img=document.getElementById('bc-ava-img');
+  if(p.photo){img.src=p.photo;img.style.display='block';emoji.style.display='none';}
+  else{img.style.display='none';emoji.style.display='block';emoji.textContent=p.emoji||'👤';}
+}
+function renderBcNet(p){
+  const badge=document.getElementById('bc-net');
+  if(p.id==='p_own'){
+    const net=p.funds-totalMyDebts();
+    badge.textContent=`${net>=0?(lang==='ar'?'الصافي: ':'Net: '):(lang==='ar'?'مديون: ':'Owe: ')}${fmt(Math.abs(net))} ${curr()}`;
+    badge.className='bc-net '+(net>=0?'badge-g':'badge-r');
+  } else {
+    const tr=p.trust.deposited-p.trust.withdrawn;
+    const ltt=p.loanToThem.given-p.loanToThem.returned;
+    const lft=p.loanFromThem.borrowed-p.loanFromThem.repaid;
+    const net=tr+ltt-lft;
+    const lbl=net>0?(lang==='ar'?'يستحق له: ':'They owe me: '):net<0?(lang==='ar'?'أستحق له: ':'I owe them: '):(lang==='ar'?'مسوّى ✓':'Settled ✓');
+    badge.textContent=`${lbl}${Math.abs(net)>0?fmt(Math.abs(net))+' '+curr():''}`;
+    badge.className='bc-net '+(net>0?'badge-g':net<0?'badge-r':'badge-n');
   }
 }
-
-function deleteLedgerLog(idx) {
-  const c = db.categories.find(x=>x.id===activeCatId);
-  if(!c || !c.logs[idx]) return;
-  if(!confirm(t('confirm.undoOperation'))) return;
-  const l = c.logs[idx];
-  if(l.type === 'add') {
-    c.added = Math.max(0, c.added - l.amount);
-  } else {
-    c.paid = Math.max(0, c.paid - l.amount);
-    const own = db.people.find(p=>p.id==='p_own');
-    if(own) own.loan = Math.max(0, own.loan - l.amount);
-  }
-  c.logs.splice(idx, 1);
-  save(); recalc(); renderLedgerDetail(); render();
+function renderBcRelations(p){
+  const el=document.getElementById('bc-relations');
+  el.innerHTML=p.id==='p_own'?renderOwnRelations(p):renderPersonRelations(p);
 }
 
-function addPerson() {
-  const name = v('f-person-name');
-  if(!name) return alert(t('alert.enterName'));
-  const emojis = ['👤','👦','👩','👴','👵','🧑','👨','🙍'];
-  db.people.push({ id:'p_'+Date.now(), name, emoji: emojis[Math.floor(Math.random()*emojis.length)], trust:0, loan:0, logs:[] });
-  closeModal('modal-add-person'); set('f-person-name','');
-  save(); render();
-}
-
-function personAction(type) {
-  const amt = parseFloat(type==='deposit' ? v('f-dep-amt') : v('f-wit-amt'));
-  const reason = type==='deposit' ? v('f-dep-reason') : v('f-wit-reason');
-  if(!amt||amt<=0) return alert(t('alert.enterAmount'));
-  if(!reason) return alert(t('alert.enterReason'));
-  const p = db.people.find(x=>x.id===activePersonId);
-  if(!p) return;
-  if(type==='deposit') { p.trust+=amt; db.logs.push({ name:t('misc.depositDash', p.name), reason, amt, date:dateStr() }); }
-  else { p.loan+=amt; db.logs.push({ name:t('misc.withdrawDash', p.name), reason, amt:-amt, date:dateStr() }); }
-  p.logs.push({ type, amount:amt, reason, date:dateStr() });
-  closeModal(type==='deposit'?'modal-p-deposit':'modal-p-withdraw');
-  set(type==='deposit'?'f-dep-amt':'f-wit-amt','');
-  set(type==='deposit'?'f-dep-reason':'f-wit-reason','');
-  save(); recalc(); renderPersonProfile(); render();
-}
-
-function openPersonProfile(id) {
-  activePersonId = id;
-  const p = db.people.find(x=>x.id===id);
-  if(!p) return;
-  document.getElementById('p-avatar-lg').textContent = p.emoji||'👤';
-  document.getElementById('p-name-lg').textContent = p.name;
-  document.getElementById('p-role').textContent = p.id==='p_own' ? t('person.ownAccount') : t('person.externalProfile');
-  document.getElementById('p-delete-btn').style.display = p.id==='p_own' ? 'none' : 'flex';
-  renderPersonProfile();
-  switchView('view-person', false);
-}
-
-function renderPersonProfile() {
-  const p = db.people.find(x=>x.id===activePersonId);
-  if(!p) return;
-  recalc();
-  const curr = currentLang === 'ar' ? 'ر.س' : 'SAR';
-  document.getElementById('p-trust').textContent = fmt(p.trust) + ' ' + curr;
-  document.getElementById('p-loan').textContent = fmt(p.loan) + ' ' + curr;
-  const tl = document.getElementById('p-timeline');
-  if(!p.logs||p.logs.length===0) {
-    tl.innerHTML = `<div class="empty-state" style="padding:20px 0;"><i class="fa-solid fa-inbox"></i><p>${t('person.noTransactions')}</p></div>`;
-  } else {
-    tl.innerHTML = p.logs.slice().reverse().map((l,ri) => {
-      const realIdx = p.logs.length-1-ri;
-      const pos = l.type==='deposit';
-      return `
-        <div class="tl-item" style="position:relative;">
-          <div class="tl-dot" style="background:${pos?'rgba(0,195,255,0.1)':'rgba(255,140,66,0.1)'};color:${pos?'var(--b)':'var(--o)'}">
-            <i class="fa-solid ${pos?'fa-box-archive':'fa-hand-holding-dollar'}"></i>
-          </div>
-          <div class="tl-body">
-            <div class="tl-title">${pos?t('person.depositLabel'):t('person.withdrawLabel')}</div>
-            <div class="tl-meta">${l.reason} · ${l.date}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div class="tl-amt" style="color:${pos?'var(--b)':'var(--o)'}">${l.amount.toFixed(2)}</div>
-            <button onclick="deletePersonLog(${realIdx})" style="background:rgba(255,61,110,0.08);border:1px solid rgba(255,61,110,0.15);color:var(--r);width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:0.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-}
-
-function deletePersonLog(idx) {
-  const p = db.people.find(x=>x.id===activePersonId);
-  if(!p||!p.logs[idx]) return;
-  if(!confirm(t('confirm.undoTransaction'))) return;
-  const l = p.logs[idx];
-  if(l.type==='deposit') p.trust=Math.max(0,p.trust-l.amount);
-  else p.loan=Math.max(0,p.loan-l.amount);
-  p.logs.splice(idx,1);
-  save(); recalc(); renderPersonProfile(); render();
-}
-
-function deleteActivePerson() {
-  if(!activePersonId||activePersonId==='p_own') return;
-  const p = db.people.find(x=>x.id===activePersonId);
-  if(!confirm(t('confirm.deletePerson', p.name))) return;
-  db.people = db.people.filter(x=>x.id!==activePersonId);
-  activePersonId = null;
-  switchView('view-people');
-  save(); render();
-}
-
-function saveBudget() {
-  const total = parseFloat(v('f-total-budget'))||0;
-  db.budget.total = total;
-  db.categories.forEach(c => {
-    const el = document.getElementById('budget-cat-'+c.id);
-    if(el) c.budget = parseFloat(el.value)||0;
-  });
-  closeModal('modal-budget');
-  save(); render();
-}
-
-function openBudgetModal() {
-  set('f-total-budget', db.budget.total||'');
-  const catInputs = document.getElementById('cat-budget-inputs');
-  catInputs.innerHTML = db.categories.map(c=>`
-    <div class="form-group">
-      <label class="form-label">${t('form.budgetForCat', c.name)}</label>
-      <input class="form-input" id="budget-cat-${c.id}" type="number" placeholder="0" value="${c.budget||''}">
+function renderOwnRelations(p){
+  const md=p.debts.reduce((a,d)=>a+Math.max(0,d.amount-d.paid),0);
+  const mdPaid=p.debts.reduce((a,d)=>a+d.paid,0);
+  const mdTotal=p.debts.reduce((a,d)=>a+d.amount,0);
+  const debtPct=mdTotal>0?Math.min((mdPaid/mdTotal)*100,100):0;
+  return`<div class="bc-rel">
+    <div class="bc-rel-hdr">
+      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(0,245,160,.1);color:var(--g)"><i class="fa-solid fa-wallet"></i></div>${t('rel.myFunds')}</div>
+      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.myFundsDesc')}</span>
     </div>
-  `).join('');
+    <div class="bc-amounts">
+      <div class="bc-amt-cell"><div class="bc-amt-label">${lang==='ar'?'رصيدي':'Balance'}</div><div class="bc-amt-val" style="color:var(--g)">${fmt(p.funds)}</div><div style="font-size:.6rem;color:var(--txt3);">${curr()}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${lang==='ar'?'ديوني':'My debts'}</div><div class="bc-amt-val" style="color:var(--r)">${fmt(md)}</div><div style="font-size:.6rem;color:var(--txt3);">${curr()}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${lang==='ar'?'الصافي':'Net'}</div><div class="bc-amt-val" style="color:${p.funds-md>=0?'var(--g)':'var(--r)'}">${fmt(p.funds-md)}</div><div style="font-size:.6rem;color:var(--txt3);">${curr()}</div></div>
+    </div>
+    <div class="bc-actions">
+      <button class="bc-btn bc-btn-g" onclick="openPersonAction('addFunds')"><i class="fa-solid fa-plus"></i> ${t('rel.addFunds')}</button>
+      <button class="bc-btn bc-btn-r" onclick="openPersonAction('deductFunds')"><i class="fa-solid fa-minus"></i> ${t('rel.removeFunds')}</button>
+    </div>
+  </div>
+  <div class="bc-rel" style="border-bottom:none;">
+    <div class="bc-rel-hdr">
+      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(255,61,110,.1);color:var(--r)"><i class="fa-solid fa-file-invoice-dollar"></i></div>${t('rel.myDebt')}</div>
+      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.myDebtDesc')}</span>
+    </div>
+    ${p.debts.length===0?`<div style="font-size:.78rem;color:var(--txt3);padding:4px 0 8px;">${lang==='ar'?'لا ديون عليك 🎉':'No debts — great! 🎉'}</div>`:
+    `<div class="bc-amounts">
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.myDebtAmt')}</div><div class="bc-amt-val" style="color:var(--r)">${fmt(mdTotal)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.myDebtPaid')}</div><div class="bc-amt-val" style="color:var(--g)">${fmt(mdPaid)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.myDebtLeft')}</div><div class="bc-amt-val" style="color:${md>0?'var(--r)':'var(--g)'}">${fmt(md)}</div></div>
+    </div>
+    <div class="pbar" style="margin-top:8px;margin-bottom:10px;"><div class="pbar-fill" style="width:${debtPct}%;background:var(--g);"></div></div>
+    <div style="margin-bottom:10px;">${p.debts.map((d,i)=>{const rem=Math.max(0,d.amount-d.paid);const settled=rem<=0;return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.78rem;"><div style="flex:1;min-width:0;"><div style="font-weight:700;color:${settled?'var(--txt3)':'var(--txt)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.reason}</div><div style="font-size:.65rem;color:var(--txt3);">${d.date}${settled?' · ✓ settled':''}</div></div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0;"><span style="font-family:var(--mono);color:${settled?'var(--g)':'var(--r)'};">${fmt(rem)} ${curr()}</span>${d.receipt?`<div class="tl-icon-btn" style="background:rgba(199,125,255,.08);border-color:rgba(199,125,255,.2);color:var(--p);" onclick="viewReceipt('${d.receipt}')"><i class="fa-solid fa-receipt"></i></div>`:''}<div class="tl-icon-btn" style="background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);" onclick="deleteMyDebt(${i})"><i class="fa-solid fa-xmark"></i></div></div></div>`;}).join('')}</div>`}
+    <div class="bc-actions">
+      <button class="bc-btn bc-btn-r" onclick="openMyDebtModal('add')"><i class="fa-solid fa-plus"></i> ${t('rel.addDebt')}</button>
+      <button class="bc-btn bc-btn-g" onclick="openMyDebtModal('pay')" ${md<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-check"></i> ${t('rel.payDebt')}</button>
+    </div>
+  </div>`;
 }
 
-// ═══════════════ VIEW SWITCHER ═══════════════
-const navMap = { 'view-home':'nav-home','view-bills':'nav-bills','view-people':'nav-people','view-analytics':'nav-analytics' };
-function switchView(id, updateNav=true) {
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.getElementById('scroll-area').scrollTop = 0;
-  if(updateNav) {
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    if(navMap[id]) document.getElementById(navMap[id]).classList.add('active');
+function renderPersonRelations(p){
+  const tr=p.trust.deposited-p.trust.withdrawn;
+  const ltt=p.loanToThem.given-p.loanToThem.returned;
+  const lft=p.loanFromThem.borrowed-p.loanFromThem.repaid;
+  const trPct=p.trust.deposited>0?Math.min((p.trust.withdrawn/p.trust.deposited)*100,100):0;
+  const lttPct=p.loanToThem.given>0?Math.min((p.loanToThem.returned/p.loanToThem.given)*100,100):0;
+  const lftPct=p.loanFromThem.borrowed>0?Math.min((p.loanFromThem.repaid/p.loanFromThem.borrowed)*100,100):0;
+  return`
+  <div class="bc-rel">
+    <div class="bc-rel-hdr">
+      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(0,195,255,.1);color:var(--b)"><i class="fa-solid fa-vault"></i></div>${t('rel.trust')}</div>
+      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.trustDesc')}</span>
+    </div>
+    <div class="bc-amounts">
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.deposited')}</div><div class="bc-amt-val" style="color:var(--b)">${fmt(p.trust.deposited)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.withdrawn')}</div><div class="bc-amt-val" style="color:var(--txt2)">${fmt(p.trust.withdrawn)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.remaining')}</div><div class="bc-amt-val" style="color:${tr>0?'var(--b)':'var(--g)'}">${fmt(tr)}</div></div>
+    </div>
+    ${p.trust.deposited>0?`<div class="pbar" style="margin-top:8px;"><div class="pbar-fill" style="width:${trPct}%;background:var(--b);"></div></div>`:''}
+    <div class="bc-actions">
+      <button class="bc-btn bc-btn-b" onclick="openPersonAction('trustDeposit')"><i class="fa-solid fa-box-archive"></i> ${t('rel.addTrust')}</button>
+      <button class="bc-btn bc-btn-g" onclick="openPersonAction('trustReturn')" ${tr<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-rotate-left"></i> ${t('rel.returnTrust')}</button>
+    </div>
+  </div>
+  <div class="bc-rel">
+    <div class="bc-rel-hdr">
+      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(255,140,66,.1);color:var(--o)"><i class="fa-solid fa-hand-holding-dollar"></i></div>${t('rel.loanToThem')}</div>
+      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.loanToThemDesc')}</span>
+    </div>
+    <div class="bc-amounts">
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.given')}</div><div class="bc-amt-val" style="color:var(--o)">${fmt(p.loanToThem.given)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.returned')}</div><div class="bc-amt-val" style="color:var(--txt2)">${fmt(p.loanToThem.returned)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.owed')}</div><div class="bc-amt-val" style="color:${ltt>0?'var(--o)':'var(--g)'}">${fmt(ltt)}</div></div>
+    </div>
+    ${p.loanToThem.given>0?`<div class="pbar" style="margin-top:8px;"><div class="pbar-fill" style="width:${lttPct}%;background:var(--g);"></div></div>`:''}
+    <div class="bc-actions">
+      <button class="bc-btn bc-btn-o" onclick="openPersonAction('giveLoan')"><i class="fa-solid fa-plus"></i> ${t('rel.giveLoan')}</button>
+      <button class="bc-btn bc-btn-g" onclick="openPersonAction('loanRepaid')" ${ltt<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-check"></i> ${t('rel.markRepaid')}</button>
+    </div>
+  </div>
+  <div class="bc-rel" style="border-bottom:none;">
+    <div class="bc-rel-hdr">
+      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(199,125,255,.1);color:var(--p)"><i class="fa-solid fa-money-bill-transfer"></i></div>${t('rel.loanFromThem')}</div>
+      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.loanFromThemDesc')}</span>
+    </div>
+    <div class="bc-amounts">
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.borrowed')}</div><div class="bc-amt-val" style="color:var(--p)">${fmt(p.loanFromThem.borrowed)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.repaid')}</div><div class="bc-amt-val" style="color:var(--txt2)">${fmt(p.loanFromThem.repaid)}</div></div>
+      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.left')}</div><div class="bc-amt-val" style="color:${lft>0?'var(--r)':'var(--g)'}">${fmt(lft)}</div></div>
+    </div>
+    ${p.loanFromThem.borrowed>0?`<div class="pbar" style="margin-top:8px;"><div class="pbar-fill" style="width:${lftPct}%;background:var(--p);"></div></div>`:''}
+    <div class="bc-actions">
+      <button class="bc-btn bc-btn-b" onclick="openPersonAction('takeLoan')"><i class="fa-solid fa-plus"></i> ${t('rel.takeLoan')}</button>
+      <button class="bc-btn bc-btn-g" onclick="openPersonAction('payBackLoan')" ${lft<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-rotate-left"></i> ${t('rel.payBack')}</button>
+    </div>
+  </div>`;
+}
+
+// ── PERSON ACTION MODAL ──
+const actionMeta={
+  trustDeposit:{ti:'rel.addTrust',showInfo:false,hasReceipt:true},
+  trustReturn:{ti:'rel.returnTrust',showInfo:true,infoLbl:()=>lang==='ar'?'متبقي الأمانة:':'Trust remaining:',infoVal:()=>{const p=db.people.find(x=>x.id===activePid);return p?`${fmt(p.trust.deposited-p.trust.withdrawn)} ${curr()}`:'0';},hasReceipt:false},
+  giveLoan:{ti:'rel.giveLoan',showInfo:false,hasReceipt:true},
+  loanRepaid:{ti:'rel.markRepaid',showInfo:true,infoLbl:()=>lang==='ar'?'متبقي السُلفة:':'Loan remaining:',infoVal:()=>{const p=db.people.find(x=>x.id===activePid);return p?`${fmt(p.loanToThem.given-p.loanToThem.returned)} ${curr()}`:'0';},hasReceipt:false},
+  takeLoan:{ti:'rel.takeLoan',showInfo:false,hasReceipt:true},
+  payBackLoan:{ti:'rel.payBack',showInfo:true,infoLbl:()=>lang==='ar'?'المتبقي عليك:':'Remaining you owe:',infoVal:()=>{const p=db.people.find(x=>x.id===activePid);return p?`${fmt(p.loanFromThem.borrowed-p.loanFromThem.repaid)} ${curr()}`:'0';},hasReceipt:true},
+  addFunds:{ti:'rel.addFunds',showInfo:false,hasReceipt:false},
+  deductFunds:{ti:'rel.removeFunds',showInfo:false,hasReceipt:false},
+};
+function openPersonAction(action){
+  currentAction=action;pendingReceipt=null;
+  const m=actionMeta[action];
+  document.getElementById('paction-title').textContent=t(m.ti);
+  const infoBox=document.getElementById('paction-info-box');
+  if(m.showInfo){
+    infoBox.style.display='block';
+    document.getElementById('paction-info-label').textContent=m.infoLbl();
+    document.getElementById('paction-info-val').textContent=m.infoVal();
+  } else infoBox.style.display='none';
+  document.getElementById('paction-receipt-group').style.display=m.hasReceipt?'block':'none';
+  clearReceipt();set('paction-amt','');set('paction-reason','');
+  openModal('modal-person-action');
+}
+function confirmPersonAction(){
+  const amt=parseFloat(v('paction-amt'));const reason=v('paction-reason');
+  if(!amt||amt<=0)return alert(t('err.enterAmt'));
+  if(!reason)return alert(t('err.enterDesc'));
+  const p=db.people.find(x=>x.id===activePid);if(!p)return;
+  const entry={amount:amt,reason,date:ds()};
+  if(pendingReceipt)entry.receipt=pendingReceipt;
+  switch(currentAction){
+    case 'trustDeposit':
+      p.trust.deposited+=amt;p.trust.logs.push({...entry,type:'deposit'});
+      p.logs.push({type:'trustDeposit',...entry});
+      db.logs.push({label:t('rel.trust')+' · '+p.name,reason,amt,date:ds()});break;
+    case 'trustReturn':{
+      const act=Math.min(amt,p.trust.deposited-p.trust.withdrawn);
+      p.trust.withdrawn+=act;p.trust.logs.push({...entry,amount:act,type:'return'});
+      p.logs.push({type:'trustReturn',...entry,amount:act});
+      db.logs.push({label:t('rel.trust')+' ↩ '+p.name,reason,amt:-act,date:ds()});break;}
+    case 'giveLoan':
+      p.loanToThem.given+=amt;p.loanToThem.logs.push({...entry,type:'given'});
+      p.logs.push({type:'giveLoan',...entry});
+      db.logs.push({label:t('rel.loanToThem')+' · '+p.name,reason,amt:-amt,date:ds()});break;
+    case 'loanRepaid':{
+      const act=Math.min(amt,p.loanToThem.given-p.loanToThem.returned);
+      p.loanToThem.returned+=act;p.loanToThem.logs.push({...entry,amount:act,type:'returned'});
+      p.logs.push({type:'loanRepaid',...entry,amount:act});
+      db.logs.push({label:t('rel.loanToThem')+' ✓ '+p.name,reason,amt:act,date:ds()});break;}
+    case 'takeLoan':
+      p.loanFromThem.borrowed+=amt;p.loanFromThem.logs.push({...entry,type:'borrowed'});
+      p.logs.push({type:'takeLoan',...entry});
+      db.logs.push({label:t('rel.loanFromThem')+' · '+p.name,reason,amt,date:ds()});break;
+    case 'payBackLoan':{
+      const act=Math.min(amt,p.loanFromThem.borrowed-p.loanFromThem.repaid);
+      p.loanFromThem.repaid+=act;p.loanFromThem.logs.push({...entry,amount:act,type:'repaid'});
+      p.logs.push({type:'payBackLoan',...entry,amount:act});
+      db.logs.push({label:t('rel.loanFromThem')+' ↩ '+p.name,reason,amt:-act,date:ds()});break;}
+    case 'addFunds':
+      p.funds+=amt;p.logs.push({type:'addFunds',...entry});
+      db.logs.push({label:t('rel.myFunds'),reason,amt,date:ds()});break;
+    case 'deductFunds':
+      p.funds=Math.max(0,p.funds-amt);p.logs.push({type:'deductFunds',...entry});
+      db.logs.push({label:t('rel.myFunds'),reason,amt:-amt,date:ds()});break;
   }
-  if(id==='view-bills') renderLedgers();
-  if(id==='view-analytics') renderAnalytics();
+  pendingReceipt=null;clearReceipt();
+  closeModal('modal-person-action');
+  save();renderAll();openPersonProfile(activePid);
 }
 
-// ═══════════════ MODAL HELPERS ═══════════════
-function openModal(id) {
-  if(id==='modal-quick-add' || id==='modal-quick-pay') {
-    const sel = document.getElementById(id==='modal-quick-add' ? 'qa-cat-select' : 'qp-cat-select');
-    sel.innerHTML = '';
-    if(db.categories.length === 0) { sel.innerHTML = `<option>${t('alert.noLedgersYet')}</option>`; }
-    else {
-      db.categories.forEach(c=>sel.innerHTML+=`<option value="${c.id}">${c.name} ${t('misc.remainingLabel', fmt(ledgerRemaining(c)))}</option>`);
-      if(id==='modal-quick-pay') updateQuickPayInfo();
-    }
+// ── MY WALLET DEBTS ──
+function openMyDebtModal(mode){
+  myDebtMode=mode;pendingMyDebtReceipt=null;
+  const p=own();if(!p)return;
+  if(mode==='pay'&&p.debts.filter(d=>d.amount-d.paid>0).length===0)
+    return alert(lang==='ar'?'لا ديون متبقية!':'No debts remaining!');
+  document.getElementById('mydebt-title').textContent=mode==='add'?t('rel.addDebt'):t('rel.payDebt');
+  clearMyDebtReceipt();set('mydebt-amt','');set('mydebt-reason','');
+  openModal('modal-my-debt');
+}
+function confirmMyDebt(){
+  const amt=parseFloat(v('mydebt-amt'));const reason=v('mydebt-reason');
+  if(!amt||amt<=0)return alert(t('err.enterAmt'));
+  if(!reason)return alert(t('err.enterDesc'));
+  const p=own();if(!p)return;
+  if(myDebtMode==='add'){
+    p.debts.push({id:'d'+Date.now(),amount:amt,paid:0,reason,date:ds(),receipt:pendingMyDebtReceipt||undefined});
+    p.logs.push({type:'addDebt',amount:amt,reason,date:ds()});
+    db.logs.push({label:t('rel.myDebt'),reason,amt:-amt,date:ds()});
+  } else {
+    let rem=amt;
+    for(let d of p.debts){if(rem<=0)break;const pay=Math.min(rem,d.amount-d.paid);d.paid+=pay;rem-=pay;}
+    p.logs.push({type:'payDebt',amount:amt,reason,date:ds()});
+    db.logs.push({label:t('rel.myDebt')+' ↩',reason,amt:amt,date:ds()});
   }
-  if(id==='modal-budget') openBudgetModal();
-  document.getElementById(id).classList.add('open');
+  pendingMyDebtReceipt=null;clearMyDebtReceipt();
+  closeModal('modal-my-debt');save();renderAll();openPersonProfile('p_own');
 }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-// ═══════════════ SIDEBAR ═══════════════
-function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
-function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
-
-// ═══════════════ DATA EXPORT/IMPORT ═══════════════
-function exportData() {
-  const blob = new Blob([JSON.stringify(db, null, 2)], { type:'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'family-wallet-backup.json';
-  a.click();
+function deleteMyDebt(idx){
+  const p=own();if(!p||!p.debts[idx])return;
+  if(!confirm(t('confirm.undo')))return;
+  p.debts.splice(idx,1);save();renderAll();openPersonProfile('p_own');
 }
-function importData(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const imported = JSON.parse(ev.target.result);
-      if(confirm(t('confirm.replaceData'))) { db = imported; save(); render(); }
-    } catch { alert(t('alert.invalidFile')); }
+
+// ── PERSON LOG ──
+const logTypeIcon={
+  trustDeposit:{icon:'fa-vault',col:'var(--b)',lbl:()=>t('log.trustDeposit')},
+  trustReturn:{icon:'fa-rotate-left',col:'var(--g)',lbl:()=>t('log.trustReturn')},
+  giveLoan:{icon:'fa-hand-holding-dollar',col:'var(--o)',lbl:()=>t('log.loanGiven')},
+  loanRepaid:{icon:'fa-check',col:'var(--g)',lbl:()=>t('log.loanRepaid')},
+  takeLoan:{icon:'fa-money-bill-transfer',col:'var(--p)',lbl:()=>t('log.loanTaken')},
+  payBackLoan:{icon:'fa-rotate-left',col:'var(--g)',lbl:()=>t('log.loanPaidBack')},
+  addFunds:{icon:'fa-wallet',col:'var(--g)',lbl:()=>t('log.addFunds')},
+  deductFunds:{icon:'fa-minus-circle',col:'var(--r)',lbl:()=>t('log.deductFunds')},
+  addDebt:{icon:'fa-file-invoice-dollar',col:'var(--r)',lbl:()=>t('log.addDebt')},
+  payDebt:{icon:'fa-check-double',col:'var(--g)',lbl:()=>t('log.payDebt')},
+};
+function setLogFilter(f){
+  logFilter=f;
+  ['all','deposit','withdraw','return'].forEach(x=>{
+    const el=document.getElementById('lf-'+x);if(el)el.classList.toggle('on',x===f);
+  });
+  const p=db.people.find(x=>x.id===activePid);if(p)renderPersonLog(p);
+}
+function renderPersonLog(p){
+  const tl=document.getElementById('person-tl');
+  let logs=p.logs||[];
+  if(logFilter==='deposit')logs=logs.filter(l=>['trustDeposit','giveLoan','addFunds','takeLoan'].includes(l.type));
+  else if(logFilter==='withdraw')logs=logs.filter(l=>['deductFunds','addDebt'].includes(l.type));
+  else if(logFilter==='return')logs=logs.filter(l=>['trustReturn','loanRepaid','payBackLoan','payDebt'].includes(l.type));
+  if(!logs.length){tl.innerHTML=`<div class="empty-state" style="padding:16px 0;"><i class="fa-solid fa-inbox"></i><p>${t('person.noTx')}</p></div>`;return;}
+  tl.innerHTML=logs.slice().reverse().map(l=>{
+    const realIdx=p.logs.lastIndexOf(l);
+    const m=logTypeIcon[l.type]||{icon:'fa-circle',col:'var(--txt2)',lbl:()=>l.type};
+    return`<div class="tl-row"><div class="tl-dot" style="background:rgba(255,255,255,.04);color:${m.col}"><i class="fa-solid ${m.icon}"></i></div><div class="tl-body"><div class="tl-title">${m.lbl()}</div><div class="tl-meta">${l.reason} · ${l.date}</div></div><div class="tl-right"><div class="tl-amt" style="color:${m.col}">${l.amount.toFixed(2)}</div>${l.receipt?`<div class="tl-icon-btn" style="background:rgba(199,125,255,.08);border-color:rgba(199,125,255,.2);color:var(--p);" onclick="viewReceipt('${l.receipt}')"><i class="fa-solid fa-receipt"></i></div>`:''}<div class="tl-icon-btn" style="background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);" onclick="deletePersonLog(${realIdx})"><i class="fa-solid fa-xmark"></i></div></div></div>`;
+  }).join('');
+}
+function deletePersonLog(idx){
+  const p=db.people.find(x=>x.id===activePid);if(!p||!p.logs[idx])return;
+  if(!confirm(t('confirm.undo')))return;
+  const l=p.logs[idx];
+  switch(l.type){
+    case 'trustDeposit':p.trust.deposited=Math.max(0,p.trust.deposited-l.amount);break;
+    case 'trustReturn':p.trust.withdrawn=Math.max(0,p.trust.withdrawn-l.amount);break;
+    case 'giveLoan':p.loanToThem.given=Math.max(0,p.loanToThem.given-l.amount);break;
+    case 'loanRepaid':p.loanToThem.returned=Math.max(0,p.loanToThem.returned-l.amount);break;
+    case 'takeLoan':p.loanFromThem.borrowed=Math.max(0,p.loanFromThem.borrowed-l.amount);break;
+    case 'payBackLoan':p.loanFromThem.repaid=Math.max(0,p.loanFromThem.repaid-l.amount);break;
+    case 'addFunds':if(p.id==='p_own')p.funds=Math.max(0,p.funds-l.amount);break;
+    case 'deductFunds':if(p.id==='p_own')p.funds+=l.amount;break;
+  }
+  p.logs.splice(idx,1);save();renderAll();openPersonProfile(activePid);
+}
+
+// ── CLAIM LINK ──
+function generateClaimLink(){
+  const p=db.people.find(x=>x.id===activePid);if(!p)return;
+  const payload={
+    n:p.name,
+    trust:{dep:p.trust.deposited,wit:p.trust.withdrawn},
+    loan:{given:p.loanToThem.given,returned:p.loanToThem.returned},
+    from:{bor:p.loanFromThem.borrowed,rep:p.loanFromThem.repaid},
+    logs:(p.logs||[]).slice(-10).map(l=>({type:l.type,amount:l.amount,reason:l.reason,date:l.date,hasReceipt:!!l.receipt})),
+    gen:ds()
   };
-  reader.readAsText(file);
+  const link=`${location.href.split('#')[0]}#claim=${btoa(unescape(encodeURIComponent(JSON.stringify(payload))))}`;
+  const box=document.getElementById('claim-link-box');
+  box.textContent=link;box._link=link;box.style.display='block';
+  document.getElementById('claim-copy-btn').style.display='block';
+  document.getElementById('claim-note').style.display='block';
 }
-
-function confirmReset() {
-  if(!confirm(t('confirm.resetAll'))) return;
-  localStorage.removeItem(KEY);
-  location.reload();
+function copyClaimLink(){
+  const link=document.getElementById('claim-link-box')._link;
+  if(navigator.clipboard)navigator.clipboard.writeText(link).then(()=>{
+    const b=document.getElementById('claim-copy-btn');const orig=b.innerHTML;
+    b.innerHTML='<i class="fa-solid fa-check"></i> '+(lang==='ar'?'تم!':'Copied!');
+    setTimeout(()=>b.innerHTML=orig,2000);
+  });
 }
-
-// ═══════════════ UTILS ═══════════════
-function v(id) { return document.getElementById(id).value.trim(); }
-function set(id, val) { document.getElementById(id).value = val; }
-function fmt(n) { return (n||0).toLocaleString(currentLang==='ar'?'ar-SA':'en-US', {minimumFractionDigits:0,maximumFractionDigits:1}); }
-function dateStr() { const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
-function pad(n) { return String(n).padStart(2,'0'); }
-function hexRgb(hex) { hex=hex.replace('#',''); if(hex.length===3)hex=hex.split('').map(c=>c+c).join(''); const b=parseInt(hex,16); return `${(b>>16)&255},${(b>>8)&255},${b&255}`; }
-
-// ═══════════════ PWA: SERVICE WORKER REGISTRATION ═══════════════
-function registerServiceWorker() {
-  if('serviceWorker' in navigator) {
-    try {
-      const swCode = `
-        const CACHE_NAME = 'family-wallet-v1';
-        self.addEventListener('install', e => { self.skipWaiting(); });
-        self.addEventListener('activate', e => { self.clients.claim(); });
-        self.addEventListener('fetch', e => {
-          e.respondWith(
-            caches.match(e.request).then(cached => {
-              if(cached) return cached;
-              return fetch(e.request).then(response => {
-                if(response && response.status === 200 && e.request.method === 'GET') {
-                  const copy = response.clone();
-                  caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy));
-                }
-                return response;
-              }).catch(() => cached);
-            })
-          );
-        });
-      `;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(swUrl).catch(()=>{});
-    } catch(e) { console.log('SW registration skipped:', e); }
-  }
+function checkClaimLink(){
+  if(!location.hash.startsWith('#claim='))return;
+  try{showClaimView(JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(7))))));}catch(e){}
 }
-
-function setupManifest() {
-  try {
-    const manifest = {
-      name: "Family Wallet Pro",
-      short_name: "Family Wallet",
-      start_url: ".",
-      display: "standalone",
-      background_color: "#080a12",
-      theme_color: "#080a12",
-      orientation: "portrait",
-      icons: [
-        { src: makeIconDataUrl(192), sizes: "192x192", type: "image/png" },
-        { src: makeIconDataUrl(512), sizes: "512x512", type: "image/png" }
-      ]
-    };
-    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    document.getElementById('manifest-link').setAttribute('href', url);
-    const icon192 = makeIconDataUrl(192);
-    document.getElementById('apple-touch-icon').setAttribute('href', icon192);
-    document.getElementById('favicon-link').setAttribute('href', icon192);
-  } catch(e) { console.log('Manifest setup skipped:', e); }
-}
-
-function makeIconDataUrl(size) {
-  const canvas = document.createElement('canvas');
-  canvas.width = size; canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  const grad = ctx.createLinearGradient(0,0,size,size);
-  grad.addColorStop(0, '#00f5a0');
-  grad.addColorStop(1, '#00c3ff');
-  ctx.fillStyle = '#080a12';
-  ctx.fillRect(0,0,size,size);
-  const r = size*0.22;
-  ctx.beginPath();
-  ctx.moveTo(r,0); ctx.arcTo(size,0,size,size,r); ctx.arcTo(size,size,0,size,r); ctx.arcTo(0,size,0,0,r); ctx.arcTo(0,0,size,0,r); ctx.closePath();
-  ctx.fillStyle = '#0d1020'; ctx.fill();
-  ctx.fillStyle = grad;
-  ctx.font = `bold ${size*0.5}px Arial`;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText('💰', size/2, size/2 + size*0.02);
-  return canvas.toDataURL('image/png');
-}
-
-// ═══════════════ INIT ═══════════════
-loadLangPreference();
-load();
-applyStaticTranslations();
-render();
-setupManifest();
-registerServiceWorker();
-</script>
-</body>
-</html>
+function showClaimView(d){
+  const cr=curr();
+  const tr=d.trust.dep-d.trust.wit;const lt=d.loan.given-d.loan.returned;const lf=d.from.bor-d.from.rep;
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(8,10,18,.98);z-index:99999;overflow-y:auto;display:flex;justify-content:center;padding:20px;';
+  ov.innerHTML=`<div style="max-width:440px;width:100%;"><div style="text-align:center;margin-bottom:22px;"><div style="font-size:2rem;margin-bottom:7px;">💰</div><h2 style="font-size:1.2rem;font-weight:900;">Trust Statement</h2><p style="font-size:.73rem;color:var(--txt2);margin-top:3px;">Generated ${d.gen}</p></div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;"><h3 style="font-size:1.15rem;font-weight:900;text-align:center;margin-bottom:14px;">${d.n}</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;border-top:1px solid var(--border);padding-top:12px;">
+  <div><div style="font-size:.62rem;color:var(--txt3);">Trust held</div><div style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--b);">${tr.toFixed(2)}</div><div style="font-size:.58rem;color:var(--txt3);">${cr}</div></div>
+  <div><div style="font-size:.62rem;color:var(--txt3);">Loan given</div><div style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--o);">${lt.toFixed(2)}</div><div style="font-size:.58rem;color:var(--txt3);">${cr}</div></div>
+  <div><div style="font-size:.62rem;color:var(--txt3);">Debt left</div><div style
