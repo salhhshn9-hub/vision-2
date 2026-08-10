@@ -1,1664 +1,874 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" id="html-root">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title id="page-title">Family Wallet Pro</title>
-<meta name="theme-color" content="#080a12">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Family Wallet">
-<link rel="manifest" id="manifest-link" href="">
-<link rel="apple-touch-icon" id="apple-touch-icon" href="">
-<link rel="icon" id="favicon-link" href="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-:root{
-  --bg:#080a12;--surface:#0d1020;--surface2:#111526;--surface3:#161929;
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.10);
-  --g:#00f5a0;--b:#00c3ff;--o:#ff8c42;--r:#ff3d6e;--p:#c77dff;--y:#ffd166;
-  --txt:#fff;--txt2:#8892a4;--txt3:#4a5568;
-  --font:'Tajawal',sans-serif;--font-en:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
-  --ease:cubic-bezier(.4,0,.2,1);
+<title>Family Wallet Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, addDoc, serverTimestamp, writeBatch, collectionGroup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAYykfKPLfsOpAg4ZzrUvA1uydcLtkSooc",
+  authDomain: "money-calculator-69bb8.firebaseapp.com",
+  projectId: "money-calculator-69bb8",
+  storageBucket: "money-calculator-69bb8.firebasestorage.app",
+  messagingSenderId: "772531900543",
+  appId: "1:772531900543:web:cdd3ba82d9685c5801af4a",
+  measurementId: "G-J1R75BRHCP"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let currentFamily = null;
+let userRole = 'owner';
+let unsubExpenses = null, unsubIncomes = null, unsubMembers = null, unsubLogs = null, unsubInvites = null, unsubReminders = null, unsubCats = null;
+let expenseChart = null, incomeChart = null;
+
+const $ = (id) => document.getElementById(id);
+const show = (id) => $(id).classList.remove('hidden');
+const hide = (id) => $(id).classList.add('hidden');
+const showScreen = (screenId) => { document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden')); show(screenId); };
+
+function showToast(msg, type='info') {
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{background:var(--bg);color:var(--txt);font-family:var(--font);min-height:100vh;display:flex;justify-content:center;overflow-x:hidden;}
-html.lang-en body{font-family:var(--font-en);}
-body::before{content:"";position:fixed;top:-200px;right:20%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,245,160,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;}
-body::after{content:"";position:fixed;bottom:-100px;left:10%;width:400px;height:400px;background:radial-gradient(circle,rgba(0,195,255,0.03) 0%,transparent 70%);pointer-events:none;z-index:0;}
 
-/* ── SHELL ── */
-.app{width:100%;max-width:460px;min-height:100vh;background:rgba(8,10,18,0.97);backdrop-filter:blur(30px);border-left:1px solid var(--border);border-right:1px solid var(--border);display:flex;flex-direction:column;position:relative;z-index:1;box-shadow:0 0 80px rgba(0,0,0,0.9);}
+function formatCurrency(num) {
+  return new Intl.NumberFormat('en-SA', { style: 'currency', currency: 'SAR' }).format(num || 0);
+}
 
-/* ── HEADER ── */
-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;background:rgba(8,10,18,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-.hdr-left{display:flex;align-items:center;gap:12px;}
-.hdr-title{font-size:1rem;font-weight:700;}
-.hdr-sub{font-size:0.65rem;color:var(--txt2);font-family:var(--mono);letter-spacing:1px;margin-top:1px;}
-.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--txt);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s var(--ease);font-size:.95rem;flex-shrink:0;}
-.icon-btn:active{transform:scale(.9);}
-.hdr-right{display:flex;gap:8px;align-items:center;}
-.lang-btn{font-family:var(--mono);font-weight:700;font-size:.75rem;letter-spacing:.5px;}
-.notif-wrap{position:relative;}
-.notif-dot::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--r);border:2px solid var(--bg);box-shadow:0 0 6px var(--r);}
+function formatDate(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-GB', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+}
 
-/* ── BOTTOM NAV ── */
-.bottom-nav{position:sticky;bottom:0;z-index:200;background:rgba(8,10,18,0.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 20px;display:flex;justify-content:space-around;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 18px;border-radius:12px;transition:all .2s var(--ease);color:var(--txt3);}
-.nav-item.active{color:var(--g);}
-.nav-item i{font-size:1.1rem;}
-.nav-item span{font-size:.62rem;font-weight:700;}
+function generateFamilyCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
 
-/* ── VIEWS ── */
-.view{display:none;flex-direction:column;animation:fadeUp .28s var(--ease);}
-.view.active{display:flex;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.scroll-area{flex:1;overflow-y:auto;padding-bottom:8px;}
-.scroll-area::-webkit-scrollbar{width:2px;}
-.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+// ================= AUTH =================
+$('loginBtn').onclick = async () => {
+  const email = $('loginEmail').value.trim();
+  const pass = $('loginPassword').value;
+  if(!email||!pass) return showToast('Enter email and password', 'error');
+  try { await signInWithEmailAndPassword(auth, email, pass); }
+  catch(e) { showToast(e.message, 'error'); }
+};
 
-/* ── SHARED ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;margin:10px 14px;}
-.card-sm{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;}
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 6px;}
-.sec-hdr h3{font-size:.88rem;font-weight:700;}
-.sec-hdr a{font-size:.75rem;color:var(--b);cursor:pointer;}
-.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:.65rem;font-weight:700;}
-.badge-g{background:rgba(0,245,160,.12);color:var(--g);border:1px solid rgba(0,245,160,.2);}
-.badge-b{background:rgba(0,195,255,.12);color:var(--b);border:1px solid rgba(0,195,255,.2);}
-.badge-o{background:rgba(255,140,66,.12);color:var(--o);border:1px solid rgba(255,140,66,.2);}
-.badge-r{background:rgba(255,61,110,.12);color:var(--r);border:1px solid rgba(255,61,110,.2);}
-.badge-y{background:rgba(255,209,102,.12);color:var(--y);border:1px solid rgba(255,209,102,.2);}
-.badge-n{background:rgba(255,255,255,.05);color:var(--txt2);border:1px solid var(--border);}
-.pbar{height:5px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden;margin-top:6px;}
-.pbar-fill{height:100%;border-radius:6px;transition:width .8s var(--ease);}
-.empty-state{text-align:center;padding:36px 20px;}
-.empty-state i{font-size:2rem;color:var(--txt3);margin-bottom:10px;display:block;}
-.empty-state p{color:var(--txt2);font-size:.83rem;}
+$('registerBtn').onclick = async () => {
+  const name = $('regName').value.trim();
+  const email = $('regEmail').value.trim();
+  const pass = $('regPassword').value;
+  if(!name||!email||!pass) return showToast('Complete all fields', 'error');
+  if(pass.length < 6) return showToast('Password min 6 chars', 'error');
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), { uid: cred.user.uid, name, email, createdAt: serverTimestamp() });
+    showToast('Account created!');
+  } catch(e) { showToast(e.message, 'error'); }
+};
 
-/* ── HERO ── */
-.hero{background:linear-gradient(135deg,rgba(0,245,160,.06),rgba(0,195,255,.03));border:1px solid rgba(0,245,160,.12);border-radius:22px;padding:20px;margin:12px 14px;text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(0,245,160,.07) 0%,transparent 70%);pointer-events:none;}
-.hero-label{font-size:.76rem;color:var(--txt2);margin-bottom:5px;}
-.hero-amt{font-family:var(--mono);font-size:2.5rem;font-weight:700;letter-spacing:-1px;line-height:1;}
-.hero-trend{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:4px 10px;font-size:.7rem;margin-top:9px;}
+$('logoutBtn').onclick = async () => { await signOut(auth); };
+$('showRegister').onclick = () => { hide('loginForm'); show('registerForm'); };
+$('showLogin').onclick = () => { hide('registerForm'); show('loginForm'); };
 
-/* ── STATS ── */
-.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 14px;}
-.stat-pill{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:11px 8px;text-align:center;position:relative;overflow:hidden;}
-.stat-pill::before{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;}
-.stat-pill.s-g::before{background:var(--g);box-shadow:0 0 6px var(--g);}
-.stat-pill.s-b::before{background:var(--b);box-shadow:0 0 6px var(--b);}
-.stat-pill.s-r::before{background:var(--r);box-shadow:0 0 6px var(--r);}
-.stat-pill p{font-size:.62rem;color:var(--txt3);margin-bottom:4px;font-weight:500;}
-.stat-pill h4{font-family:var(--mono);font-size:.9rem;font-weight:700;}
+// ================= FAMILY =================
+window.createFamily = async () => {
+  const name = $('familyNameInput').value.trim();
+  if(!name) return showToast('Enter family name', 'error');
+  const code = generateFamilyCode();
+  const familyRef = doc(collection(db, 'families'));
+  const batch = writeBatch(db);
+  batch.set(familyRef, { name, code, ownerId: currentUser.uid, ownerName: currentUser.displayName || currentUser.email, createdAt: serverTimestamp(), currency: 'SAR' });
+  batch.set(doc(db, 'families', familyRef.id, 'members', currentUser.uid), { uid: currentUser.uid, name: currentUser.displayName || currentUser.email, email: currentUser.email, role: 'owner', joinedAt: serverTimestamp() });
+  await batch.commit();
+  showToast('Family created! Code: ' + code);
+  $('familyNameInput').value = '';
+};
 
-/* ── QA GRID ── */
-.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px;margin-top:10px;}
-.qa-btn{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:13px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:all .2s var(--ease);}
-.qa-btn:active{transform:scale(.95);}
-.qa-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
-.qa-btn span{font-size:.78rem;font-weight:700;}
+window.joinFamily = async () => {
+  const code = $('joinCodeInput').value.trim().toUpperCase();
+  if(!code) return showToast('Enter family code', 'error');
+  const q = query(collection(db, 'families'), where('code', '==', code));
+  const snap = await getDocs(q);
+  if(snap.empty) return showToast('Invalid code', 'error');
+  const family = snap.docs[0];
+  const memberDoc = await getDoc(doc(db, 'families', family.id, 'members', currentUser.uid));
+  if(memberDoc.exists()) return showToast('Already a member', 'error');
+  await addDoc(collection(db, 'families', family.id, 'invites'), { uid: currentUser.uid, name: currentUser.displayName || currentUser.email, email: currentUser.email, status: 'pending', requestedAt: serverTimestamp() });
+  showToast('Join request sent!');
+  $('joinCodeInput').value = '';
+};
 
-/* ── ALERTS ── */
-.alert-bar{margin:8px 14px;background:rgba(255,61,110,.08);border:1px solid rgba(255,61,110,.2);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:.78rem;color:var(--r);}
+window.acceptInvite = async (inviteId, familyId, inviteData) => {
+  const batch = writeBatch(db);
+  batch.update(doc(db, 'families', familyId, 'invites', inviteId), { status: 'accepted', acceptedAt: serverTimestamp() });
+  batch.set(doc(db, 'families', familyId, 'members', inviteData.uid), { uid: inviteData.uid, name: inviteData.name, email: inviteData.email, role: 'editor', joinedAt: serverTimestamp() });
+  await batch.commit();
+  addLog(familyId, `Accepted member ${inviteData.name}`);
+  showToast('Member accepted');
+};
 
-/* ── TIMELINE ── */
-.tl{display:flex;flex-direction:column;}
-.tl-row{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);}
-.tl-row:last-child{border-bottom:none;}
-.tl-dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;}
-.tl-body{flex:1;min-width:0;}
-.tl-title{font-size:.8rem;font-weight:700;}
-.tl-meta{font-size:.68rem;color:var(--txt3);margin-top:2px;}
-.tl-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.tl-amt{font-family:var(--mono);font-size:.85rem;font-weight:700;}
-.tl-icon-btn{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.66rem;border:1px solid;transition:all .18s;}
-.tl-icon-btn:active{transform:scale(.88);}
+window.rejectInvite = async (inviteId, familyId) => {
+  await updateDoc(doc(db, 'families', familyId, 'invites', inviteId), { status: 'rejected', rejectedAt: serverTimestamp() });
+  showToast('Request rejected');
+};
 
-/* ── LEDGER CARDS (bill view) ── */
-.bill-card{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:14px;margin:0 14px 9px;cursor:pointer;transition:all .2s var(--ease);}
-.bill-card:active{transform:scale(.98);}
-.bill-top{display:flex;align-items:flex-start;gap:11px;}
-.bill-icon{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
-.bill-info{flex:1;}
-.bill-name{font-size:.87rem;font-weight:700;}
-.bill-sub{font-size:.68rem;color:var(--txt3);margin-top:2px;}
-.bill-right{text-align:end;}
-.bill-rem{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--r);}
-.bill-of{font-size:.63rem;color:var(--txt3);font-family:var(--mono);margin-top:2px;}
-.bill-prog{margin-top:10px;}
-.bill-prog-hdr{display:flex;justify-content:space-between;margin-bottom:4px;font-size:.66rem;color:var(--txt3);}
+window.removeMember = async (memberUid) => {
+  if(!currentFamily) return;
+  if(memberUid === currentFamily.ownerId) return showToast('Cannot remove owner', 'error');
+  if(userRole !== 'owner' && userRole !== 'admin') return showToast('No permission', 'error');
+  await deleteDoc(doc(db, 'families', currentFamily.id, 'members', memberUid));
+  addLog(currentFamily.id, 'Removed member');
+  showToast('Member removed');
+};
 
-/* ── PERSON CARD (list) ── */
-.person-card{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:13px;display:flex;align-items:center;gap:11px;margin:0 14px 9px;cursor:pointer;transition:all .2s var(--ease);}
-.person-card:active{transform:scale(.98);}
-.p-ava{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden;}
-.p-ava img{width:100%;height:100%;object-fit:cover;}
-.p-info{flex:1;min-width:0;}
-.p-name{font-size:.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.p-meta{font-size:.7rem;color:var(--txt2);margin-top:2px;}
-.p-badge{font-family:var(--mono);font-size:.83rem;font-weight:700;flex-shrink:0;}
+window.changeRole = async (memberUid, newRole) => {
+  if(userRole !== 'owner' && userRole !== 'admin') return;
+  await updateDoc(doc(db, 'families', currentFamily.id, 'members', memberUid), { role: newRole });
+  addLog(currentFamily.id, `Changed role to ${newRole}`);
+  showToast('Role updated');
+};
 
-/* ── ANALYTICS ── */
-.an-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 14px;}
-.an-card{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:13px;}
-.an-label{font-size:.68rem;color:var(--txt2);margin-bottom:5px;}
-.an-val{font-family:var(--mono);font-size:1.25rem;font-weight:700;}
-.an-sub{font-size:.65rem;color:var(--txt3);margin-top:3px;font-family:var(--mono);}
-.an-full{grid-column:1/-1;}
-.chart-wrap{height:172px;display:flex;align-items:center;justify-content:center;}
+window.leaveFamily = async () => {
+  if(!currentFamily) return;
+  if(currentFamily.ownerId === currentUser.uid) return showToast('Owner cannot leave. Transfer ownership or delete family.', 'error');
+  await deleteDoc(doc(db, 'families', currentFamily.id, 'members', currentUser.uid));
+  currentFamily = null;
+  showScreen('familySelectScreen');
+  showToast('Left family');
+};
 
-/* ═══════════════════════════════════════
-   PERSON PROFILE — BANK CARD STYLE
-═══════════════════════════════════════ */
-.bank-card{margin:10px 14px;border-radius:22px;overflow:hidden;background:var(--surface);border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.5);}
+window.deleteFamily = async () => {
+  if(!currentFamily) return;
+  if(currentFamily.ownerId !== currentUser.uid) return showToast('Owner only', 'error');
+  if(!confirm('Delete family permanently? Cannot undo!')) return;
+  await deleteDoc(doc(db, 'families', currentFamily.id));
+  currentFamily = null;
+  showScreen('familySelectScreen');
+  showToast('Family deleted');
+};
 
-/* top hero strip */
-.bc-hero{position:relative;padding:20px;background:linear-gradient(135deg,rgba(199,125,255,.1),rgba(0,195,255,.06));display:flex;align-items:center;gap:16px;}
-.bc-hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(0,245,160,.06) 0%,transparent 60%);pointer-events:none;}
-.bc-ava{width:64px;height:64px;border-radius:18px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.9rem;cursor:pointer;position:relative;border:2px solid rgba(255,255,255,.08);}
-.bc-ava img{width:100%;height:100%;object-fit:cover;}
-.bc-ava .cam-ov{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:.18s;}
-.bc-ava:hover .cam-ov{opacity:1;}
-.bc-name{font-size:1.18rem;font-weight:900;line-height:1.2;}
-.bc-role{font-size:.7rem;color:var(--txt2);margin-top:3px;}
-.bc-net{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-family:var(--mono);font-size:.76rem;font-weight:700;margin-top:7px;}
+// ================= EXPENSES & INCOME =================
+const defaultCategories = [
+  { id: 'food', name: 'Food & Drinks', icon: '🍽️', budget: 2000 },
+  { id: 'transport', name: 'Transport', icon: '🚗', budget: 1000 },
+  { id: 'bills', name: 'Bills', icon: '💡', budget: 1500 },
+  { id: 'shopping', name: 'Shopping', icon: '🛍️', budget: 1000 },
+  { id: 'health', name: 'Health', icon: '💊', budget: 500 },
+  { id: 'education', name: 'Education', icon: '📚', budget: 800 },
+  { id: 'entertainment', name: 'Entertainment', icon: '🎬', budget: 600 },
+  { id: 'other', name: 'Other', icon: '📦', budget: 500 }
+];
 
-/* divider */
-.bc-div{height:1px;background:var(--border);}
+async function initFamilyData(familyId) {
+  const catsRef = doc(db, 'families', familyId, 'settings', 'categories');
+  const catsDoc = await getDoc(catsRef);
+  if(!catsDoc.exists()) await setDoc(catsRef, { list: defaultCategories });
+}
 
-/* relation blocks */
-.bc-relations{display:flex;flex-direction:column;gap:0;}
-.bc-rel{padding:14px 18px;border-bottom:1px solid var(--border);position:relative;}
-.bc-rel:last-child{border-bottom:none;}
-.bc-rel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.bc-rel-title{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;}
-.bc-rel-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
-.bc-amounts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.bc-amt-cell{text-align:center;}
-.bc-amt-label{font-size:.6rem;color:var(--txt3);margin-bottom:3px;font-weight:600;}
-.bc-amt-val{font-family:var(--mono);font-size:.9rem;font-weight:700;}
-.bc-actions{display:flex;gap:7px;margin-top:11px;}
-.bc-btn{flex:1;padding:9px 4px;border-radius:10px;border:1px solid;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .18s;font-family:inherit;}
-.bc-btn:active{transform:scale(.95);}
-.bc-btn-g{background:rgba(0,245,160,.06);border-color:rgba(0,245,160,.2);color:var(--g);}
-.bc-btn-b{background:rgba(0,195,255,.06);border-color:rgba(0,195,255,.2);color:var(--b);}
-.bc-btn-o{background:rgba(255,140,66,.06);border-color:rgba(255,140,66,.2);color:var(--o);}
-.bc-btn-r{background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);}
+window.addExpense = async () => {
+  if(!currentFamily) return;
+  if(userRole === 'viewer') return showToast('Viewer only', 'error');
+  const cat = $('expenseCategory').value;
+  const amount = parseFloat($('expenseAmount').value);
+  const note = $('expenseNote').value.trim();
+  const date = $('expenseDate').value || new Date().toISOString().split('T')[0];
+  if(!amount || amount <= 0) return showToast('Enter amount', 'error');
+  await addDoc(collection(db, 'families', currentFamily.id, 'expenses'), { category: cat, amount, note, date, createdBy: currentUser.uid, createdByName: currentUser.displayName || currentUser.email, createdAt: serverTimestamp() });
+  addLog(currentFamily.id, `Added expense ${formatCurrency(amount)} - ${note || cat}`);
+  showToast('Expense added');
+  $('expenseAmount').value = '';
+  $('expenseNote').value = '';
+};
 
-/* own-wallet debt section */
-.bc-debt{padding:14px 18px;border-bottom:1px solid var(--border);}
-.bc-debt-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.debt-total{font-family:var(--mono);font-size:1.3rem;font-weight:800;}
+window.addIncome = async () => {
+  if(!currentFamily) return;
+  if(userRole === 'viewer') return showToast('Viewer only', 'error');
+  const source = $('incomeSource').value.trim();
+  const amount = parseFloat($('incomeAmount').value);
+  const type = $('incomeType').value;
+  const recurring = $('incomeRecurring').checked;
+  const date = $('incomeDate').value || new Date().toISOString().split('T')[0];
+  if(!source || !amount) return showToast('Complete fields', 'error');
+  await addDoc(collection(db, 'families', currentFamily.id, 'incomes'), { source, amount, type, recurring, date, createdBy: currentUser.uid, createdByName: currentUser.displayName || currentUser.email, createdAt: serverTimestamp() });
+  addLog(currentFamily.id, `Added income ${formatCurrency(amount)} - ${source}`);
+  showToast('Income added');
+  $('incomeSource').value = '';
+  $('incomeAmount').value = '';
+};
 
-/* log section */
-.bc-log-section{padding:14px 18px 18px;}
-.bc-log-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.log-filters{display:flex;gap:5px;}
-.lf-pill{padding:3px 9px;border-radius:7px;font-size:.65rem;font-weight:700;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--txt3);transition:all .18s;}
-.lf-pill.on{background:rgba(0,195,255,.1);border-color:rgba(0,195,255,.3);color:var(--b);}
+window.addCategory = async () => {
+  if(!currentFamily) return;
+  if(userRole === 'viewer') return showToast('Viewer only', 'error');
+  const name = $('newCatName').value.trim();
+  const budget = parseFloat($('newCatBudget').value) || 0;
+  const icon = $('newCatIcon').value || '📁';
+  if(!name) return showToast('Enter category name', 'error');
+  const catsRef = doc(db, 'families', currentFamily.id, 'settings', 'categories');
+  const catsDoc = await getDoc(catsRef);
+  const list = catsDoc.exists() ? catsDoc.data().list : defaultCategories;
+  list.push({ id: 'cat_' + Date.now(), name, icon, budget });
+  await setDoc(catsRef, { list });
+  addLog(currentFamily.id, `Added category ${name}`);
+  showToast('Category added');
+  $('newCatName').value = '';
+  $('newCatBudget').value = '';
+};
 
-/* claim link */
-.claim-zone{padding:12px 18px;border-top:1px solid var(--border);}
-.claim-link-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:var(--mono);font-size:.68rem;color:var(--txt2);word-break:break-all;margin-top:8px;display:none;}
-.copy-btn{width:100%;margin-top:7px;padding:9px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--b);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;display:none;}
+// ================= REMINDERS =================
+window.addReminder = async () => {
+  if(!currentFamily) return;
+  const title = $('reminderTitle').value.trim();
+  const amount = parseFloat($('reminderAmount').value) || 0;
+  const dueDate = $('reminderDate').value;
+  const recurring = $('reminderRecurring').value;
+  if(!title || !dueDate) return showToast('Complete fields', 'error');
+  await addDoc(collection(db, 'families', currentFamily.id, 'reminders'), { title, amount, dueDate, recurring, paid: false, createdBy: currentUser.uid, createdByName: currentUser.displayName || currentUser.email, createdAt: serverTimestamp() });
+  if('Notification' in window && Notification.permission === 'granted') {
+    const d = new Date(dueDate); const now = new Date(); const diff = d - now;
+    if(diff > 0 && diff < 86400000 * 2) {
+      setTimeout(() => { new Notification('Family Wallet Pro', { body: `Reminder: ${title} - ${formatCurrency(amount)}` }); }, diff);
+    }
+  }
+  showToast('Reminder added');
+  $('reminderTitle').value = '';
+  $('reminderAmount').value = '';
+};
 
-/* sidebar + modals (same as before) */
-.sidebar{position:fixed;top:0;right:-100%;width:300px;height:100%;background:#0a0c18;border-left:1px solid var(--border);z-index:1000;transition:right .35s var(--ease);display:flex;flex-direction:column;}
-.sidebar.open{right:0;}
-html[dir=ltr] .sidebar{right:auto;left:-100%;border-left:none;border-right:1px solid var(--border);}
-html[dir=ltr] .sidebar.open{left:0;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);z-index:999;display:none;}
-.overlay.open{display:block;}
-.sb-hdr{padding:18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.sb-body{flex:1;overflow-y:auto;padding:14px;}
-.sb-section{margin-bottom:18px;}
-.sb-sec-title{font-size:.68rem;font-weight:700;color:var(--txt3);letter-spacing:1px;margin-bottom:8px;padding:0 4px;}
-.sb-link{display:flex;align-items:center;gap:11px;padding:11px;border-radius:12px;cursor:pointer;color:var(--txt2);font-size:.86rem;font-weight:600;border:1px solid transparent;margin-bottom:3px;transition:all .18s;}
-.sb-link:hover{background:var(--surface2);color:var(--txt);border-color:var(--border);}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(20px);z-index:5000;display:none;align-items:flex-end;justify-content:center;}
-.modal.open{display:flex;animation:fadeIn .2s var(--ease);}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.modal-sheet{width:100%;max-width:460px;background:#0d1020;border-top:1px solid var(--border2);border-radius:26px 26px 0 0;padding:22px 18px 40px;max-height:90vh;overflow-y:auto;}
-.mh{width:38px;height:4px;background:var(--border2);border-radius:4px;margin:0 auto 18px;}
-.mt{font-size:1.05rem;font-weight:900;margin-bottom:18px;}
-.fg{margin-bottom:14px;}
-.fl{font-size:.76rem;color:var(--txt2);font-weight:600;margin-bottom:5px;display:block;}
-.fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:12px 14px;color:var(--txt);font-family:var(--font);font-size:.93rem;transition:all .2s;}
-.fi:focus{border-color:var(--b);outline:none;background:rgba(0,195,255,.04);}
-.btn-row{display:flex;gap:9px;margin-top:18px;}
-.btn{padding:13px;border-radius:14px;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s;font-family:inherit;border:1px solid;}
-.btn:active{transform:scale(.97);}
-.btn-primary{background:linear-gradient(135deg,var(--g),var(--b));color:#000;border:none;font-weight:900;box-shadow:0 4px 18px rgba(0,245,160,.2);}
-.btn-sec{background:var(--surface2);border-color:var(--border);color:var(--txt2);}
-.btn-danger{background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);}
+window.payReminder = async (reminderId) => {
+  if(!currentFamily) return;
+  await updateDoc(doc(db, 'families', currentFamily.id, 'reminders', reminderId), { paid: true, paidAt: serverTimestamp() });
+  showToast('Marked as paid');
+};
 
-/* receipt upload */
-.receipt-zone{display:flex;align-items:center;gap:9px;padding:10px 13px;background:var(--surface2);border:1px dashed var(--border2);border-radius:12px;cursor:pointer;}
-.receipt-zone span{font-size:.8rem;color:var(--txt2);}
-.receipt-thumb{width:100%;border-radius:10px;margin-top:8px;max-height:140px;object-fit:cover;display:none;border:1px solid var(--border);}
+// ================= LOGS =================
+async function addLog(familyId, action) {
+  await addDoc(collection(db, 'families', familyId, 'logs'), { action, userId: currentUser.uid, userName: currentUser.displayName || currentUser.email, timestamp: serverTimestamp() });
+}
 
-/* avatar upload */
-.ava-zone{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--surface2);border:1px dashed var(--border2);border-radius:13px;cursor:pointer;}
-.ava-ph{width:50px;height:50px;border-radius:13px;background:rgba(0,195,255,.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;overflow:hidden;}
-.ava-ph img{width:100%;height:100%;object-fit:cover;}
+// ================= LISTENERS =================
+function setupListeners(familyId) {
+  if(unsubMembers) unsubMembers();
+  unsubMembers = onSnapshot(collection(db, 'families', familyId, 'members'), snap => {
+    const members = []; snap.forEach(d => members.push({...d.data(), id: d.id}));
+    renderMembers(members);
+  });
+  if(unsubInvites) unsubInvites();
+  unsubInvites = onSnapshot(collection(db, 'families', familyId, 'invites'), snap => {
+    const invites = []; snap.forEach(d => invites.push({...d.data(), id: d.id}));
+    renderInvites(invites);
+  });
+  if(unsubExpenses) unsubExpenses();
+  unsubExpenses = onSnapshot(query(collection(db, 'families', familyId, 'expenses'), orderBy('createdAt', 'desc')), snap => {
+    const expenses = []; snap.forEach(d => expenses.push({...d.data(), id: d.id}));
+    window.allExpenses = expenses;
+    renderExpenses(expenses);
+    updateDashboard();
+  });
+  if(unsubIncomes) unsubIncomes();
+  unsubIncomes = onSnapshot(query(collection(db, 'families', familyId, 'incomes'), orderBy('createdAt', 'desc')), snap => {
+    const incomes = []; snap.forEach(d => incomes.push({...d.data(), id: d.id}));
+    window.allIncomes = incomes;
+    renderIncomes(incomes);
+    updateDashboard();
+  });
+  if(unsubLogs) unsubLogs();
+  unsubLogs = onSnapshot(query(collection(db, 'families', familyId, 'logs'), orderBy('timestamp', 'desc')), snap => {
+    const logs = []; snap.forEach(d => logs.push({...d.data(), id: d.id}));
+    renderLogs(logs);
+  });
+  if(unsubReminders) unsubReminders();
+  unsubReminders = onSnapshot(query(collection(db, 'families', familyId, 'reminders'), orderBy('dueDate')), snap => {
+    const reminders = []; snap.forEach(d => reminders.push({...d.data(), id: d.id}));
+    renderReminders(reminders);
+  });
+  if(unsubCats) unsubCats();
+  unsubCats = onSnapshot(doc(db, 'families', familyId, 'settings', 'categories'), snap => {
+    const list = snap.exists() ? snap.data().list : defaultCategories;
+    renderCategoryOptions(list);
+    window.familyCategories = list;
+  });
+}
+
+function renderMembers(members) {
+  const el = $('membersList');
+  const me = members.find(m => m.uid === currentUser.uid);
+  userRole = me ? me.role : 'viewer';
+  el.innerHTML = members.map(m => `
+    <div class="member-card ${m.role}">
+      <div class="member-info">
+        <div class="member-name">${m.name} ${m.uid === currentUser.uid ? '(You)' : ''}</div>
+        <div class="member-role">${getRoleLabel(m.role)}</div>
+      </div>
+      ${(userRole === 'owner' || userRole === 'admin') && m.uid !== currentUser.uid ? `
+        <select class="role-select" onchange="window.changeRole('${m.uid}', this.value)">
+          <option value="admin" ${m.role==='admin'?'selected':''}>Admin</option>
+          <option value="editor" ${m.role==='editor'?'selected':''}>Editor</option>
+          <option value="viewer" ${m.role==='viewer'?'selected':''}>Viewer</option>
+        </select>
+        <button class="btn-icon" onclick="window.removeMember('${m.uid}')">🗑️</button>
+      ` : ''}
+    </div>
+  `).join('');
+  document.querySelectorAll('.editor-only').forEach(el => el.style.display = userRole === 'viewer' ? 'none' : '');
+}
+
+function getRoleLabel(role) {
+  const map = { owner: '👑 Owner', admin: '⭐ Admin', editor: '✏️ Editor', viewer: '👁️ Viewer' };
+  return map[role] || role;
+}
+
+function renderInvites(invites) {
+  const el = $('invitesList');
+  const pending = invites.filter(i => i.status === 'pending');
+  if(pending.length === 0) { el.innerHTML = '<div class="empty">No pending requests</div>'; return; }
+  el.innerHTML = pending.map(i => `
+    <div class="invite-card">
+      <div>${i.name} <small>(${i.email})</small></div>
+      <div class="invite-actions">
+        <button class="btn-success" onclick="window.acceptInvite('${i.id}', '${currentFamily.id}', {uid:'${i.uid}',name:'${i.name}',email:'${i.email}'}")">✅ Accept</button>
+        <button class="btn-danger" onclick="window.rejectInvite('${i.id}', '${currentFamily.id}')">❌ Reject</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderExpenses(expenses) {
+  const el = $('expensesList');
+  if(expenses.length === 0) { el.innerHTML = '<div class="empty">No expenses yet</div>'; return; }
+  el.innerHTML = expenses.slice(0, 50).map(e => `
+    <div class="transaction-card expense">
+      <div class="tx-main">
+        <div class="tx-icon">${getCategoryIcon(e.category)}</div>
+        <div class="tx-info">
+          <div class="tx-title">${e.note || e.category}</div>
+          <div class="tx-meta">${e.createdByName || ''} • ${formatDate(e.createdAt)}</div>
+        </div>
+        <div class="tx-amount negative">-${formatCurrency(e.amount)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderIncomes(incomes) {
+  const el = $('incomesList');
+  if(incomes.length === 0) { el.innerHTML = '<div class="empty">No income yet</div>'; return; }
+  el.innerHTML = incomes.slice(0, 50).map(i => `
+    <div class="transaction-card income">
+      <div class="tx-main">
+        <div class="tx-icon">💰</div>
+        <div class="tx-info">
+          <div class="tx-title">${i.source}</div>
+          <div class="tx-meta">${i.createdByName || ''} • ${formatDate(i.createdAt)} ${i.recurring ? '🔄' : ''}</div>
+        </div>
+        <div class="tx-amount positive">+${formatCurrency(i.amount)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderLogs(logs) {
+  const el = $('logsList');
+  if(logs.length === 0) { el.innerHTML = '<div class="empty">No activity yet</div>'; return; }
+  el.innerHTML = logs.slice(0, 100).map(l => `
+    <div class="log-item">
+      <span class="log-time">${formatDate(l.timestamp)}</span>
+      <span class="log-user">${l.userName}</span>
+      <span class="log-action">${l.action}</span>
+    </div>
+  `).join('');
+}
+
+function renderReminders(reminders) {
+  const el = $('remindersList');
+  const unpaid = reminders.filter(r => !r.paid);
+  if(unpaid.length === 0) { el.innerHTML = '<div class="empty">No upcoming reminders</div>'; return; }
+  el.innerHTML = unpaid.map(r => `
+    <div class="reminder-card ${isOverdue(r.dueDate) ? 'overdue' : ''}">
+      <div class="reminder-info">
+        <div class="reminder-title">${r.title}</div>
+        <div class="reminder-meta">${formatCurrency(r.amount)} • ${r.dueDate} ${r.recurring !== 'none' ? '🔄' : ''}</div>
+      </div>
+      <button class="btn-success" onclick="window.payReminder('${r.id}')">✅ Pay</button>
+    </div>
+  `).join('');
+}
+
+function isOverdue(dateStr) { return new Date(dateStr) < new Date(); }
+function getCategoryIcon(catId) {
+  const cats = window.familyCategories || defaultCategories;
+  const cat = cats.find(c => c.id === catId);
+  return cat ? cat.icon : '📦';
+}
+function renderCategoryOptions(cats) {
+  const sel = $('expenseCategory');
+  sel.innerHTML = cats.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
+}
+
+// ================= DASHBOARD =================
+function updateDashboard() {
+  const expenses = window.allExpenses || [];
+  const incomes = window.allIncomes || [];
+  const totalExpenses = expenses.reduce((s, e) => s + (e.amount || 0), 0);
+  const totalIncome = incomes.reduce((s, i) => s + (i.amount || 0), 0);
+  const balance = totalIncome - totalExpenses;
+  $('dashIncome').textContent = formatCurrency(totalIncome);
+  $('dashExpense').textContent = formatCurrency(totalExpenses);
+  $('dashBalance').textContent = formatCurrency(balance);
+  $('dashBalance').className = balance >= 0 ? 'stat-value positive' : 'stat-value negative';
+
+  const catMap = {};
+  expenses.forEach(e => { catMap[e.category] = (catMap[e.category] || 0) + e.amount; });
+  const cats = window.familyCategories || defaultCategories;
+  const labels = Object.keys(catMap).map(k => { const c = cats.find(x => x.id === k); return c ? c.name : k; });
+  const data = Object.values(catMap);
+  if(expenseChart) expenseChart.destroy();
+  expenseChart = new Chart($('expenseChart'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: ['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#8b5cf6','#ec4899','#6b7280'] }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#fff', font: { family: 'Segoe UI' } } } } }
+  });
+
+  const monthlyData = getMonthlyData(expenses, incomes);
+  if(incomeChart) incomeChart.destroy();
+  incomeChart = new Chart($('incomeChart'), {
+    type: 'bar',
+    data: { labels: monthlyData.labels, datasets: [{ label: 'Income', data: monthlyData.income, backgroundColor: '#22c55e' }, { label: 'Expenses', data: monthlyData.expense, backgroundColor: '#ef4444' }] },
+    options: { responsive: true, scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } }, plugins: { legend: { labels: { color: '#fff' } } } }
+  });
+}
+
+function getMonthlyData(expenses, incomes) {
+  const months = {};
+  const now = new Date();
+  for(let i=5; i>=0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = d.toLocaleDateString('en', {year:'numeric', month:'short'});
+    months[key] = { income: 0, expense: 0 };
+  }
+  expenses.forEach(e => {
+    const d = new Date(e.date || e.createdAt?.toDate?.() || Date.now());
+    const key = d.toLocaleDateString('en', {year:'numeric', month:'short'});
+    if(months[key]) months[key].expense += e.amount;
+  });
+  incomes.forEach(i => {
+    const d = new Date(i.date || i.createdAt?.toDate?.() || Date.now());
+    const key = d.toLocaleDateString('en', {year:'numeric', month:'short'});
+    if(months[key]) months[key].income += i.amount;
+  });
+  return { labels: Object.keys(months), income: Object.values(months).map(m => m.income), expense: Object.values(months).map(m => m.expense) };
+}
+
+// ================= FAMILY SELECT =================
+async function loadUserFamilies() {
+  const q1 = query(collection(db, 'families'), where('ownerId', '==', currentUser.uid));
+  const q2 = query(collectionGroup(db, 'members'), where('uid', '==', currentUser.uid));
+  const [ownedSnap, memberSnap] = await Promise.all([getDocs(q1), getDocs(q2)]);
+  const families = [];
+  ownedSnap.forEach(d => families.push({...d.data(), id: d.id, role: 'owner'}));
+  for(const mDoc of memberSnap.docs) {
+    const familyId = mDoc.ref.parent.parent.id;
+    if(!families.find(f => f.id === familyId)) {
+      const fDoc = await getDoc(doc(db, 'families', familyId));
+      if(fDoc.exists()) families.push({...fDoc.data(), id: familyId, role: mDoc.data().role});
+    }
+  }
+  renderFamilySelect(families);
+}
+
+function renderFamilySelect(families) {
+  const el = $('familySelectList');
+  if(families.length === 0) { el.innerHTML = '<div class="empty">No families yet. Create one!</div>'; return; }
+  el.innerHTML = families.map(f => `
+    <div class="family-card" onclick="window.selectFamily('${f.id}', '${f.role}')">
+      <div class="family-icon">👨‍👩‍👧‍👦</div>
+      <div class="family-info">
+        <div class="family-name">${f.name}</div>
+        <div class="family-code">Code: ${f.code}</div>
+        <div class="family-role">${getRoleLabel(f.role)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.selectFamily = async (familyId, role) => {
+  const fDoc = await getDoc(doc(db, 'families', familyId));
+  if(!fDoc.exists()) return showToast('Family not found', 'error');
+  currentFamily = { ...fDoc.data(), id: familyId };
+  userRole = role;
+  $('familyTitle').textContent = currentFamily.name;
+  $('familyCodeDisplay').textContent = 'Code: ' + currentFamily.code;
+  $('shareCode').value = currentFamily.code;
+  await initFamilyData(familyId);
+  setupListeners(familyId);
+  showScreen('mainScreen');
+  showToast('Entered family: ' + currentFamily.name);
+  if('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+};
+
+// ================= NAVIGATION =================
+const tabs = {
+  tabDashboard: 'dashboardPanel',
+  tabExpenses: 'expensesPanel',
+  tabIncomes: 'incomesPanel',
+  tabReminders: 'remindersPanel',
+  tabReports: 'reportsPanel',
+  tabMembers: 'membersPanel',
+  tabLogs: 'logsPanel',
+  tabSettings: 'settingsPanel'
+};
+Object.keys(tabs).forEach(tabId => {
+  $(tabId).onclick = () => {
+    Object.keys(tabs).forEach(t => $(t).classList.remove('active'));
+    $(tabId).classList.add('active');
+    Object.values(tabs).forEach(p => hide(p));
+    show(tabs[tabId]);
+    if(tabId === 'tabReports') setTimeout(() => updateDashboard(), 100);
+  };
+});
+
+$('backToFamilies').onclick = () => {
+  currentFamily = null;
+  if(unsubMembers) unsubMembers();
+  if(unsubExpenses) unsubExpenses();
+  if(unsubIncomes) unsubIncomes();
+  if(unsubLogs) unsubLogs();
+  if(unsubInvites) unsubInvites();
+  if(unsubReminders) unsubReminders();
+  if(unsubCats) unsubCats();
+  showScreen('familySelectScreen');
+  loadUserFamilies();
+};
+
+// ================= AUTH STATE =================
+onAuthStateChanged(auth, async (user) => {
+  if(user) {
+    currentUser = user;
+    $('userName').textContent = user.displayName || user.email;
+    hide('authScreen');
+    show('familySelectScreen');
+    await loadUserFamilies();
+  } else {
+    currentUser = null;
+    currentFamily = null;
+    showScreen('authScreen');
+  }
+});
+
+const today = new Date().toISOString().split('T')[0];
+$('expenseDate').value = today;
+$('incomeDate').value = today;
+$('reminderDate').value = today;
+
+</script>
+<style>
+:root { --bg: #0f172a; --surface: #1e293b; --surface2: #334155; --primary: #3b82f6; --primary-light: #60a5fa; --success: #22c55e; --danger: #ef4444; --warning: #f59e0b; --text: #f1f5f9; --text2: #94a3b8; --border: #334155; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+.hidden { display: none !important; }
+
+.auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); }
+.auth-box { background: var(--surface); border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid var(--border); }
+.auth-logo { text-align: center; font-size: 48px; margin-bottom: 10px; }
+.auth-title { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.auth-subtitle { text-align: center; color: var(--text2); margin-bottom: 30px; font-size: 14px; }
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text2); font-weight: 500; }
+.input-group input, .input-group select { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 15px; outline: none; transition: all 0.2s; }
+.input-group input:focus, .input-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+.btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-secondary { background: var(--surface2); color: var(--text); }
+.btn-success { background: var(--success); color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; }
+.btn-danger { background: var(--danger); color: white; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; }
+.btn-icon { background: transparent; border: none; color: var(--danger); font-size: 18px; cursor: pointer; padding: 4px; }
+.auth-switch { text-align: center; margin-top: 20px; color: var(--text2); font-size: 14px; }
+.auth-switch span { color: var(--primary-light); cursor: pointer; font-weight: 600; }
+
+.app-header { background: var(--surface); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.app-title { font-size: 18px; font-weight: 700; }
+.user-info { display: flex; align-items: center; gap: 12px; }
+.user-name { font-size: 14px; color: var(--text2); }
+.logout-btn { background: var(--surface2); border: none; color: var(--text); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+
+.family-select-container { padding: 20px; max-width: 600px; margin: 0 auto; }
+.section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.family-card { background: var(--surface); border-radius: 16px; padding: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; }
+.family-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.family-icon { font-size: 36px; }
+.family-info { flex: 1; }
+.family-name { font-size: 16px; font-weight: 600; }
+.family-code { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.family-role { font-size: 12px; color: var(--primary-light); margin-top: 4px; }
+.create-family-box { background: var(--surface); border-radius: 16px; padding: 20px; margin-top: 30px; border: 1px solid var(--border); }
+.join-box { margin-top: 16px; }
+
+.main-container { padding-bottom: 80px; }
+.family-header { background: var(--surface); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+.family-code-display { font-size: 12px; color: var(--primary-light); background: rgba(59,130,246,0.1); padding: 4px 12px; border-radius: 20px; font-family: monospace; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; padding: 20px; }
+.stat-card { background: var(--surface); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--border); }
+.stat-label { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+.stat-value { font-size: 20px; font-weight: 700; }
+.stat-value.positive { color: var(--success); }
+.stat-value.negative { color: var(--danger); }
+.charts-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 0 20px 20px; }
+.chart-card { background: var(--surface); border-radius: 16px; padding: 20px; border: 1px solid var(--border); }
+.chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text2); }
+
+.panel { padding: 20px; max-width: 700px; margin: 0 auto; }
+.panel-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+.form-card { background: var(--surface); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+.transaction-card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px; border: 1px solid var(--border); }
+.tx-main { display: flex; align-items: center; gap: 12px; }
+.tx-icon { font-size: 24px; width: 40px; text-align: center; }
+.tx-info { flex: 1; }
+.tx-title { font-weight: 600; font-size: 15px; }
+.tx-meta { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.tx-amount { font-size: 16px; font-weight: 700; }
+.tx-amount.positive { color: var(--success); }
+.tx-amount.negative { color: var(--danger); }
+
+.member-card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.member-info { flex: 1; }
+.member-name { font-weight: 600; }
+.member-role { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.role-select { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+
+.invite-card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.invite-actions { display: flex; gap: 8px; }
+
+.reminder-card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.reminder-card.overdue { border-color: var(--danger); background: rgba(239,68,68,0.1); }
+.reminder-title { font-weight: 600; }
+.reminder-meta { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+.log-item { background: var(--surface); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+.log-time { font-size: 11px; color: var(--text2); }
+.log-user { font-size: 13px; font-weight: 600; color: var(--primary-light); }
+.log-action { font-size: 14px; }
+
+.empty { text-align: center; padding: 40px 20px; color: var(--text2); font-size: 14px; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; overflow-x: auto; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 8px; border: none; background: none; color: var(--text2); font-size: 10px; cursor: pointer; min-width: 60px; }
+.nav-item.active { color: var(--primary-light); }
+.nav-icon { font-size: 20px; }
+
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--surface2); color: white; padding: 12px 24px; border-radius: 12px; font-size: 14px; z-index: 1000; animation: toastIn 0.3s ease; border: 1px solid var(--border); max-width: 90%; text-align: center; }
+.toast-error { background: var(--danger); }
+.toast-success { background: var(--success); }
+@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+.checkbox-label { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: var(--text2); }
+.danger-zone { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--danger); }
+.danger-title { color: var(--danger); font-size: 14px; font-weight: 600; margin-bottom: 12px; }
 </style>
+<base target="_blank">
 </head>
 <body>
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-  <div class="sb-hdr">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <i class="fa-solid fa-wallet" style="color:var(--g)"></i>
-      <span style="font-weight:900;" data-i18n="sb.title">Settings & Tools</span>
-    </div>
-    <div class="icon-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></div>
-  </div>
-  <div class="sb-body">
-    <div class="sb-section">
-      <div class="sb-sec-title" data-i18n="sb.accounts">ACCOUNTS & PEOPLE</div>
-      <div class="sb-link" onclick="openModal('modal-add-person');closeSidebar()">
-        <i class="fa-solid fa-user-plus" style="color:var(--b)"></i> <span data-i18n="sb.addPerson">Add new person</span>
+<!-- AUTH SCREEN -->
+<div id="authScreen" class="screen">
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-logo">👛</div>
+      <div class="auth-title">Family Wallet Pro</div>
+      <div class="auth-subtitle">Smart Family Budget Manager</div>
+      <div id="loginForm">
+        <div class="input-group"><label>Email</label><input type="email" id="loginEmail" placeholder="example@email.com"></div>
+        <div class="input-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+        <button class="btn btn-primary" id="loginBtn">Sign In</button>
+        <div class="auth-switch">No account? <span id="showRegister">Register</span></div>
       </div>
-      <div class="sb-link" onclick="openModal('modal-budget');closeSidebar()">
-        <i class="fa-solid fa-sliders" style="color:var(--p)"></i> <span data-i18n="sb.budget">Monthly budget</span>
-      </div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-sec-title" data-i18n="sb.data">DATA</div>
-      <div class="sb-link" onclick="exportData();closeSidebar()">
-        <i class="fa-solid fa-download" style="color:var(--g)"></i> <span data-i18n="sb.export">Export (JSON)</span>
-      </div>
-      <div class="sb-link" onclick="document.getElementById('import-file').click();closeSidebar()">
-        <i class="fa-solid fa-upload" style="color:var(--y)"></i> <span data-i18n="sb.import">Import backup</span>
-        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
-      </div>
-    </div>
-    <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border);">
-      <div class="sb-link" style="color:var(--r)" onclick="confirmReset()">
-        <i class="fa-solid fa-trash-arrow-up"></i> <span data-i18n="sb.reset">Clear all data</span>
+      <div id="registerForm" class="hidden">
+        <div class="input-group"><label>Full Name</label><input type="text" id="regName" placeholder="John Doe"></div>
+        <div class="input-group"><label>Email</label><input type="email" id="regEmail" placeholder="example@email.com"></div>
+        <div class="input-group"><label>Password</label><input type="password" id="regPassword" placeholder="Min 6 chars"></div>
+        <button class="btn btn-primary" id="registerBtn">Create Account</button>
+        <div class="auth-switch">Have account? <span id="showLogin">Sign In</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- APP -->
-<div class="app">
-  <header>
-    <div class="hdr-left">
-      <div class="icon-btn" onclick="openSidebar()"><i class="fa-solid fa-bars"></i></div>
-      <div>
-        <div class="hdr-title" data-i18n="app.title">Family Wallet</div>
-        <div class="hdr-sub">FAMILY WALLET PRO</div>
+<!-- FAMILY SELECT -->
+<div id="familySelectScreen" class="screen hidden">
+  <div class="app-header">
+    <div class="app-title">👛 Family Wallet Pro</div>
+    <div class="user-info"><span class="user-name" id="userName"></span><button class="logout-btn" id="logoutBtn">Logout</button></div>
+  </div>
+  <div class="family-select-container">
+    <div class="section-title">👨‍👩‍👧‍👦 Your Families</div>
+    <div id="familySelectList"></div>
+    <div class="create-family-box">
+      <div class="section-title">➕ New Family</div>
+      <div class="input-group"><label>Family Name</label><input type="text" id="familyNameInput" placeholder="The Smiths"></div>
+      <button class="btn btn-primary" onclick="window.createFamily()">Create Family</button>
+      <div class="join-box">
+        <div class="section-title" style="margin-top:20px">🔗 Join Family</div>
+        <div class="input-group"><label>Family Code</label><input type="text" id="joinCodeInput" placeholder="ABC123" style="text-transform:uppercase"></div>
+        <button class="btn btn-secondary" onclick="window.joinFamily()">Send Join Request</button>
       </div>
     </div>
-    <div class="hdr-right">
-      <div class="icon-btn lang-btn" onclick="toggleLang()"><span id="lang-lbl">AR</span></div>
-      <div class="icon-btn notif-wrap" id="notif-btn" onclick="showAlerts()"><i class="fa-solid fa-bell"></i></div>
-    </div>
-  </header>
+  </div>
+</div>
 
-  <div class="scroll-area" id="scroll-area">
+<!-- MAIN SCREEN -->
+<div id="mainScreen" class="screen hidden">
+  <div class="app-header">
+    <div class="app-title" id="familyTitle">My Family</div>
+    <div class="user-info"><span class="family-code-display" id="familyCodeDisplay"></span><button class="logout-btn" id="backToFamilies">Families</button></div>
+  </div>
+  <div class="main-container">
 
-    <!-- ══ HOME ══ -->
-    <div class="view active" id="view-home">
-      <div class="hero">
-        <div class="hero-label" data-i18n="home.netLiq">💰 Net Total Liquidity</div>
-        <div class="hero-amt" id="hero-amt">0.00</div>
-        <div style="font-size:.7rem;color:var(--txt3);margin-top:6px;font-family:var(--mono);" data-i18n="common.sar">Saudi Riyal</div>
-        <div class="hero-trend" id="hero-trend"><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="home.updated">Updated now</span></div>
+    <!-- DASHBOARD -->
+    <div id="dashboardPanel" class="panel">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">💰 Total Income</div><div class="stat-value positive" id="dashIncome">0 SAR</div></div>
+        <div class="stat-card"><div class="stat-label">💸 Total Expenses</div><div class="stat-value negative" id="dashExpense">0 SAR</div></div>
+        <div class="stat-card"><div class="stat-label">📊 Balance</div><div class="stat-value" id="dashBalance">0 SAR</div></div>
       </div>
-
-      <div class="stats-row">
-        <div class="stat-pill s-g"><p data-i18n="home.myMoney">My funds</p><h4 id="stat-my" style="color:var(--g)">0</h4></div>
-        <div class="stat-pill s-b"><p data-i18n="home.trusts">Trusts</p><h4 id="stat-trusts" style="color:var(--b)">0</h4></div>
-        <div class="stat-pill s-r"><p data-i18n="home.bills">Bills</p><h4 id="stat-bills" style="color:var(--r)">0</h4></div>
-      </div>
-
-      <div id="alerts-zone"></div>
-
-      <div class="sec-hdr"><h3 data-i18n="home.quick">Quick Actions</h3></div>
-      <div class="qa-grid">
-        <div class="qa-btn" onclick="quickAction('ledger-add')">
-          <div class="qa-icon" style="background:rgba(255,140,66,.1);color:var(--o)"><i class="fa-solid fa-file-circle-plus"></i></div>
-          <span data-i18n="home.addLedger">Add to ledger</span>
-        </div>
-        <div class="qa-btn" onclick="quickAction('ledger-pay')">
-          <div class="qa-icon" style="background:rgba(0,245,160,.1);color:var(--g)"><i class="fa-solid fa-money-bill-wave"></i></div>
-          <span data-i18n="home.payLedger">Pay ledger</span>
-        </div>
-        <div class="qa-btn" onclick="openModal('modal-add-person')">
-          <div class="qa-icon" style="background:rgba(0,195,255,.1);color:var(--b)"><i class="fa-solid fa-user-plus"></i></div>
-          <span data-i18n="home.newPerson">New person</span>
-        </div>
-        <div class="qa-btn" onclick="openModal('modal-add-cat')">
-          <div class="qa-icon" style="background:rgba(199,125,255,.1);color:var(--p)"><i class="fa-solid fa-folder-plus"></i></div>
-          <span data-i18n="home.newCat">New category</span>
-        </div>
-      </div>
-
-      <div class="sec-hdr"><h3 data-i18n="home.people">People</h3><a onclick="switchView('view-people')" data-i18n="common.all">View all</a></div>
-      <div id="home-people"></div>
-
-      <div class="card">
-        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
-          <i class="fa-solid fa-clock-rotate-left" style="color:var(--b)"></i> <span data-i18n="home.recent">Recent activity</span>
-        </div>
-        <div class="tl" id="home-tl"></div>
-      </div>
-
-      <div class="card" id="budget-card">
-        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
-          <i class="fa-solid fa-chart-pie" style="color:var(--p)"></i> <span data-i18n="home.budgetTitle">Monthly Budget</span>
-        </div>
-        <div id="budget-content"></div>
+      <div class="charts-grid">
+        <div class="chart-card"><div class="chart-title">📈 Expenses by Category</div><canvas id="expenseChart"></canvas></div>
+        <div class="chart-card"><div class="chart-title">📊 Income vs Expenses (Last 6 Months)</div><canvas id="incomeChart"></canvas></div>
       </div>
     </div>
 
-    <!-- ══ BILLS ══ -->
-    <div class="view" id="view-bills">
-      <div style="padding:10px 14px 2px;">
-        <div class="card-sm"><span id="bills-summary" style="font-size:.78rem;color:var(--txt2);"></span></div>
+    <!-- EXPENSES -->
+    <div id="expensesPanel" class="panel hidden">
+      <div class="panel-title">💸 Expenses</div>
+      <div class="form-card editor-only">
+        <div class="form-row">
+          <div class="input-group"><label>Category</label><select id="expenseCategory"></select></div>
+          <div class="input-group"><label>Amount</label><input type="number" id="expenseAmount" placeholder="0.00"></div>
+        </div>
+        <div class="input-group"><label>Note (optional)</label><input type="text" id="expenseNote" placeholder="e.g. Monthly groceries"></div>
+        <div class="input-group"><label>Date</label><input type="date" id="expenseDate"></div>
+        <button class="btn btn-primary" onclick="window.addExpense()">➕ Add Expense</button>
       </div>
-      <div class="sec-hdr"><h3 data-i18n="bills.title">Account Ledgers</h3><a onclick="openModal('modal-add-cat')" data-i18n="common.newPlus">+ New</a></div>
-      <div id="ledgers-list"></div>
+      <div class="form-card editor-only">
+        <div class="panel-title" style="font-size:16px">📁 New Category</div>
+        <div class="form-row">
+          <div class="input-group"><label>Name</label><input type="text" id="newCatName" placeholder="e.g. Sports"></div>
+          <div class="input-group"><label>Budget</label><input type="number" id="newCatBudget" placeholder="0"></div>
+        </div>
+        <div class="input-group"><label>Icon</label><input type="text" id="newCatIcon" placeholder="🏃" maxlength="2"></div>
+        <button class="btn btn-secondary" onclick="window.addCategory()">➕ Add Category</button>
+      </div>
+      <div id="expensesList"></div>
     </div>
 
-    <!-- ══ LEDGER DETAIL ══ -->
-    <div class="view" id="view-ledger">
-      <button class="btn btn-sec" style="margin:12px 14px;width:calc(100% - 28px);" onclick="switchView('view-bills')">
-        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="common.back">Back</span>
-      </button>
-      <div class="bank-card" id="ledger-card">
-        <div class="bc-hero">
-          <div style="width:52px;height:52px;border-radius:16px;background:rgba(0,195,255,.1);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;" id="ledger-icon-el"></div>
-          <div style="flex:1;">
-            <div style="font-size:1.1rem;font-weight:900;" id="ledger-name-el"></div>
-            <div style="font-size:.7rem;color:var(--txt2);margin-top:3px;" data-i18n="ledger.openAccount">Open account ledger</div>
-          </div>
+    <!-- INCOMES -->
+    <div id="incomesPanel" class="panel hidden">
+      <div class="panel-title">💰 Income</div>
+      <div class="form-card editor-only">
+        <div class="form-row">
+          <div class="input-group"><label>Source</label><input type="text" id="incomeSource" placeholder="e.g. Salary"></div>
+          <div class="input-group"><label>Amount</label><input type="number" id="incomeAmount" placeholder="0.00"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--border);">
-          <div style="background:var(--surface);padding:14px 16px;border-bottom:1px solid var(--border);">
-            <div style="font-size:.65rem;color:var(--txt3);margin-bottom:4px;" data-i18n="ledger.added">Total added</div>
-            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--o);" id="ledger-added"></div>
-          </div>
-          <div style="background:var(--surface);padding:14px 16px;border-bottom:1px solid var(--border);border-right:none;">
-            <div style="font-size:.65rem;color:var(--txt3);margin-bottom:4px;" data-i18n="ledger.paid">Total paid</div>
-            <div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--g);" id="ledger-paid"></div>
-          </div>
-          <div style="grid-column:1/-1;background:var(--surface);padding:12px 16px;">
-            <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--txt3);">
-              <span data-i18n="ledger.remaining">Remaining on this ledger</span>
-              <span id="ledger-rem-pct" style="font-family:var(--mono);font-weight:700;"></span>
-            </div>
-            <div class="pbar" style="margin-top:5px;"><div class="pbar-fill" id="ledger-rem-bar"></div></div>
-            <div style="font-family:var(--mono);font-size:1.5rem;font-weight:800;margin-top:8px;" id="ledger-remaining"></div>
-          </div>
+        <div class="form-row">
+          <div class="input-group"><label>Type</label><select id="incomeType"><option value="salary">Monthly Salary</option><option value="freelance">Freelance</option><option value="investment">Investment</option><option value="gift">Gift/Grant</option><option value="other">Other</option></select></div>
+          <div class="input-group"><label>Date</label><input type="date" id="incomeDate"></div>
         </div>
+        <label class="checkbox-label"><input type="checkbox" id="incomeRecurring"> Recurring (Monthly)</label>
+        <button class="btn btn-primary" onclick="window.addIncome()">➕ Add Income</button>
       </div>
-      <div style="display:flex;gap:8px;padding:8px 14px;">
-        <button class="btn bc-btn-o" style="flex:1;padding:11px;border-radius:12px;" onclick="openLedgerAdd()"><i class="fa-solid fa-plus"></i> <span data-i18n="ledger.addAmt">Add</span></button>
-        <button class="btn bc-btn-g" style="flex:1;padding:11px;border-radius:12px;" onclick="openLedgerPay()"><i class="fa-solid fa-money-bill-wave"></i> <span data-i18n="ledger.payAmt">Pay</span></button>
-        <button class="btn btn-sec" style="padding:11px 14px;border-radius:12px;" onclick="openEditCat()"><i class="fa-solid fa-pen"></i></button>
-        <button class="btn btn-danger" style="padding:11px 14px;border-radius:12px;" onclick="deleteActiveLedger()"><i class="fa-solid fa-trash"></i></button>
-      </div>
-      <div class="card">
-        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;" data-i18n="ledger.log">Activity log</div>
-        <div class="tl" id="ledger-tl"></div>
-      </div>
+      <div id="incomesList"></div>
     </div>
 
-    <!-- ══ PEOPLE ══ -->
-    <div class="view" id="view-people">
-      <div class="sec-hdr"><h3 data-i18n="people.all">All People</h3><a onclick="openModal('modal-add-person')" data-i18n="common.newPlus">+ Add</a></div>
-      <div id="people-list"></div>
+    <!-- REMINDERS -->
+    <div id="remindersPanel" class="panel hidden">
+      <div class="panel-title">⏰ Reminders & Bills</div>
+      <div class="form-card editor-only">
+        <div class="input-group"><label>Title</label><input type="text" id="reminderTitle" placeholder="e.g. Electricity Bill"></div>
+        <div class="form-row">
+          <div class="input-group"><label>Amount</label><input type="number" id="reminderAmount" placeholder="0.00"></div>
+          <div class="input-group"><label>Due Date</label><input type="date" id="reminderDate"></div>
+        </div>
+        <div class="input-group"><label>Repeat</label><select id="reminderRecurring"><option value="none">Once</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></div>
+        <button class="btn btn-primary" onclick="window.addReminder()">➕ Add Reminder</button>
+      </div>
+      <div id="remindersList"></div>
     </div>
 
-    <!-- ══ PERSON PROFILE — BANK CARD ══ -->
-    <div class="view" id="view-person">
-      <input type="file" id="ava-input" accept="image/*" style="display:none" onchange="handleAvaUpload(event)">
-      <button class="btn btn-sec" style="margin:12px 14px;width:calc(100% - 28px);" onclick="switchView('view-people')">
-        <i class="fa-solid fa-arrow-right"></i> <span data-i18n="common.back">Back</span>
-      </button>
+    <!-- REPORTS -->
+    <div id="reportsPanel" class="panel hidden">
+      <div class="panel-title">📊 Reports</div>
+      <div class="chart-card"><div class="chart-title">📈 Expenses by Category</div><canvas id="expenseChart2"></canvas></div>
+      <div class="chart-card" style="margin-top:20px"><div class="chart-title">📊 Income vs Expenses</div><canvas id="incomeChart2"></canvas></div>
+    </div>
 
-      <!-- BANK CARD -->
-      <div class="bank-card" id="person-bank-card">
-
-        <!-- HERO -->
-        <div class="bc-hero">
-          <div class="bc-ava" id="bc-ava" onclick="triggerAva()">
-            <span id="bc-ava-emoji">👤</span>
-            <img id="bc-ava-img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" alt="">
-            <div class="cam-ov"><i class="fa-solid fa-camera" style="color:#fff;font-size:.9rem;"></i></div>
-          </div>
-          <div style="flex:1;min-width:0;">
-            <div class="bc-name" id="bc-name">-</div>
-            <div class="bc-role" id="bc-role"></div>
-            <div id="bc-net" class="bc-net badge-n">—</div>
-          </div>
-        </div>
-        <div class="bc-div"></div>
-
-        <!-- RELATIONS (dynamic, injected by JS) -->
-        <div class="bc-relations" id="bc-relations"></div>
-
-        <!-- CLAIM LINK (for non-own people) -->
-        <div class="claim-zone" id="claim-zone" style="display:none;">
-          <button class="btn bc-btn-b" style="width:100%;padding:10px;border-radius:11px;" onclick="generateClaimLink()">
-            <i class="fa-solid fa-link"></i> <span data-i18n="person.claimLink">Generate claim link</span>
-          </button>
-          <div class="claim-link-box" id="claim-link-box"></div>
-          <button class="copy-btn" id="claim-copy-btn" onclick="copyClaimLink()">
-            <i class="fa-solid fa-copy"></i> <span data-i18n="person.copyLink">Copy link</span>
-          </button>
-          <p id="claim-note" style="font-size:.68rem;color:var(--txt3);margin-top:6px;display:none;" data-i18n="person.claimNote">Share so they can view their balance</p>
-        </div>
-
-        <!-- LOG -->
-        <div class="bc-log-section">
-          <div class="bc-log-hdr">
-            <span style="font-size:.82rem;font-weight:700;" data-i18n="person.log">Transaction log</span>
-            <div class="log-filters">
-              <div class="lf-pill on" id="lf-all" onclick="setLogFilter('all')" data-i18n="log.all">All</div>
-              <div class="lf-pill" id="lf-deposit" onclick="setLogFilter('deposit')">📥</div>
-              <div class="lf-pill" id="lf-withdraw" onclick="setLogFilter('withdraw')">📤</div>
-              <div class="lf-pill" id="lf-return" onclick="setLogFilter('return')">✅</div>
-            </div>
-          </div>
-          <div class="tl" id="person-tl"></div>
-        </div>
-
-      </div><!-- /bank-card -->
-
-      <div style="padding:4px 14px 24px;display:flex;gap:8px;">
-        <button class="btn btn-danger" id="p-delete-btn" onclick="deleteActivePerson()" style="flex:1;">
-          <i class="fa-solid fa-user-xmark"></i> <span data-i18n="person.delete">Delete profile</span>
-        </button>
+    <!-- MEMBERS -->
+    <div id="membersPanel" class="panel hidden">
+      <div class="panel-title">👥 Members</div>
+      <div id="membersList"></div>
+      <div id="invitesSection" style="margin-top:30px">
+        <div class="panel-title">📨 Join Requests</div>
+        <div id="invitesList"></div>
       </div>
     </div>
 
-    <!-- ══ ANALYTICS ══ -->
-    <div class="view" id="view-analytics">
-      <div class="card">
-        <div style="font-size:.8rem;font-weight:700;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:7px;">
-          <i class="fa-solid fa-chart-donut" style="color:var(--p)"></i> <span data-i18n="an.dist">Ledger Distribution</span>
-        </div>
-        <div class="chart-wrap"><canvas id="chart-donut"></canvas></div>
-        <div id="chart-legend" style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;justify-content:center;"></div>
-      </div>
-      <div class="an-grid">
-        <div class="an-card"><div class="an-label" data-i18n="an.ledgers">Ledgers tracked</div><div class="an-val" id="an-ledgers" style="color:var(--o)">0</div></div>
-        <div class="an-card"><div class="an-label" data-i18n="an.paidPct">Payment rate</div><div class="an-val" id="an-pct" style="color:var(--g)">0%</div></div>
-        <div class="an-card"><div class="an-label" data-i18n="an.bigDebt">Largest remaining</div><div class="an-val" id="an-max" style="color:var(--r)">0</div><div class="an-sub" id="an-max-name"></div></div>
-        <div class="an-card"><div class="an-label" data-i18n="an.people">People tracked</div><div class="an-val" id="an-people" style="color:var(--b)">0</div></div>
-        <div class="an-card an-full"><div class="an-label" style="margin-bottom:8px;" data-i18n="an.cats">Category breakdown</div><div style="height:150px;"><canvas id="chart-bar"></canvas></div></div>
-      </div>
-      <div style="height:20px;"></div>
+    <!-- LOGS -->
+    <div id="logsPanel" class="panel hidden">
+      <div class="panel-title">📝 Activity Log</div>
+      <div id="logsList"></div>
     </div>
 
-  </div><!-- /scroll-area -->
+    <!-- SETTINGS -->
+    <div id="settingsPanel" class="panel hidden">
+      <div class="panel-title">⚙️ Settings</div>
+      <div class="form-card">
+        <div style="font-size:16px; font-weight:600; margin-bottom:12px">📤 Share Family Code</div>
+        <div class="input-group"><input type="text" id="shareCode" readonly style="text-align:center; font-family:monospace; font-size:18px; letter-spacing:2px"></div>
+        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText($('shareCode').value); showToast('Copied!')">📋 Copy Code</button>
+      </div>
+      <div class="danger-zone">
+        <div class="danger-title">⚠️ Danger Zone</div>
+        <button class="btn btn-secondary" style="margin-bottom:10px" onclick="window.leaveFamily()">🚪 Leave Family</button>
+        <button class="btn btn-danger" onclick="window.deleteFamily()">🗑️ Delete Family Forever</button>
+      </div>
+    </div>
 
+  </div>
+
+  <!-- Bottom Nav -->
   <nav class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="switchView('view-home')"><i class="fa-solid fa-house"></i><span data-i18n="nav.home">Home</span></div>
-    <div class="nav-item" id="nav-bills" onclick="switchView('view-bills')"><i class="fa-solid fa-receipt"></i><span data-i18n="nav.bills">Bills</span></div>
-    <div class="nav-item" id="nav-people" onclick="switchView('view-people')"><i class="fa-solid fa-users"></i><span data-i18n="nav.people">People</span></div>
-    <div class="nav-item" id="nav-analytics" onclick="switchView('view-analytics')"><i class="fa-solid fa-chart-column"></i><span data-i18n="nav.stats">Stats</span></div>
+    <button class="nav-item active" id="tabDashboard"><span class="nav-icon">📊</span><span>Home</span></button>
+    <button class="nav-item" id="tabExpenses"><span class="nav-icon">💸</span><span>Expenses</span></button>
+    <button class="nav-item" id="tabIncomes"><span class="nav-icon">💰</span><span>Income</span></button>
+    <button class="nav-item" id="tabReminders"><span class="nav-icon">⏰</span><span>Reminders</span></button>
+    <button class="nav-item" id="tabReports"><span class="nav-icon">📊</span><span>Reports</span></button>
+    <button class="nav-item" id="tabMembers"><span class="nav-icon">👥</span><span>Members</span></button>
+    <button class="nav-item" id="tabLogs"><span class="nav-icon">📝</span><span>Logs</span></button>
+    <button class="nav-item" id="tabSettings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
   </nav>
 </div>
 
-<!-- ══════ MODALS ══════ -->
-
-<!-- ADD CATEGORY -->
-<div class="modal" id="modal-add-cat">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.addCat">📁 New bill category</div>
-    <div class="fg"><label class="fl" data-i18n="f.catName">Category name</label>
-      <input class="fi" id="f-cat-name" placeholder="e.g. Groceries, Electricity..."></div>
-    <div class="fg"><label class="fl" data-i18n="f.catBudget">Monthly budget (optional)</label>
-      <input class="fi" id="f-cat-budget" type="number" placeholder="0"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" onclick="addCategory()" data-i18n="c.save">Save</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-add-cat')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- EDIT CATEGORY -->
-<div class="modal" id="modal-edit-cat">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.editCat">✏️ Edit category</div>
-    <div class="fg"><label class="fl" data-i18n="f.catName">Name</label><input class="fi" id="ec-name"></div>
-    <div class="fg"><label class="fl" data-i18n="f.catBudget">Monthly budget (optional)</label><input class="fi" id="ec-budget" type="number" placeholder="0"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" onclick="saveEditCat()" data-i18n="c.save">Save</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-edit-cat')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- LEDGER ADD -->
-<div class="modal" id="modal-ledger-add">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.ledgerAdd">📥 Add amount to ledger</div>
-    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="la-amt" type="number" placeholder="0.00"></div>
-    <div class="fg"><label class="fl" data-i18n="f.desc">Description</label><input class="fi" id="la-reason" placeholder="Details..."></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" onclick="ledgerAdd()" data-i18n="c.add">Add</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-ledger-add')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- LEDGER PAY -->
-<div class="modal" id="modal-ledger-pay">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.ledgerPay">💸 Pay from ledger</div>
-    <div class="card-sm" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;font-size:.8rem;">
-        <span style="color:var(--txt2)" data-i18n="f.remaining">Remaining:</span>
-        <span id="lp-rem" style="font-family:var(--mono);color:var(--r);font-weight:700;"></span>
-      </div>
-    </div>
-    <div class="fg"><label class="fl" data-i18n="f.amt">Amount</label><input class="fi" id="lp-amt" type="number" placeholder="0.00"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1;background:linear-gradient(135deg,var(--g),var(--b));" onclick="ledgerPay()" data-i18n="c.confirm">Confirm</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-ledger-pay')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- QUICK ADD/PAY -->
-<div class="modal" id="modal-quick">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" id="quick-title"></div>
-    <div class="fg"><label class="fl" data-i18n="f.chooseLedger">Choose ledger</label><select class="fi" id="quick-cat-select" onchange="updateQuickRem()"></select></div>
-    <div class="card-sm" id="quick-rem-box" style="margin-bottom:12px;display:none;">
-      <div style="display:flex;justify-content:space-between;font-size:.8rem;">
-        <span style="color:var(--txt2)" data-i18n="f.remaining">Remaining:</span>
-        <span id="quick-rem" style="font-family:var(--mono);color:var(--r);font-weight:700;"></span>
-      </div>
-    </div>
-    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="quick-amt" type="number" placeholder="0.00"></div>
-    <div class="fg"><label class="fl" data-i18n="f.desc">Description</label><input class="fi" id="quick-reason" placeholder="Details..."></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" id="quick-confirm-btn" onclick="confirmQuick()" data-i18n="c.confirm">Confirm</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-quick')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD PERSON -->
-<div class="modal" id="modal-add-person">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.addPerson">👤 Add new person</div>
-    <div class="fg"><label class="fl" data-i18n="f.name">Full name</label><input class="fi" id="f-pname" placeholder="Name..."></div>
-    <div class="fg">
-      <label class="fl" data-i18n="f.photo">Photo <span style="color:var(--txt3);font-weight:400;">(optional)</span></label>
-      <div class="ava-zone" onclick="document.getElementById('new-ava-input').click()">
-        <div class="ava-ph" id="new-ava-ph">👤<img id="new-ava-prev" style="display:none;width:100%;height:100%;object-fit:cover;" alt=""></div>
-        <div><div style="font-size:.83rem;font-weight:600;" data-i18n="f.tapPhoto">Tap to upload photo</div><div style="font-size:.7rem;color:var(--txt3);margin-top:2px;">Optional · JPG, PNG</div></div>
-      </div>
-      <input type="file" id="new-ava-input" accept="image/*" style="display:none" onchange="previewNewAva(event)">
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" onclick="addPerson()" data-i18n="c.add">Add</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-add-person')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- PERSON ACTION MODAL (deposit/withdraw/return) -->
-<div class="modal" id="modal-person-action">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" id="paction-title"></div>
-    <div class="card-sm" id="paction-info-box" style="margin-bottom:12px;display:none;">
-      <div style="display:flex;justify-content:space-between;font-size:.8rem;">
-        <span style="color:var(--txt2);" id="paction-info-label"></span>
-        <span id="paction-info-val" style="font-family:var(--mono);font-weight:700;"></span>
-      </div>
-    </div>
-    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="paction-amt" type="number" placeholder="0.00"></div>
-    <div class="fg"><label class="fl" data-i18n="f.desc">Description</label><input class="fi" id="paction-reason" placeholder="Details..."></div>
-    <div class="fg" id="paction-receipt-group">
-      <label class="fl">🧾 <span data-i18n="f.receipt">Receipt</span> <span style="color:var(--txt3);font-weight:400;">(optional)</span></label>
-      <div class="receipt-zone" onclick="document.getElementById('receipt-input').click()">
-        <i class="fa-solid fa-camera" style="color:var(--p);font-size:.95rem;"></i>
-        <span data-i18n="f.tapReceipt">Tap to attach photo</span>
-      </div>
-      <input type="file" id="receipt-input" accept="image/*" style="display:none" onchange="previewReceipt(event)">
-      <img id="receipt-prev" class="receipt-thumb" alt="">
-      <button id="receipt-clear" style="display:none;background:none;border:none;color:var(--r);font-size:.7rem;cursor:pointer;margin-top:4px;" onclick="clearReceipt()">✕ Remove</button>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" id="paction-confirm" onclick="confirmPersonAction()" data-i18n="c.confirm">Confirm</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-person-action')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- MY WALLET DEBT MODAL -->
-<div class="modal" id="modal-my-debt">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" id="mydebt-title"></div>
-    <div class="fg"><label class="fl" data-i18n="f.amt">Amount (SAR)</label><input class="fi" id="mydebt-amt" type="number" placeholder="0.00"></div>
-    <div class="fg"><label class="fl" data-i18n="f.desc">Description (from whom / to whom)</label><input class="fi" id="mydebt-reason" placeholder="e.g. Borrowed from Ahmed..."></div>
-    <div class="fg" id="mydebt-receipt-group">
-      <label class="fl">🧾 <span data-i18n="f.receipt">Receipt</span> <span style="color:var(--txt3);font-weight:400;">(optional)</span></label>
-      <div class="receipt-zone" onclick="document.getElementById('mydebt-receipt-input').click()">
-        <i class="fa-solid fa-camera" style="color:var(--p);font-size:.95rem;"></i>
-        <span data-i18n="f.tapReceipt">Tap to attach photo</span>
-      </div>
-      <input type="file" id="mydebt-receipt-input" accept="image/*" style="display:none" onchange="previewMyDebtReceipt(event)">
-      <img id="mydebt-receipt-prev" class="receipt-thumb" alt="">
-      <button id="mydebt-receipt-clear" style="display:none;background:none;border:none;color:var(--r);font-size:.7rem;cursor:pointer;margin-top:4px;" onclick="clearMyDebtReceipt()">✕ Remove</button>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" id="mydebt-confirm" onclick="confirmMyDebt()" data-i18n="c.confirm">Confirm</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-my-debt')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- BUDGET -->
-<div class="modal" id="modal-budget">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.budget">📊 Monthly Budget</div>
-    <div class="fg"><label class="fl" data-i18n="f.totalBudget">Total monthly budget (SAR)</label><input class="fi" id="f-total-budget" type="number" placeholder="5000"></div>
-    <div id="cat-budget-inputs"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" onclick="saveBudget()" data-i18n="c.save">Save</button>
-      <button class="btn btn-sec" style="flex:1" onclick="closeModal('modal-budget')" data-i18n="c.cancel">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ALERTS -->
-<div class="modal" id="modal-alerts">
-  <div class="modal-sheet">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.alerts">🔔 Smart Alerts</div>
-    <div id="alerts-list"></div>
-    <div class="btn-row"><button class="btn btn-sec" style="width:100%" onclick="closeModal('modal-alerts')" data-i18n="c.close">Close</button></div>
-  </div>
-</div>
-
-<!-- RECEIPT VIEWER -->
-<div class="modal" id="modal-receipt">
-  <div class="modal-sheet" style="text-align:center;">
-    <div class="mh"></div>
-    <div class="mt" data-i18n="m.receipt">🧾 Receipt</div>
-    <img id="receipt-view-img" style="width:100%;border-radius:12px;max-height:55vh;object-fit:contain;" alt="">
-    <div class="btn-row"><button class="btn btn-sec" style="width:100%;margin-top:12px;" onclick="closeModal('modal-receipt')" data-i18n="c.close">Close</button></div>
-  </div>
-</div>
-
-<script>
-// ═══════════ I18N ═══════════
-const I18N = {
-en:{
-  'app.title':'Family Wallet','sb.title':'Settings & Tools','sb.accounts':'ACCOUNTS & PEOPLE',
-  'sb.addPerson':'Add new person','sb.budget':'Monthly budget','sb.data':'DATA',
-  'sb.export':'Export (JSON)','sb.import':'Import backup','sb.reset':'Clear all data',
-  'home.netLiq':'💰 Net Total Liquidity','home.updated':'Updated now','home.negBal':'Negative balance!',
-  'common.sar':'Saudi Riyal','common.all':'View all','common.back':'Back','common.newPlus':'+ New',
-  'home.myMoney':'My funds','home.trusts':'Trusts','home.bills':'Bills',
-  'home.quick':'Quick Actions','home.addLedger':'Add to ledger','home.payLedger':'Pay ledger',
-  'home.newPerson':'New person','home.newCat':'New category',
-  'home.people':'People','home.recent':'Recent activity','home.budgetTitle':'Monthly Budget',
-  'home.noBudget':'No budget set','home.setBudget':'Set up budget',
-  'home.spent':'Spent','home.budgetOf':'Budget','home.totalRem':'Total remaining',
-  'bills.title':'Account Ledgers','ledger.openAccount':'Open account ledger',
-  'ledger.added':'Total added','ledger.paid':'Total paid','ledger.remaining':'Remaining',
-  'ledger.addAmt':'Add','ledger.payAmt':'Pay','ledger.log':'Activity log',
-  'ledger.noActivity':'No activity yet','ledger.addedOp':'Added to ledger','ledger.paidOp':'Paid from ledger',
-  'ledger.fullyPaid':'✓ Fully paid','ledger.partial':'◑ Partial','ledger.unpaid':'○ Unpaid',
-  'ledger.overBudget':'⚠ Over budget','ledger.payRate':'Payment rate',
-  'people.all':'All People',
-  'rel.trust':'🏦 Trust','rel.trustDesc':'Funds they deposited with me',
-  'rel.loanToThem':'📤 Loan to them','rel.loanToThemDesc':'I gave them a loan',
-  'rel.loanFromThem':'📥 Loan from them','rel.loanFromThemDesc':'They gave me a loan',
-  'rel.col.deposited':'Deposited','rel.col.withdrawn':'Withdrawn','rel.col.remaining':'Remaining',
-  'rel.col.given':'Given','rel.col.returned':'Returned','rel.col.owed':'Owed',
-  'rel.col.borrowed':'Borrowed','rel.col.repaid':'Repaid','rel.col.left':'Left to pay',
-  'rel.addTrust':'＋ Deposit','rel.returnTrust':'↩ Return trust',
-  'rel.giveLoan':'＋ Give loan','rel.markRepaid':'✓ Repaid',
-  'rel.takeLoan':'＋ Take loan','rel.payBack':'↩ Pay back',
-  'rel.myFunds':'💼 My Wallet','rel.myFundsDesc':'My personal free funds',
-  'rel.myDebt':'📋 My Debts','rel.myDebtDesc':'Debts I owe to others',
-  'rel.myDebtAmt':'Total I owe','rel.myDebtPaid':'Paid back','rel.myDebtLeft':'Still owe',
-  'rel.addDebt':'＋ Add debt','rel.payDebt':'↩ Pay back debt',
-  'rel.addFunds':'＋ Add funds','rel.removeFunds':'− Deduct funds',
-  'person.log':'Transaction log','person.delete':'Delete profile',
-  'person.ownAcc':'⚙️ My personal account','person.extProfile':'👤 External profile',
-  'person.claimLink':'Generate claim link','person.copyLink':'Copy link',
-  'person.claimNote':'Share so they can view their balance',
-  'person.noTx':'No transactions yet',
-  'log.all':'All','log.trustDeposit':'Trust deposit','log.trustReturn':'Trust returned',
-  'log.loanGiven':'Loan given','log.loanRepaid':'Loan repaid',
-  'log.loanTaken':'Loan taken','log.loanPaidBack':'Paid back loan',
-  'log.addFunds':'Funds added','log.deductFunds':'Funds deducted',
-  'log.addDebt':'Debt added','log.payDebt':'Debt paid back',
-  'an.dist':'Ledger Distribution','an.ledgers':'Ledgers','an.paidPct':'Payment rate',
-  'an.bigDebt':'Largest remaining','an.people':'People','an.cats':'Category breakdown',
-  'm.addCat':'📁 New bill category','m.editCat':'✏️ Edit category',
-  'm.ledgerAdd':'📥 Add to ledger','m.ledgerPay':'💸 Pay from ledger',
-  'm.addPerson':'👤 Add new person','m.budget':'📊 Monthly Budget',
-  'm.alerts':'🔔 Smart Alerts','m.receipt':'🧾 Receipt',
-  'f.catName':'Category name','f.catBudget':'Monthly budget (optional)',
-  'f.amt':'Amount (SAR)','f.desc':'Description','f.chooseLedger':'Choose ledger',
-  'f.remaining':'Remaining:','f.name':'Full name','f.photo':'Photo',
-  'f.tapPhoto':'Tap to upload photo','f.receipt':'Receipt','f.tapReceipt':'Tap to attach photo',
-  'f.totalBudget':'Total monthly budget (SAR)','f.budgetFor':(n)=>`Budget for "${n}"`,
-  'c.save':'Save','c.cancel':'Cancel','c.add':'Add','c.confirm':'Confirm','c.close':'Close',
-  'nav.home':'Home','nav.bills':'Bills','nav.people':'People','nav.stats':'Stats',
-  'alert.none':'No alerts — all good! 🎉',
-  'alert.totalDebt':(v)=>`You have ${v} SAR in unpaid ledger balances`,
-  'alert.ledgerHigh':(n,v)=>`Ledger "${n}" has ${v} SAR remaining`,
-  'alert.over80':'Your ledger debts exceed 80% of your monthly budget!',
-  'alert.catOver':(n,b)=>`"${n}" exceeded its budget of ${b} SAR`,
-  'alert.bigLoan':(n,v)=>`${n} owes you a large loan: ${v} SAR`,
-  'alert.myDebt':(v)=>`You have ${v} SAR in personal debts to pay back`,
-  'confirm.deleteLedger':(n)=>`Delete ledger "${n}" permanently?`,
-  'confirm.deleteLedgerBal':(v)=>`⚠️ This ledger has ${v} SAR remaining. Delete anyway?`,
-  'confirm.deletePerson':(n)=>`Delete "${n}" permanently?`,
-  'confirm.undo':'Undo this operation?',
-  'confirm.import':'Replace current data with imported file?',
-  'confirm.reset':'⚠️ Permanently erase ALL data?',
-  'err.enterAmt':'Please enter a valid amount','err.enterName':'Please enter a name',
-  'err.enterDesc':'Please enter a description','err.chooseLedger':'Please choose a ledger',
-  'err.invalidFile':'Invalid file',
-  'misc.addedTo':(n)=>`Added → ${n}`,'misc.paidFrom':(n)=>`Paid ← ${n}`,
-},
-ar:{
-  'app.title':'محفظة العائلة','sb.title':'الإعدادات والأدوات','sb.accounts':'الحسابات والأشخاص',
-  'sb.addPerson':'إضافة شخص جديد','sb.budget':'الميزانية الشهرية','sb.data':'البيانات',
-  'sb.export':'تصدير (JSON)','sb.import':'استيراد نسخة','sb.reset':'مسح كل البيانات',
-  'home.netLiq':'💰 السيولة الكلية الصافية','home.updated':'محدّث الآن','home.negBal':'رصيد سالب!',
-  'common.sar':'ريال سعودي','common.all':'عرض الكل','common.back':'رجوع','common.newPlus':'+ جديد',
-  'home.myMoney':'محفظتي','home.trusts':'أمانات','home.bills':'فواتير',
-  'home.quick':'إجراءات سريعة','home.addLedger':'إضافة لدفتر','home.payLedger':'تسديد دفتر',
-  'home.newPerson':'شخص جديد','home.newCat':'فئة جديدة',
-  'home.people':'الأشخاص','home.recent':'آخر الحركات','home.budgetTitle':'الميزانية الشهرية',
-  'home.noBudget':'لم تحدد ميزانية','home.setBudget':'تفعيل الميزانية',
-  'home.spent':'مُنفق','home.budgetOf':'الميزانية','home.totalRem':'الإجمالي المتبقي',
-  'bills.title':'دفاتر الحسابات','ledger.openAccount':'دفتر حساب مفتوح',
-  'ledger.added':'إجمالي مُضاف','ledger.paid':'إجمالي مُسدد','ledger.remaining':'المتبقي',
-  'ledger.addAmt':'إضافة','ledger.payAmt':'تسديد','ledger.log':'سجل العمليات',
-  'ledger.noActivity':'لا توجد عمليات بعد','ledger.addedOp':'إضافة للدفتر','ledger.paidOp':'تسديد من الدفتر',
-  'ledger.fullyPaid':'✓ مسدد بالكامل','ledger.partial':'◑ مسدد جزئياً','ledger.unpaid':'○ غير مسدد',
-  'ledger.overBudget':'⚠ تجاوز الميزانية','ledger.payRate':'نسبة التسديد',
-  'people.all':'جميع الأشخاص',
-  'rel.trust':'🏦 الأمانة','rel.trustDesc':'فلوس أودعها عندي',
-  'rel.loanToThem':'📤 سُلفة أعطيتها','rel.loanToThemDesc':'أعطيته سُلفة',
-  'rel.loanFromThem':'📥 دين أخذته منه','rel.loanFromThemDesc':'أخذت منه دين',
-  'rel.col.deposited':'أودع','rel.col.withdrawn':'سُحب','rel.col.remaining':'المتبقي',
-  'rel.col.given':'أعطيت','rel.col.returned':'رجع','rel.col.owed':'المطلوب',
-  'rel.col.borrowed':'أخذت','rel.col.repaid':'رجعت','rel.col.left':'المتبقي عليك',
-  'rel.addTrust':'＋ إيداع','rel.returnTrust':'↩ رجّع الأمانة',
-  'rel.giveLoan':'＋ أعطه سُلفة','rel.markRepaid':'✓ رجّع السُلفة',
-  'rel.takeLoan':'＋ خذ منه دين','rel.payBack':'↩ سدّد الدين',
-  'rel.myFunds':'💼 محفظتي','rel.myFundsDesc':'سيولتي الحرة الشخصية',
-  'rel.myDebt':'📋 ديوني','rel.myDebtDesc':'ديون عليّ لآخرين',
-  'rel.myDebtAmt':'إجمالي ما عليّ','rel.myDebtPaid':'سددت منه','rel.myDebtLeft':'المتبقي عليّ',
-  'rel.addDebt':'＋ دين جديد عليّ','rel.payDebt':'↩ سدّد دين',
-  'rel.addFunds':'＋ أضف رصيد','rel.removeFunds':'− خصم رصيد',
-  'person.log':'سجل الحركات','person.delete':'حذف الملف نهائياً',
-  'person.ownAcc':'⚙️ حسابي الشخصي','person.extProfile':'👤 ملف خارجي',
-  'person.claimLink':'رابط كشف الأمانة','person.copyLink':'نسخ الرابط',
-  'person.claimNote':'شارك الرابط مع صاحبه ليشوف رصيده',
-  'person.noTx':'لا توجد حركات بعد',
-  'log.all':'الكل','log.trustDeposit':'إيداع أمانة','log.trustReturn':'استرداد أمانة',
-  'log.loanGiven':'سُلفة أعطيتها','log.loanRepaid':'سُلفة رجعت',
-  'log.loanTaken':'دين أخذته منه','log.loanPaidBack':'سددت الدين',
-  'log.addFunds':'إضافة رصيد','log.deductFunds':'خصم رصيد',
-  'log.addDebt':'دين جديد عليّ','log.payDebt':'سداد دين',
-  'an.dist':'توزيع الدفاتر','an.ledgers':'دفاتر','an.paidPct':'نسبة السداد',
-  'an.bigDebt':'أكبر دين متبقي','an.people':'أشخاص','an.cats':'مخطط الفئات',
-  'm.addCat':'📁 فئة جديدة','m.editCat':'✏️ تعديل الفئة',
-  'm.ledgerAdd':'📥 إضافة للدفتر','m.ledgerPay':'💸 تسديد من الدفتر',
-  'm.addPerson':'👤 إضافة شخص جديد','m.budget':'📊 الميزانية الشهرية',
-  'm.alerts':'🔔 التنبيهات الذكية','m.receipt':'🧾 الفاتورة',
-  'f.catName':'اسم الفئة','f.catBudget':'الميزانية الشهرية (اختياري)',
-  'f.amt':'المبلغ (ر.س)','f.desc':'البيان','f.chooseLedger':'اختر الدفتر',
-  'f.remaining':'المتبقي:','f.name':'الاسم الكامل','f.photo':'الصورة الشخصية',
-  'f.tapPhoto':'اضغط لرفع صورة','f.receipt':'الفاتورة','f.tapReceipt':'اضغط لإرفاق صورة',
-  'f.totalBudget':'الميزانية الإجمالية الشهرية (ر.س)','f.budgetFor':(n)=>`ميزانية "${n}"`,
-  'c.save':'حفظ','c.cancel':'إلغاء','c.add':'إضافة','c.confirm':'تأكيد','c.close':'إغلاق',
-  'nav.home':'الرئيسية','nav.bills':'الفواتير','nav.people':'الأشخاص','nav.stats':'إحصائيات',
-  'alert.none':'لا توجد تنبيهات — كل شيء تمام! 🎉',
-  'alert.totalDebt':(v)=>`عليك ${v} ر.س ديون دفاتر غير مسددة`,
-  'alert.ledgerHigh':(n,v)=>`دفتر "${n}" عليه ${v} ر.س متبقي`,
-  'alert.over80':'ديونك تتجاوز 80% من ميزانيتك!',
-  'alert.catOver':(n,b)=>`"${n}" تجاوز ميزانيته (${b} ر.س)`,
-  'alert.bigLoan':(n,v)=>`${n} عليه سُلفة كبيرة: ${v} ر.س`,
-  'alert.myDebt':(v)=>`عليك ${v} ر.س ديون شخصية لم تسددها`,
-  'confirm.deleteLedger':(n)=>`حذف دفتر "${n}" نهائياً؟`,
-  'confirm.deleteLedgerBal':(v)=>`⚠️ الدفتر فيه ${v} ر.س متبقي. تكمل الحذف؟`,
-  'confirm.deletePerson':(n)=>`حذف "${n}" نهائياً؟`,
-  'confirm.undo':'تراجع عن هذه العملية؟',
-  'confirm.import':'استبدال البيانات الحالية بالملف المستورد؟',
-  'confirm.reset':'⚠️ مسح كل البيانات نهائياً؟',
-  'err.enterAmt':'أدخل مبلغاً صحيحاً','err.enterName':'أدخل الاسم',
-  'err.enterDesc':'أدخل البيان','err.chooseLedger':'اختر دفتراً','err.invalidFile':'ملف غير صالح',
-  'misc.addedTo':(n)=>`إضافة → ${n}`,'misc.paidFrom':(n)=>`تسديد ← ${n}`,
-}};
-
-let lang='en';
-function t(k,...a){const e=I18N[lang][k];return typeof e==='function'?e(...a):e||k;}
-function applyI18n(){
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const val=t(el.dataset.i18n);if(typeof val==='string')el.textContent=val;
-  });
-  document.getElementById('page-title').textContent=t('app.title')+' Pro';
-  document.getElementById('lang-lbl').textContent=lang==='en'?'AR':'EN';
-}
-function applyDir(){
-  const h=document.getElementById('html-root');
-  if(lang==='ar'){h.lang='ar';h.dir='rtl';h.classList.remove('lang-en');}
-  else{h.lang='en';h.dir='ltr';h.classList.add('lang-en');}
-}
-function toggleLang(){
-  lang=lang==='en'?'ar':'en';
-  localStorage.setItem('FW_LANG',lang);
-  applyDir();applyI18n();renderAll();
-}
-
-// ═══════════ STATE ═══════════
-const KEY='FW_PRO_V6';
-let db={
-  people:[{id:'p_own',name:'My Wallet',emoji:'💼',funds:0,debts:[],logs:[]}],
-  categories:[
-    {id:'c1',name:'Groceries',color:'#ff8c42',icon:'fa-cart-shopping',added:0,paid:0,budget:0,logs:[]},
-    {id:'c2',name:'Household',color:'#00c3ff',icon:'fa-house',added:0,paid:0,budget:0,logs:[]}
-  ],
-  logs:[],budget:{total:0}
-};
-let activePid=null,activeCatId=null,logFilter='all';
-let pendingReceipt=null,pendingMyDebtReceipt=null,newAvaData=null;
-let donutChart=null,barChart=null,quickMode=null,currentAction=null,myDebtMode='add';
-
-// ═══════════ PERSISTENCE ═══════════
-function save(){localStorage.setItem(KEY,JSON.stringify(db));}
-function load(){
-  try{
-    const r=localStorage.getItem(KEY);if(!r)return;
-    const d=JSON.parse(r);
-    if(!d.people)d.people=[];if(!d.categories)d.categories=[];
-    if(!d.logs)d.logs=[];if(!d.budget)d.budget={total:0};
-    d.people.forEach(p=>{
-      if(!p.logs)p.logs=[];
-      if(p.id==='p_own'){
-        if(typeof p.funds!=='number')p.funds=0;
-        if(!p.debts)p.debts=[];
-      } else {
-        if(!p.trust||typeof p.trust==='number'){const old=typeof p.trust==='number'?p.trust:0;p.trust={deposited:old,withdrawn:0,logs:[]};}
-        if(!p.loanToThem||typeof p.loanToThem==='number'){const old=typeof p.loanToThem==='number'?p.loanToThem:0;p.loanToThem={given:old,returned:0,logs:[]};delete p.loan;}
-        if(!p.loanFromThem)p.loanFromThem={borrowed:0,repaid:0,logs:[]};
-        if(!p.trust.logs)p.trust.logs=[];
-        if(!p.loanToThem.logs)p.loanToThem.logs=[];
-        if(!p.loanFromThem.logs)p.loanFromThem.logs=[];
-      }
-    });
-    d.categories.forEach(c=>{
-      if(!c.logs)c.logs=[];if(typeof c.added!=='number')c.added=0;
-      if(typeof c.paid!=='number')c.paid=0;if(!c.budget)c.budget=0;
-      if(!c.icon)c.icon='fa-folder-open';
-    });
-    db=d;
-  }catch(e){console.log(e);}
-}
-
-// ═══════════ CALC ═══════════
-function ledgerRem(c){return Math.max(0,c.added-c.paid);}
-function own(){return db.people.find(p=>p.id==='p_own');}
-function totalTrusts(){return db.people.filter(p=>p.id!=='p_own').reduce((a,p)=>a+(p.trust.deposited-p.trust.withdrawn),0);}
-function totalLoansFromThem(){return db.people.filter(p=>p.id!=='p_own').reduce((a,p)=>a+(p.loanFromThem.borrowed-p.loanFromThem.repaid),0);}
-function totalMyDebts(){const o=own();if(!o)return 0;return o.debts.reduce((a,d)=>a+Math.max(0,d.amount-d.paid),0);}
-function totalLedgerDebt(){return db.categories.reduce((a,c)=>a+ledgerRem(c),0);}
-function netBalance(){const o=own()||{funds:0};return o.funds+totalTrusts()-totalLoansFromThem()-totalMyDebts();}
-const curr=()=>lang==='ar'?'ر.س':'SAR';
-const fmt=(n)=>(n||0).toLocaleString(lang==='ar'?'ar-SA':'en-US',{minimumFractionDigits:0,maximumFractionDigits:1});
-
-// ═══════════ ALERTS ═══════════
-function getAlerts(){
-  const al=[];
-  const ld=totalLedgerDebt();
-  if(ld>1000)al.push({icon:'fa-receipt',col:'var(--r)',txt:t('alert.totalDebt',fmt(ld))});
-  db.categories.forEach(c=>{const r=ledgerRem(c);if(r>500)al.push({icon:'fa-exclamation-triangle',col:'var(--y)',txt:t('alert.ledgerHigh',c.name,fmt(r))});});
-  if(db.budget.total>0&&ld>db.budget.total*0.8)al.push({icon:'fa-chart-line',col:'var(--o)',txt:t('alert.over80')});
-  db.categories.forEach(c=>{if(c.budget>0&&ledgerRem(c)>c.budget)al.push({icon:'fa-circle-exclamation',col:'var(--r)',txt:t('alert.catOver',c.name,fmt(c.budget))});});
-  db.people.filter(p=>p.id!=='p_own').forEach(p=>{
-    const ln=p.loanToThem.given-p.loanToThem.returned;
-    if(ln>2000)al.push({icon:'fa-user-slash',col:'var(--o)',txt:t('alert.bigLoan',p.name,fmt(ln))});
-  });
-  const md=totalMyDebts();
-  if(md>0)al.push({icon:'fa-triangle-exclamation',col:'var(--r)',txt:t('alert.myDebt',fmt(md))});
-  return al;
-}
-function showAlerts(){
-  const al=getAlerts();
-  document.getElementById('alerts-list').innerHTML=al.length===0
-    ?`<div class="empty-state" style="padding:20px 0;"><i class="fa-solid fa-check-circle" style="color:var(--g)"></i><p>${t('alert.none')}</p></div>`
-    :al.map(a=>`<div style="display:flex;gap:10px;padding:11px;background:var(--surface2);border-radius:12px;margin-bottom:7px;border:1px solid var(--border);"><i class="fa-solid ${a.icon}" style="color:${a.col};font-size:.9rem;flex-shrink:0;margin-top:2px;"></i><span style="font-size:.83rem;">${a.txt}</span></div>`).join('');
-  openModal('modal-alerts');
-}
-
-// ═══════════ RENDER ═══════════
-function renderAll(){renderHome();renderLedgers();renderPeople();renderAnalytics();renderNotifDot();}
-function renderNotifDot(){
-  const nb=document.getElementById('notif-btn');
-  nb.className='icon-btn notif-wrap'+(getAlerts().length?' notif-dot':'');
-}
-
-// ── HOME ──
-function renderHome(){
-  const net=netBalance();
-  const amtEl=document.getElementById('hero-amt');
-  amtEl.textContent=Math.abs(net).toFixed(2);
-  amtEl.style.color=net<0?'var(--r)':'var(--g)';
-  const trend=document.getElementById('hero-trend');
-  trend.innerHTML=net<0?`<i class="fa-solid fa-arrow-trend-down"></i> ${t('home.negBal')}`:`<i class="fa-solid fa-arrow-trend-up"></i> ${t('home.updated')}`;
-  trend.style.cssText=`background:${net<0?'rgba(255,61,110,.1)':'rgba(0,245,160,.1)'};border:1px solid ${net<0?'rgba(255,61,110,.2)':'rgba(0,245,160,.2)'};color:${net<0?'var(--r)':'var(--g)'};display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:4px 10px;font-size:.7rem;margin-top:9px;`;
-  const o=own()||{funds:0};
-  document.getElementById('stat-my').textContent=fmt(o.funds);
-  document.getElementById('stat-trusts').textContent=fmt(totalTrusts());
-  document.getElementById('stat-bills').textContent=fmt(totalLedgerDebt());
-  const al=getAlerts();
-  document.getElementById('alerts-zone').innerHTML=al.length?`<div class="alert-bar"><i class="fa-solid fa-triangle-exclamation"></i>${al.length} ${lang==='ar'?'تنبيه':'alert(s)'} — <strong style="cursor:pointer;text-decoration:underline;" onclick="showAlerts()">${lang==='ar'?'عرض':'View'}</strong></div>`:'';
-  document.getElementById('home-people').innerHTML=db.people.slice(0,3).map(personCardHTML).join('');
-  const tl=document.getElementById('home-tl');
-  tl.innerHTML=!db.logs.length?`<div class="empty-state" style="padding:16px 0;"><i class="fa-solid fa-inbox"></i><p>${lang==='ar'?'لا يوجد حركات بعد':'No activity yet'}</p></div>`:db.logs.slice().reverse().slice(0,5).map(tlRowHTML).join('');
-  renderBudgetSummary();
-}
-function renderBudgetSummary(){
-  const el=document.getElementById('budget-content');
-  if(db.budget.total<=0&&db.categories.every(c=>c.budget<=0)){
-    el.innerHTML=`<div style="text-align:center;padding:8px;"><p style="color:var(--txt2);font-size:.8rem;">${t('home.noBudget')}</p><button onclick="openModal('modal-budget')" style="margin-top:9px;padding:7px 14px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);color:var(--b);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;">${t('home.setBudget')}</button></div>`;
-    return;
-  }
-  const spent=totalLedgerDebt();
-  const pct=db.budget.total>0?Math.min((spent/db.budget.total)*100,100):0;
-  const col=pct>80?'var(--r)':pct>50?'var(--y)':'var(--g)';
-  el.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--txt2);margin-bottom:6px;"><span>${t('home.totalRem')}</span><span style="font-family:var(--mono);font-weight:700;color:${col}">${pct.toFixed(0)}%</span></div><div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${col};box-shadow:0 0 6px ${col};"></div></div><div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--txt3);font-family:var(--mono);margin-top:6px;"><span>${t('home.spent')}: ${fmt(spent)} ${curr()}</span><span>${t('home.budgetOf')}: ${fmt(db.budget.total)} ${curr()}</span></div>`;
-}
-
-// ── LEDGERS ──
-function renderLedgers(){
-  const total=db.categories.reduce((a,c)=>a+c.added,0);
-  const paid=db.categories.reduce((a,c)=>a+c.paid,0);
-  document.getElementById('bills-summary').textContent=`${db.categories.length} ${lang==='ar'?'دفتر':'ledger(s)'} · ${lang==='ar'?'مُضاف':'added'}: ${fmt(total)} ${curr()} · ${lang==='ar'?'متبقي':'rem.'}: ${fmt(total-paid)} ${curr()}`;
-  const el=document.getElementById('ledgers-list');
-  if(!db.categories.length){el.innerHTML=`<div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>${lang==='ar'?'لا توجد دفاتر بعد':'No ledgers yet'}</p></div>`;return;}
-  el.innerHTML=db.categories.map(c=>{
-    const rem=ledgerRem(c);
-    const pct=c.added>0?Math.min((c.paid/c.added)*100,100).toFixed(0):0;
-    const col=rem<=0&&c.added>0?'var(--g)':c.paid>0?'var(--y)':'var(--r)';
-    const badge=rem<=0&&c.added>0?`<span class="badge badge-g">${t('ledger.fullyPaid')}</span>`:c.paid>0?`<span class="badge badge-y">${t('ledger.partial')}</span>`:c.added>0?`<span class="badge badge-r">${t('ledger.unpaid')}</span>`:'';
-    return`<div class="bill-card" onclick="openLedger('${c.id}')"><div class="bill-top"><div class="bill-icon" style="background:rgba(${hr(c.color)},.1);color:${c.color};"><i class="fa-solid ${c.icon}"></i></div><div class="bill-info"><div class="bill-name">${c.name}</div><div class="bill-sub">${c.budget>0?`${lang==='ar'?'ميزانية':'Budget'}: ${fmt(c.budget)} ${curr()}`:lang==='ar'?'بدون ميزانية':'No budget'}</div>${badge}${c.budget>0&&rem>c.budget?` <span class="badge badge-r">${t('ledger.overBudget')}</span>`:''}</div><div class="bill-right"><div class="bill-rem">${fmt(rem)}</div><div class="bill-of">${lang==='ar'?'من':'of'} ${fmt(c.added)} ${curr()}</div></div></div><div class="bill-prog"><div class="bill-prog-hdr"><span>${t('ledger.payRate')} ${pct}%</span></div><div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${col};"></div></div></div></div>`;
-  }).join('');
-}
-function openLedger(id){activeCatId=id;renderLedgerDetail();switchView('view-ledger',false);}
-function renderLedgerDetail(){
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  const rem=ledgerRem(c);
-  const pct=c.added>0?Math.min((c.paid/c.added)*100,100):0;
-  const col=pct>=100?'var(--g)':pct>50?'var(--y)':'var(--r)';
-  document.getElementById('ledger-icon-el').innerHTML=`<i class="fa-solid ${c.icon}" style="color:${c.color}"></i>`;
-  document.getElementById('ledger-name-el').textContent=c.name;
-  document.getElementById('ledger-added').textContent=`${fmt(c.added)} ${curr()}`;
-  document.getElementById('ledger-paid').textContent=`${fmt(c.paid)} ${curr()}`;
-  document.getElementById('ledger-remaining').textContent=`${fmt(rem)} ${curr()}`;
-  document.getElementById('ledger-remaining').style.color=rem<=0?'var(--g)':'var(--r)';
-  document.getElementById('ledger-rem-pct').textContent=pct.toFixed(0)+'%';
-  document.getElementById('ledger-rem-pct').style.color=col;
-  document.getElementById('ledger-rem-bar').style.cssText=`width:${pct}%;background:${col};`;
-  const tl=document.getElementById('ledger-tl');
-  if(!c.logs.length){tl.innerHTML=`<div class="empty-state" style="padding:16px 0;"><i class="fa-solid fa-inbox"></i><p>${t('ledger.noActivity')}</p></div>`;return;}
-  tl.innerHTML=c.logs.slice().reverse().map((l,ri)=>{
-    const realIdx=c.logs.length-1-ri;
-    const isAdd=l.type==='add';
-    return`<div class="tl-row"><div class="tl-dot" style="background:${isAdd?'rgba(255,140,66,.1)':'rgba(0,245,160,.1)'};color:${isAdd?'var(--o)':'var(--g)'}"><i class="fa-solid ${isAdd?'fa-plus':'fa-money-bill-wave'}"></i></div><div class="tl-body"><div class="tl-title">${t(isAdd?'ledger.addedOp':'ledger.paidOp')}</div><div class="tl-meta">${l.reason} · ${l.date}</div></div><div class="tl-right"><div class="tl-amt" style="color:${isAdd?'var(--o)':'var(--g)'}">${isAdd?'+':'−'}${l.amount.toFixed(2)}</div><div class="tl-icon-btn" style="background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);" onclick="deleteLedgerLog(${realIdx})"><i class="fa-solid fa-xmark"></i></div></div></div>`;
-  }).join('');
-}
-function deleteLedgerLog(idx){
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c||!c.logs[idx])return;
-  if(!confirm(t('confirm.undo')))return;
-  const l=c.logs[idx];
-  if(l.type==='add')c.added=Math.max(0,c.added-l.amount);else c.paid=Math.max(0,c.paid-l.amount);
-  c.logs.splice(idx,1);save();renderAll();renderLedgerDetail();
-}
-function openLedgerAdd(){set('la-amt','');set('la-reason','');openModal('modal-ledger-add');}
-function openLedgerPay(){
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  document.getElementById('lp-rem').textContent=`${fmt(ledgerRem(c))} ${curr()}`;
-  set('lp-amt','');openModal('modal-ledger-pay');
-}
-function ledgerAdd(){
-  const amt=parseFloat(v('la-amt'));const reason=v('la-reason');
-  if(!amt||amt<=0)return alert(t('err.enterAmt'));
-  if(!reason)return alert(t('err.enterDesc'));
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  c.added+=amt;c.logs.push({type:'add',amount:amt,reason,date:ds()});
-  db.logs.push({label:t('misc.addedTo',c.name),reason,amt:-amt,date:ds()});
-  closeModal('modal-ledger-add');save();renderAll();renderLedgerDetail();
-}
-function ledgerPay(){
-  const amt=parseFloat(v('lp-amt'));if(!amt||amt<=0)return alert(t('err.enterAmt'));
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  const actual=Math.min(amt,ledgerRem(c));
-  c.paid+=actual;c.logs.push({type:'pay',amount:actual,reason:lang==='ar'?'تسديد':'Payment',date:ds()});
-  db.logs.push({label:t('misc.paidFrom',c.name),reason:lang==='ar'?'تسديد':'Payment',amt:actual,date:ds()});
-  closeModal('modal-ledger-pay');save();renderAll();renderLedgerDetail();
-}
-function openEditCat(){
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  set('ec-name',c.name);set('ec-budget',c.budget||'');openModal('modal-edit-cat');
-}
-function saveEditCat(){
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  const name=v('ec-name');if(!name)return alert(t('err.enterName'));
-  c.name=name;c.budget=parseFloat(v('ec-budget'))||0;
-  closeModal('modal-edit-cat');save();renderAll();renderLedgerDetail();
-}
-function deleteActiveLedger(){
-  const c=db.categories.find(x=>x.id===activeCatId);if(!c)return;
-  const msg=ledgerRem(c)>0?t('confirm.deleteLedgerBal',fmt(ledgerRem(c))):t('confirm.deleteLedger',c.name);
-  if(!confirm(msg))return;
-  db.categories=db.categories.filter(x=>x.id!==activeCatId);activeCatId=null;
-  switchView('view-bills');save();renderAll();
-}
-function addCategory(){
-  const name=v('f-cat-name');if(!name)return alert(t('err.enterName'));
-  const budget=parseFloat(v('f-cat-budget'))||0;
-  const colors=['#ff8c42','#00c3ff','#c77dff','#ff3d6e','#00f5a0','#ffd166'];
-  const icons=['fa-cart-shopping','fa-house','fa-bolt','fa-wifi','fa-pump-medical','fa-gas-pump','fa-soap','fa-mobile-screen'];
-  db.categories.push({id:'c'+Date.now(),name,color:colors[db.categories.length%colors.length],icon:icons[db.categories.length%icons.length],added:0,paid:0,budget,logs:[]});
-  closeModal('modal-add-cat');set('f-cat-name','');set('f-cat-budget','');save();renderAll();
-}
-function quickAction(mode){
-  quickMode=mode;
-  const sel=document.getElementById('quick-cat-select');
-  sel.innerHTML=db.categories.map(c=>`<option value="${c.id}">${c.name} (${lang==='ar'?'متبقي':'rem'}: ${fmt(ledgerRem(c))})</option>`).join('');
-  document.getElementById('quick-title').textContent=mode==='ledger-add'?t('m.ledgerAdd'):t('m.ledgerPay');
-  document.getElementById('quick-rem-box').style.display=mode==='ledger-pay'?'block':'none';
-  updateQuickRem();set('quick-amt','');set('quick-reason','');openModal('modal-quick');
-}
-function updateQuickRem(){
-  const c=db.categories.find(x=>x.id===v('quick-cat-select'));
-  document.getElementById('quick-rem').textContent=c?`${fmt(ledgerRem(c))} ${curr()}`:'-';
-}
-function confirmQuick(){
-  const catId=v('quick-cat-select');const amt=parseFloat(v('quick-amt'));const reason=v('quick-reason');
-  if(!catId)return alert(t('err.chooseLedger'));
-  if(!amt||amt<=0)return alert(t('err.enterAmt'));
-  if(!reason)return alert(t('err.enterDesc'));
-  const c=db.categories.find(x=>x.id===catId);if(!c)return;
-  if(quickMode==='ledger-add'){
-    c.added+=amt;c.logs.push({type:'add',amount:amt,reason,date:ds()});
-    db.logs.push({label:t('misc.addedTo',c.name),reason,amt:-amt,date:ds()});
-  } else {
-    const actual=Math.min(amt,ledgerRem(c));
-    c.paid+=actual;c.logs.push({type:'pay',amount:actual,reason,date:ds()});
-    db.logs.push({label:t('misc.paidFrom',c.name),reason,amt:actual,date:ds()});
-  }
-  closeModal('modal-quick');save();renderAll();
-}
-
-// ── PEOPLE ──
-function renderPeople(){
-  document.getElementById('home-people').innerHTML=db.people.slice(0,3).map(personCardHTML).join('');
-  document.getElementById('people-list').innerHTML=db.people.map(personCardHTML).join('');
-}
-function personCardHTML(p){
-  const isOwn=p.id==='p_own';
-  let meta,badge,badgeCol;
-  if(isOwn){
-    const md=totalMyDebts();
-    meta=`${lang==='ar'?'رصيد':'Balance'}: ${fmt(p.funds)} ${curr()} · ${lang==='ar'?'ديون':'Debts'}: ${fmt(md)} ${curr()}`;
-    badge=fmt(p.funds-md);badgeCol=p.funds-md>=0?'var(--g)':'var(--r)';
-  } else {
-    const tr=p.trust.deposited-p.trust.withdrawn;
-    const ln=p.loanToThem.given-p.loanToThem.returned;
-    meta=`${lang==='ar'?'أمانة':'Trust'}: ${fmt(tr)} · ${lang==='ar'?'سُلفة':'Loan'}: ${fmt(ln)}`;
-    badge=fmt(tr);badgeCol='var(--b)';
-  }
-  const ava=p.photo?`<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;">`:(p.emoji||'👤');
-  return`<div class="person-card" onclick="openPersonProfile('${p.id}')"><div class="p-ava">${ava}</div><div class="p-info"><div class="p-name">${p.name}</div><div class="p-meta">${meta}</div></div><div class="p-badge" style="color:${badgeCol}">${badge}</div></div>`;
-}
-function addPerson(){
-  const name=v('f-pname');if(!name)return alert(t('err.enterName'));
-  const emojis=['👤','👦','👩','👴','👵','🧑','👨','🙍'];
-  const p={id:'p'+Date.now(),name,emoji:emojis[Math.floor(Math.random()*emojis.length)],
-    trust:{deposited:0,withdrawn:0,logs:[]},
-    loanToThem:{given:0,returned:0,logs:[]},
-    loanFromThem:{borrowed:0,repaid:0,logs:[]},logs:[]};
-  if(newAvaData)p.photo=newAvaData;
-  db.people.push(p);
-  closeModal('modal-add-person');set('f-pname','');newAvaData=null;resetNewAva();save();renderAll();
-}
-function deleteActivePerson(){
-  if(!activePid||activePid==='p_own')return;
-  const p=db.people.find(x=>x.id===activePid);if(!p)return;
-  if(!confirm(t('confirm.deletePerson',p.name)))return;
-  db.people=db.people.filter(x=>x.id!==activePid);activePid=null;
-  switchView('view-people');save();renderAll();
-}
-
-// ── PERSON PROFILE BANK CARD ──
-function openPersonProfile(id){
-  activePid=id;logFilter='all';
-  ['all','deposit','withdraw','return'].forEach(x=>{
-    const el=document.getElementById('lf-'+x);if(el)el.classList.toggle('on',x==='all');
-  });
-  const p=db.people.find(x=>x.id===id);if(!p)return;
-  renderBcAva(p);
-  document.getElementById('bc-name').textContent=p.name;
-  document.getElementById('bc-role').textContent=p.id==='p_own'?t('person.ownAcc'):t('person.extProfile');
-  document.getElementById('p-delete-btn').style.display=p.id==='p_own'?'none':'flex';
-  renderBcNet(p);
-  renderBcRelations(p);
-  const claimZone=document.getElementById('claim-zone');
-  const clBox=document.getElementById('claim-link-box');
-  const clCopy=document.getElementById('claim-copy-btn');
-  const clNote=document.getElementById('claim-note');
-  if(claimZone)claimZone.style.display=p.id!=='p_own'&&p.trust.deposited>0?'block':'none';
-  if(clBox){clBox.style.display='none';clBox.textContent='';}
-  if(clCopy)clCopy.style.display='none';
-  if(clNote)clNote.style.display='none';
-  renderPersonLog(p);
-  switchView('view-person',false);
-}
-function renderBcAva(p){
-  const emoji=document.getElementById('bc-ava-emoji');
-  const img=document.getElementById('bc-ava-img');
-  if(p.photo){img.src=p.photo;img.style.display='block';emoji.style.display='none';}
-  else{img.style.display='none';emoji.style.display='block';emoji.textContent=p.emoji||'👤';}
-}
-function renderBcNet(p){
-  const badge=document.getElementById('bc-net');
-  if(p.id==='p_own'){
-    const net=p.funds-totalMyDebts();
-    badge.textContent=`${net>=0?(lang==='ar'?'الصافي: ':'Net: '):(lang==='ar'?'مديون: ':'Owe: ')}${fmt(Math.abs(net))} ${curr()}`;
-    badge.className='bc-net '+(net>=0?'badge-g':'badge-r');
-  } else {
-    const tr=p.trust.deposited-p.trust.withdrawn;
-    const ltt=p.loanToThem.given-p.loanToThem.returned;
-    const lft=p.loanFromThem.borrowed-p.loanFromThem.repaid;
-    const net=tr+ltt-lft;
-    const lbl=net>0?(lang==='ar'?'يستحق له: ':'They owe me: '):net<0?(lang==='ar'?'أستحق له: ':'I owe them: '):(lang==='ar'?'مسوّى ✓':'Settled ✓');
-    badge.textContent=`${lbl}${Math.abs(net)>0?fmt(Math.abs(net))+' '+curr():''}`;
-    badge.className='bc-net '+(net>0?'badge-g':net<0?'badge-r':'badge-n');
-  }
-}
-function renderBcRelations(p){
-  const el=document.getElementById('bc-relations');
-  el.innerHTML=p.id==='p_own'?renderOwnRelations(p):renderPersonRelations(p);
-}
-
-function renderOwnRelations(p){
-  const md=p.debts.reduce((a,d)=>a+Math.max(0,d.amount-d.paid),0);
-  const mdPaid=p.debts.reduce((a,d)=>a+d.paid,0);
-  const mdTotal=p.debts.reduce((a,d)=>a+d.amount,0);
-  const debtPct=mdTotal>0?Math.min((mdPaid/mdTotal)*100,100):0;
-  return`<div class="bc-rel">
-    <div class="bc-rel-hdr">
-      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(0,245,160,.1);color:var(--g)"><i class="fa-solid fa-wallet"></i></div>${t('rel.myFunds')}</div>
-      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.myFundsDesc')}</span>
-    </div>
-    <div class="bc-amounts">
-      <div class="bc-amt-cell"><div class="bc-amt-label">${lang==='ar'?'رصيدي':'Balance'}</div><div class="bc-amt-val" style="color:var(--g)">${fmt(p.funds)}</div><div style="font-size:.6rem;color:var(--txt3);">${curr()}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${lang==='ar'?'ديوني':'My debts'}</div><div class="bc-amt-val" style="color:var(--r)">${fmt(md)}</div><div style="font-size:.6rem;color:var(--txt3);">${curr()}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${lang==='ar'?'الصافي':'Net'}</div><div class="bc-amt-val" style="color:${p.funds-md>=0?'var(--g)':'var(--r)'}">${fmt(p.funds-md)}</div><div style="font-size:.6rem;color:var(--txt3);">${curr()}</div></div>
-    </div>
-    <div class="bc-actions">
-      <button class="bc-btn bc-btn-g" onclick="openPersonAction('addFunds')"><i class="fa-solid fa-plus"></i> ${t('rel.addFunds')}</button>
-      <button class="bc-btn bc-btn-r" onclick="openPersonAction('deductFunds')"><i class="fa-solid fa-minus"></i> ${t('rel.removeFunds')}</button>
-    </div>
-  </div>
-  <div class="bc-rel" style="border-bottom:none;">
-    <div class="bc-rel-hdr">
-      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(255,61,110,.1);color:var(--r)"><i class="fa-solid fa-file-invoice-dollar"></i></div>${t('rel.myDebt')}</div>
-      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.myDebtDesc')}</span>
-    </div>
-    ${p.debts.length===0?`<div style="font-size:.78rem;color:var(--txt3);padding:4px 0 8px;">${lang==='ar'?'لا ديون عليك 🎉':'No debts — great! 🎉'}</div>`:
-    `<div class="bc-amounts">
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.myDebtAmt')}</div><div class="bc-amt-val" style="color:var(--r)">${fmt(mdTotal)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.myDebtPaid')}</div><div class="bc-amt-val" style="color:var(--g)">${fmt(mdPaid)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.myDebtLeft')}</div><div class="bc-amt-val" style="color:${md>0?'var(--r)':'var(--g)'}">${fmt(md)}</div></div>
-    </div>
-    <div class="pbar" style="margin-top:8px;margin-bottom:10px;"><div class="pbar-fill" style="width:${debtPct}%;background:var(--g);"></div></div>
-    <div style="margin-bottom:10px;">${p.debts.map((d,i)=>{const rem=Math.max(0,d.amount-d.paid);const settled=rem<=0;return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.78rem;"><div style="flex:1;min-width:0;"><div style="font-weight:700;color:${settled?'var(--txt3)':'var(--txt)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.reason}</div><div style="font-size:.65rem;color:var(--txt3);">${d.date}${settled?' · ✓ settled':''}</div></div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0;"><span style="font-family:var(--mono);color:${settled?'var(--g)':'var(--r)'};">${fmt(rem)} ${curr()}</span>${d.receipt?`<div class="tl-icon-btn" style="background:rgba(199,125,255,.08);border-color:rgba(199,125,255,.2);color:var(--p);" onclick="viewReceipt('${d.receipt}')"><i class="fa-solid fa-receipt"></i></div>`:''}<div class="tl-icon-btn" style="background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);" onclick="deleteMyDebt(${i})"><i class="fa-solid fa-xmark"></i></div></div></div>`;}).join('')}</div>`}
-    <div class="bc-actions">
-      <button class="bc-btn bc-btn-r" onclick="openMyDebtModal('add')"><i class="fa-solid fa-plus"></i> ${t('rel.addDebt')}</button>
-      <button class="bc-btn bc-btn-g" onclick="openMyDebtModal('pay')" ${md<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-check"></i> ${t('rel.payDebt')}</button>
-    </div>
-  </div>`;
-}
-
-function renderPersonRelations(p){
-  const tr=p.trust.deposited-p.trust.withdrawn;
-  const ltt=p.loanToThem.given-p.loanToThem.returned;
-  const lft=p.loanFromThem.borrowed-p.loanFromThem.repaid;
-  const trPct=p.trust.deposited>0?Math.min((p.trust.withdrawn/p.trust.deposited)*100,100):0;
-  const lttPct=p.loanToThem.given>0?Math.min((p.loanToThem.returned/p.loanToThem.given)*100,100):0;
-  const lftPct=p.loanFromThem.borrowed>0?Math.min((p.loanFromThem.repaid/p.loanFromThem.borrowed)*100,100):0;
-  return`
-  <div class="bc-rel">
-    <div class="bc-rel-hdr">
-      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(0,195,255,.1);color:var(--b)"><i class="fa-solid fa-vault"></i></div>${t('rel.trust')}</div>
-      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.trustDesc')}</span>
-    </div>
-    <div class="bc-amounts">
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.deposited')}</div><div class="bc-amt-val" style="color:var(--b)">${fmt(p.trust.deposited)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.withdrawn')}</div><div class="bc-amt-val" style="color:var(--txt2)">${fmt(p.trust.withdrawn)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.remaining')}</div><div class="bc-amt-val" style="color:${tr>0?'var(--b)':'var(--g)'}">${fmt(tr)}</div></div>
-    </div>
-    ${p.trust.deposited>0?`<div class="pbar" style="margin-top:8px;"><div class="pbar-fill" style="width:${trPct}%;background:var(--b);"></div></div>`:''}
-    <div class="bc-actions">
-      <button class="bc-btn bc-btn-b" onclick="openPersonAction('trustDeposit')"><i class="fa-solid fa-box-archive"></i> ${t('rel.addTrust')}</button>
-      <button class="bc-btn bc-btn-g" onclick="openPersonAction('trustReturn')" ${tr<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-rotate-left"></i> ${t('rel.returnTrust')}</button>
-    </div>
-  </div>
-  <div class="bc-rel">
-    <div class="bc-rel-hdr">
-      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(255,140,66,.1);color:var(--o)"><i class="fa-solid fa-hand-holding-dollar"></i></div>${t('rel.loanToThem')}</div>
-      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.loanToThemDesc')}</span>
-    </div>
-    <div class="bc-amounts">
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.given')}</div><div class="bc-amt-val" style="color:var(--o)">${fmt(p.loanToThem.given)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.returned')}</div><div class="bc-amt-val" style="color:var(--txt2)">${fmt(p.loanToThem.returned)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.owed')}</div><div class="bc-amt-val" style="color:${ltt>0?'var(--o)':'var(--g)'}">${fmt(ltt)}</div></div>
-    </div>
-    ${p.loanToThem.given>0?`<div class="pbar" style="margin-top:8px;"><div class="pbar-fill" style="width:${lttPct}%;background:var(--g);"></div></div>`:''}
-    <div class="bc-actions">
-      <button class="bc-btn bc-btn-o" onclick="openPersonAction('giveLoan')"><i class="fa-solid fa-plus"></i> ${t('rel.giveLoan')}</button>
-      <button class="bc-btn bc-btn-g" onclick="openPersonAction('loanRepaid')" ${ltt<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-check"></i> ${t('rel.markRepaid')}</button>
-    </div>
-  </div>
-  <div class="bc-rel" style="border-bottom:none;">
-    <div class="bc-rel-hdr">
-      <div class="bc-rel-title"><div class="bc-rel-icon" style="background:rgba(199,125,255,.1);color:var(--p)"><i class="fa-solid fa-money-bill-transfer"></i></div>${t('rel.loanFromThem')}</div>
-      <span style="font-size:.68rem;color:var(--txt3);">${t('rel.loanFromThemDesc')}</span>
-    </div>
-    <div class="bc-amounts">
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.borrowed')}</div><div class="bc-amt-val" style="color:var(--p)">${fmt(p.loanFromThem.borrowed)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.repaid')}</div><div class="bc-amt-val" style="color:var(--txt2)">${fmt(p.loanFromThem.repaid)}</div></div>
-      <div class="bc-amt-cell"><div class="bc-amt-label">${t('rel.col.left')}</div><div class="bc-amt-val" style="color:${lft>0?'var(--r)':'var(--g)'}">${fmt(lft)}</div></div>
-    </div>
-    ${p.loanFromThem.borrowed>0?`<div class="pbar" style="margin-top:8px;"><div class="pbar-fill" style="width:${lftPct}%;background:var(--p);"></div></div>`:''}
-    <div class="bc-actions">
-      <button class="bc-btn bc-btn-b" onclick="openPersonAction('takeLoan')"><i class="fa-solid fa-plus"></i> ${t('rel.takeLoan')}</button>
-      <button class="bc-btn bc-btn-g" onclick="openPersonAction('payBackLoan')" ${lft<=0?'disabled style="opacity:.4"':''}><i class="fa-solid fa-rotate-left"></i> ${t('rel.payBack')}</button>
-    </div>
-  </div>`;
-}
-
-// ── PERSON ACTION MODAL ──
-const actionMeta={
-  trustDeposit:{ti:'rel.addTrust',showInfo:false,hasReceipt:true},
-  trustReturn:{ti:'rel.returnTrust',showInfo:true,infoLbl:()=>lang==='ar'?'متبقي الأمانة:':'Trust remaining:',infoVal:()=>{const p=db.people.find(x=>x.id===activePid);return p?`${fmt(p.trust.deposited-p.trust.withdrawn)} ${curr()}`:'0';},hasReceipt:false},
-  giveLoan:{ti:'rel.giveLoan',showInfo:false,hasReceipt:true},
-  loanRepaid:{ti:'rel.markRepaid',showInfo:true,infoLbl:()=>lang==='ar'?'متبقي السُلفة:':'Loan remaining:',infoVal:()=>{const p=db.people.find(x=>x.id===activePid);return p?`${fmt(p.loanToThem.given-p.loanToThem.returned)} ${curr()}`:'0';},hasReceipt:false},
-  takeLoan:{ti:'rel.takeLoan',showInfo:false,hasReceipt:true},
-  payBackLoan:{ti:'rel.payBack',showInfo:true,infoLbl:()=>lang==='ar'?'المتبقي عليك:':'Remaining you owe:',infoVal:()=>{const p=db.people.find(x=>x.id===activePid);return p?`${fmt(p.loanFromThem.borrowed-p.loanFromThem.repaid)} ${curr()}`:'0';},hasReceipt:true},
-  addFunds:{ti:'rel.addFunds',showInfo:false,hasReceipt:false},
-  deductFunds:{ti:'rel.removeFunds',showInfo:false,hasReceipt:false},
-};
-function openPersonAction(action){
-  currentAction=action;pendingReceipt=null;
-  const m=actionMeta[action];
-  document.getElementById('paction-title').textContent=t(m.ti);
-  const infoBox=document.getElementById('paction-info-box');
-  if(m.showInfo){
-    infoBox.style.display='block';
-    document.getElementById('paction-info-label').textContent=m.infoLbl();
-    document.getElementById('paction-info-val').textContent=m.infoVal();
-  } else infoBox.style.display='none';
-  document.getElementById('paction-receipt-group').style.display=m.hasReceipt?'block':'none';
-  clearReceipt();set('paction-amt','');set('paction-reason','');
-  openModal('modal-person-action');
-}
-function confirmPersonAction(){
-  const amt=parseFloat(v('paction-amt'));const reason=v('paction-reason');
-  if(!amt||amt<=0)return alert(t('err.enterAmt'));
-  if(!reason)return alert(t('err.enterDesc'));
-  const p=db.people.find(x=>x.id===activePid);if(!p)return;
-  const entry={amount:amt,reason,date:ds()};
-  if(pendingReceipt)entry.receipt=pendingReceipt;
-  switch(currentAction){
-    case 'trustDeposit':
-      p.trust.deposited+=amt;p.trust.logs.push({...entry,type:'deposit'});
-      p.logs.push({type:'trustDeposit',...entry});
-      db.logs.push({label:t('rel.trust')+' · '+p.name,reason,amt,date:ds()});break;
-    case 'trustReturn':{
-      const act=Math.min(amt,p.trust.deposited-p.trust.withdrawn);
-      p.trust.withdrawn+=act;p.trust.logs.push({...entry,amount:act,type:'return'});
-      p.logs.push({type:'trustReturn',...entry,amount:act});
-      db.logs.push({label:t('rel.trust')+' ↩ '+p.name,reason,amt:-act,date:ds()});break;}
-    case 'giveLoan':
-      p.loanToThem.given+=amt;p.loanToThem.logs.push({...entry,type:'given'});
-      p.logs.push({type:'giveLoan',...entry});
-      db.logs.push({label:t('rel.loanToThem')+' · '+p.name,reason,amt:-amt,date:ds()});break;
-    case 'loanRepaid':{
-      const act=Math.min(amt,p.loanToThem.given-p.loanToThem.returned);
-      p.loanToThem.returned+=act;p.loanToThem.logs.push({...entry,amount:act,type:'returned'});
-      p.logs.push({type:'loanRepaid',...entry,amount:act});
-      db.logs.push({label:t('rel.loanToThem')+' ✓ '+p.name,reason,amt:act,date:ds()});break;}
-    case 'takeLoan':
-      p.loanFromThem.borrowed+=amt;p.loanFromThem.logs.push({...entry,type:'borrowed'});
-      p.logs.push({type:'takeLoan',...entry});
-      db.logs.push({label:t('rel.loanFromThem')+' · '+p.name,reason,amt,date:ds()});break;
-    case 'payBackLoan':{
-      const act=Math.min(amt,p.loanFromThem.borrowed-p.loanFromThem.repaid);
-      p.loanFromThem.repaid+=act;p.loanFromThem.logs.push({...entry,amount:act,type:'repaid'});
-      p.logs.push({type:'payBackLoan',...entry,amount:act});
-      db.logs.push({label:t('rel.loanFromThem')+' ↩ '+p.name,reason,amt:-act,date:ds()});break;}
-    case 'addFunds':
-      p.funds+=amt;p.logs.push({type:'addFunds',...entry});
-      db.logs.push({label:t('rel.myFunds'),reason,amt,date:ds()});break;
-    case 'deductFunds':
-      p.funds=Math.max(0,p.funds-amt);p.logs.push({type:'deductFunds',...entry});
-      db.logs.push({label:t('rel.myFunds'),reason,amt:-amt,date:ds()});break;
-  }
-  pendingReceipt=null;clearReceipt();
-  closeModal('modal-person-action');
-  save();renderAll();openPersonProfile(activePid);
-}
-
-// ── MY WALLET DEBTS ──
-function openMyDebtModal(mode){
-  myDebtMode=mode;pendingMyDebtReceipt=null;
-  const p=own();if(!p)return;
-  if(mode==='pay'&&p.debts.filter(d=>d.amount-d.paid>0).length===0)
-    return alert(lang==='ar'?'لا ديون متبقية!':'No debts remaining!');
-  document.getElementById('mydebt-title').textContent=mode==='add'?t('rel.addDebt'):t('rel.payDebt');
-  clearMyDebtReceipt();set('mydebt-amt','');set('mydebt-reason','');
-  openModal('modal-my-debt');
-}
-function confirmMyDebt(){
-  const amt=parseFloat(v('mydebt-amt'));const reason=v('mydebt-reason');
-  if(!amt||amt<=0)return alert(t('err.enterAmt'));
-  if(!reason)return alert(t('err.enterDesc'));
-  const p=own();if(!p)return;
-  if(myDebtMode==='add'){
-    p.debts.push({id:'d'+Date.now(),amount:amt,paid:0,reason,date:ds(),receipt:pendingMyDebtReceipt||undefined});
-    p.logs.push({type:'addDebt',amount:amt,reason,date:ds()});
-    db.logs.push({label:t('rel.myDebt'),reason,amt:-amt,date:ds()});
-  } else {
-    let rem=amt;
-    for(let d of p.debts){if(rem<=0)break;const pay=Math.min(rem,d.amount-d.paid);d.paid+=pay;rem-=pay;}
-    p.logs.push({type:'payDebt',amount:amt,reason,date:ds()});
-    db.logs.push({label:t('rel.myDebt')+' ↩',reason,amt:amt,date:ds()});
-  }
-  pendingMyDebtReceipt=null;clearMyDebtReceipt();
-  closeModal('modal-my-debt');save();renderAll();openPersonProfile('p_own');
-}
-function deleteMyDebt(idx){
-  const p=own();if(!p||!p.debts[idx])return;
-  if(!confirm(t('confirm.undo')))return;
-  p.debts.splice(idx,1);save();renderAll();openPersonProfile('p_own');
-}
-
-// ── PERSON LOG ──
-const logTypeIcon={
-  trustDeposit:{icon:'fa-vault',col:'var(--b)',lbl:()=>t('log.trustDeposit')},
-  trustReturn:{icon:'fa-rotate-left',col:'var(--g)',lbl:()=>t('log.trustReturn')},
-  giveLoan:{icon:'fa-hand-holding-dollar',col:'var(--o)',lbl:()=>t('log.loanGiven')},
-  loanRepaid:{icon:'fa-check',col:'var(--g)',lbl:()=>t('log.loanRepaid')},
-  takeLoan:{icon:'fa-money-bill-transfer',col:'var(--p)',lbl:()=>t('log.loanTaken')},
-  payBackLoan:{icon:'fa-rotate-left',col:'var(--g)',lbl:()=>t('log.loanPaidBack')},
-  addFunds:{icon:'fa-wallet',col:'var(--g)',lbl:()=>t('log.addFunds')},
-  deductFunds:{icon:'fa-minus-circle',col:'var(--r)',lbl:()=>t('log.deductFunds')},
-  addDebt:{icon:'fa-file-invoice-dollar',col:'var(--r)',lbl:()=>t('log.addDebt')},
-  payDebt:{icon:'fa-check-double',col:'var(--g)',lbl:()=>t('log.payDebt')},
-};
-function setLogFilter(f){
-  logFilter=f;
-  ['all','deposit','withdraw','return'].forEach(x=>{
-    const el=document.getElementById('lf-'+x);if(el)el.classList.toggle('on',x===f);
-  });
-  const p=db.people.find(x=>x.id===activePid);if(p)renderPersonLog(p);
-}
-function renderPersonLog(p){
-  const tl=document.getElementById('person-tl');
-  let logs=p.logs||[];
-  if(logFilter==='deposit')logs=logs.filter(l=>['trustDeposit','giveLoan','addFunds','takeLoan'].includes(l.type));
-  else if(logFilter==='withdraw')logs=logs.filter(l=>['deductFunds','addDebt'].includes(l.type));
-  else if(logFilter==='return')logs=logs.filter(l=>['trustReturn','loanRepaid','payBackLoan','payDebt'].includes(l.type));
-  if(!logs.length){tl.innerHTML=`<div class="empty-state" style="padding:16px 0;"><i class="fa-solid fa-inbox"></i><p>${t('person.noTx')}</p></div>`;return;}
-  tl.innerHTML=logs.slice().reverse().map(l=>{
-    const realIdx=p.logs.lastIndexOf(l);
-    const m=logTypeIcon[l.type]||{icon:'fa-circle',col:'var(--txt2)',lbl:()=>l.type};
-    return`<div class="tl-row"><div class="tl-dot" style="background:rgba(255,255,255,.04);color:${m.col}"><i class="fa-solid ${m.icon}"></i></div><div class="tl-body"><div class="tl-title">${m.lbl()}</div><div class="tl-meta">${l.reason} · ${l.date}</div></div><div class="tl-right"><div class="tl-amt" style="color:${m.col}">${l.amount.toFixed(2)}</div>${l.receipt?`<div class="tl-icon-btn" style="background:rgba(199,125,255,.08);border-color:rgba(199,125,255,.2);color:var(--p);" onclick="viewReceipt('${l.receipt}')"><i class="fa-solid fa-receipt"></i></div>`:''}<div class="tl-icon-btn" style="background:rgba(255,61,110,.06);border-color:rgba(255,61,110,.2);color:var(--r);" onclick="deletePersonLog(${realIdx})"><i class="fa-solid fa-xmark"></i></div></div></div>`;
-  }).join('');
-}
-function deletePersonLog(idx){
-  const p=db.people.find(x=>x.id===activePid);if(!p||!p.logs[idx])return;
-  if(!confirm(t('confirm.undo')))return;
-  const l=p.logs[idx];
-  switch(l.type){
-    case 'trustDeposit':p.trust.deposited=Math.max(0,p.trust.deposited-l.amount);break;
-    case 'trustReturn':p.trust.withdrawn=Math.max(0,p.trust.withdrawn-l.amount);break;
-    case 'giveLoan':p.loanToThem.given=Math.max(0,p.loanToThem.given-l.amount);break;
-    case 'loanRepaid':p.loanToThem.returned=Math.max(0,p.loanToThem.returned-l.amount);break;
-    case 'takeLoan':p.loanFromThem.borrowed=Math.max(0,p.loanFromThem.borrowed-l.amount);break;
-    case 'payBackLoan':p.loanFromThem.repaid=Math.max(0,p.loanFromThem.repaid-l.amount);break;
-    case 'addFunds':if(p.id==='p_own')p.funds=Math.max(0,p.funds-l.amount);break;
-    case 'deductFunds':if(p.id==='p_own')p.funds+=l.amount;break;
-  }
-  p.logs.splice(idx,1);save();renderAll();openPersonProfile(activePid);
-}
-
-// ── CLAIM LINK ──
-function generateClaimLink(){
-  const p=db.people.find(x=>x.id===activePid);if(!p)return;
-  const payload={
-    n:p.name,
-    trust:{dep:p.trust.deposited,wit:p.trust.withdrawn},
-    loan:{given:p.loanToThem.given,returned:p.loanToThem.returned},
-    from:{bor:p.loanFromThem.borrowed,rep:p.loanFromThem.repaid},
-    logs:(p.logs||[]).slice(-10).map(l=>({type:l.type,amount:l.amount,reason:l.reason,date:l.date,hasReceipt:!!l.receipt})),
-    gen:ds()
-  };
-  const link=`${location.href.split('#')[0]}#claim=${btoa(unescape(encodeURIComponent(JSON.stringify(payload))))}`;
-  const box=document.getElementById('claim-link-box');
-  box.textContent=link;box._link=link;box.style.display='block';
-  document.getElementById('claim-copy-btn').style.display='block';
-  document.getElementById('claim-note').style.display='block';
-}
-function copyClaimLink(){
-  const link=document.getElementById('claim-link-box')._link;
-  if(navigator.clipboard)navigator.clipboard.writeText(link).then(()=>{
-    const b=document.getElementById('claim-copy-btn');const orig=b.innerHTML;
-    b.innerHTML='<i class="fa-solid fa-check"></i> '+(lang==='ar'?'تم!':'Copied!');
-    setTimeout(()=>b.innerHTML=orig,2000);
-  });
-}
-function checkClaimLink(){
-  if(!location.hash.startsWith('#claim='))return;
-  try{showClaimView(JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(7))))));}catch(e){}
-}
-function showClaimView(d){
-  const cr=curr();
-  const tr=d.trust.dep-d.trust.wit;const lt=d.loan.given-d.loan.returned;const lf=d.from.bor-d.from.rep;
-  const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(8,10,18,.98);z-index:99999;overflow-y:auto;display:flex;justify-content:center;padding:20px;';
-  ov.innerHTML=`<div style="max-width:440px;width:100%;"><div style="text-align:center;margin-bottom:22px;"><div style="font-size:2rem;margin-bottom:7px;">💰</div><h2 style="font-size:1.2rem;font-weight:900;">Trust Statement</h2><p style="font-size:.73rem;color:var(--txt2);margin-top:3px;">Generated ${d.gen}</p></div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;"><h3 style="font-size:1.15rem;font-weight:900;text-align:center;margin-bottom:14px;">${d.n}</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;border-top:1px solid var(--border);padding-top:12px;">
-  <div><div style="font-size:.62rem;color:var(--txt3);">Trust held</div><div style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--b);">${tr.toFixed(2)}</div><div style="font-size:.58rem;color:var(--txt3);">${cr}</div></div>
-  <div><div style="font-size:.62rem;color:var(--txt3);">Loan given</div><div style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--o);">${lt.toFixed(2)}</div><div style="font-size:.58rem;color:var(--txt3);">${cr}</div></div>
-  <div><div style="font-size:.62rem;color:var(--txt3);">Debt left</div><div style
-  </div></div>
-  ${d.logs&&d.logs.length?`<div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:13px;"><p style="font-size:.78rem;font-weight:700;color:var(--txt2);margin-bottom:10px;">Recent transactions</p>${d.logs.slice().reverse().map(l=>{const m=logTypeIcon[l.type]||{icon:'fa-circle',col:'var(--txt2)',lbl:()=>l.type};return`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.76rem;"><div><div style="color:${m.col};font-weight:700;">${m.lbl()}</div><div style="color:var(--txt3);font-size:.66rem;">${l.reason} · ${l.date}${l.hasReceipt?' · 📎':''}</div></div><div style="font-family:var(--mono);font-weight:700;">${l.amount.toFixed(2)}</div></div>`;}).join('')}</div>`:''}
-  <button onclick="location.hash='';this.closest('[style*=fixed]').remove();" style="width:100%;padding:13px;border-radius:13px;background:var(--surface2);border:1px solid var(--border);color:var(--txt);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">← Back to app</button></div>`;
-  document.body.appendChild(ov);
-}
-
-// ── ANALYTICS ──
-function renderAnalytics(){
-  const tAmt=db.categories.reduce((a,c)=>a+c.added,0);
-  const tPaid=db.categories.reduce((a,c)=>a+c.paid,0);
-  const pct=tAmt>0?((tPaid/tAmt)*100).toFixed(1):0;
-  let mx=0,mxN='-';
-  db.categories.forEach(c=>{const r=ledgerRem(c);if(r>mx){mx=r;mxN=c.name;}});
-  document.getElementById('an-ledgers').textContent=db.categories.length;
-  document.getElementById('an-pct').textContent=pct+'%';
-  document.getElementById('an-max').textContent=fmt(mx);
-  document.getElementById('an-max-name').textContent=mxN.slice(0,18);
-  document.getElementById('an-people').textContent=db.people.filter(p=>p.id!=='p_own').length;
-  const ctx1=document.getElementById('chart-donut');
-  if(donutChart)donutChart.destroy();
-  const cd=db.categories.map(c=>ledgerRem(c));const has=cd.some(v=>v>0);
-  donutChart=new Chart(ctx1,{type:'doughnut',data:{labels:has?db.categories.map(c=>c.name):[lang==='ar'?'لا ديون':'No debt'],datasets:[{data:has?cd:[1],backgroundColor:has?db.categories.map(c=>c.color+'99'):['rgba(255,255,255,.04)'],borderColor:has?db.categories.map(c=>c.color):['rgba(255,255,255,.06)'],borderWidth:1.5,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'74%'}});
-  const lg=document.getElementById('chart-legend');
-  lg.innerHTML=has?db.categories.map(c=>`<div style="display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--txt2);"><div style="width:9px;height:9px;border-radius:3px;background:${c.color};"></div>${c.name}: <strong style="color:var(--txt)">${fmt(ledgerRem(c))}</strong></div>`).join(''):`<span style="font-size:.73rem;color:var(--txt3);">${lang==='ar'?'لا بيانات':'No data'}</span>`;
-  const ctx2=document.getElementById('chart-bar');
-  if(barChart)barChart.destroy();
-  barChart=new Chart(ctx2,{type:'bar',data:{labels:db.categories.map(c=>c.name),datasets:[{data:db.categories.map(c=>ledgerRem(c)),backgroundColor:db.categories.map(c=>c.color+'55'),borderColor:db.categories.map(c=>c.color),borderWidth:1.5,borderRadius:7}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#8892a4',font:{family:lang==='ar'?'Tajawal':'Inter',size:10}}},y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#8892a4',font:{family:'JetBrains Mono',size:9}}}}}});
-}
-
-// ── BUDGET ──
-function openBudgetModal(){
-  set('f-total-budget',db.budget.total||'');
-  document.getElementById('cat-budget-inputs').innerHTML=db.categories.map(c=>`<div class="fg"><label class="fl">${t('f.budgetFor',c.name)}</label><input class="fi" id="bc-${c.id}" type="number" placeholder="0" value="${c.budget||''}"></div>`).join('');
-}
-function saveBudget(){
-  db.budget.total=parseFloat(v('f-total-budget'))||0;
-  db.categories.forEach(c=>{const el=document.getElementById('bc-'+c.id);if(el)c.budget=parseFloat(el.value)||0;});
-  closeModal('modal-budget');save();renderAll();
-}
-
-// ── PHOTOS & RECEIPTS ──
-function triggerAva(){document.getElementById('ava-input').click();}
-async function handleAvaUpload(e){
-  const p=db.people.find(x=>x.id===activePid);if(!p)return;
-  const data=await fr(e.target.files[0]);if(!data)return;
-  p.photo=data;save();renderBcAva(p);renderPeople();renderHome();
-}
-async function previewNewAva(e){
-  const data=await fr(e.target.files[0]);if(!data)return;
-  newAvaData=data;
-  const img=document.getElementById('new-ava-prev');
-  img.src=data;img.style.display='block';
-  document.getElementById('new-ava-ph').style.fontSize='0';
-}
-function resetNewAva(){
-  const img=document.getElementById('new-ava-prev');if(img){img.style.display='none';img.src='';}
-  const ph=document.getElementById('new-ava-ph');if(ph)ph.style.fontSize='';
-}
-async function previewReceipt(e){
-  const data=await fr(e.target.files[0]);if(!data)return;
-  pendingReceipt=data;
-  const img=document.getElementById('receipt-prev');const clr=document.getElementById('receipt-clear');
-  if(img){img.src=data;img.style.display='block';}if(clr)clr.style.display='block';
-}
-function clearReceipt(){
-  pendingReceipt=null;
-  const el=document.getElementById('receipt-input');if(el)el.value='';
-  const img=document.getElementById('receipt-prev');const clr=document.getElementById('receipt-clear');
-  if(img){img.style.display='none';img.src='';}if(clr)clr.style.display='none';
-}
-async function previewMyDebtReceipt(e){
-  const data=await fr(e.target.files[0]);if(!data)return;
-  pendingMyDebtReceipt=data;
-  const img=document.getElementById('mydebt-receipt-prev');const clr=document.getElementById('mydebt-receipt-clear');
-  if(img){img.src=data;img.style.display='block';}if(clr)clr.style.display='block';
-}
-function clearMyDebtReceipt(){
-  pendingMyDebtReceipt=null;
-  const el=document.getElementById('mydebt-receipt-input');if(el)el.value='';
-  const img=document.getElementById('mydebt-receipt-prev');const clr=document.getElementById('mydebt-receipt-clear');
-  if(img){img.style.display='none';img.src='';}if(clr)clr.style.display='none';
-}
-function viewReceipt(src){document.getElementById('receipt-view-img').src=src;openModal('modal-receipt');}
-function fr(file){return new Promise(res=>{if(!file)return res(null);const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=()=>res(null);r.readAsDataURL(file);});}
-
-// ── GLOBAL LOG ──
-function tlRowHTML(l){
-  const pos=(l.amt||0)>=0;
-  return`<div class="tl-row"><div class="tl-dot" style="background:${pos?'rgba(0,245,160,.1)':'rgba(255,61,110,.1)'};color:${pos?'var(--g)':'var(--r)'}"><i class="fa-solid ${pos?'fa-arrow-down-to-line':'fa-arrow-up-from-line'}"></i></div><div class="tl-body"><div class="tl-title">${l.label||''}</div><div class="tl-meta">${l.reason||''} · ${l.date||''}</div></div><div class="tl-amt" style="color:${pos?'var(--g)':'var(--r)'}">${pos?'+':''}${(l.amt||0).toFixed(2)}</div></div>`;
-}
-
-// ── EXPORT/IMPORT ──
-function exportData(){const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='family-wallet-backup.json';a.click();}
-function importData(e){
-  const file=e.target.files[0];if(!file)return;
-  const r=new FileReader();
-  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(confirm(t('confirm.import'))){db=d;save();renderAll();}}catch{alert(t('err.invalidFile'));}};
-  r.readAsText(file);
-}
-function confirmReset(){if(confirm(t('confirm.reset'))){localStorage.removeItem(KEY);location.reload();}}
-
-// ── VIEW SWITCHER ──
-const navMap={'view-home':'nav-home','view-bills':'nav-bills','view-people':'nav-people','view-analytics':'nav-analytics'};
-function switchView(id,updateNav=true){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.getElementById('scroll-area').scrollTop=0;
-  if(updateNav){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));if(navMap[id])document.getElementById(navMap[id]).classList.add('active');}
-  if(id==='view-bills')renderLedgers();
-  if(id==='view-analytics')renderAnalytics();
-}
-
-// ── MODALS ──
-function openModal(id){if(id==='modal-budget')openBudgetModal();document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('open');}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
-
-// ── UTILS ──
-function v(id){return document.getElementById(id).value.trim();}
-function set(id,val){const el=document.getElementById(id);if(el)el.value=val;}
-function ds(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
-function pad(n){return String(n).padStart(2,'0');}
-function hr(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');const b=parseInt(hex,16);return`${(b>>16)&255},${(b>>8)&255},${b&255}`;}
-
-// ── PWA ──
-function setupManifest(){
-  try{
-    const c=document.createElement('canvas');c.width=192;c.height=192;
-    const cx=c.getContext('2d');const g=cx.createLinearGradient(0,0,192,192);
-    g.addColorStop(0,'#00f5a0');g.addColorStop(1,'#00c3ff');
-    cx.fillStyle='#080a12';cx.fillRect(0,0,192,192);
-    const r=42;cx.beginPath();cx.moveTo(r,0);cx.arcTo(192,0,192,192,r);cx.arcTo(192,192,0,192,r);cx.arcTo(0,192,0,0,r);cx.arcTo(0,0,192,0,r);cx.closePath();cx.fillStyle='#0d1020';cx.fill();
-    cx.fillStyle=g;cx.font='bold 96px Arial';cx.textAlign='center';cx.textBaseline='middle';cx.fillText('💰',96,98);
-    const icon=c.toDataURL('image/png');
-    const manifest={name:'Family Wallet Pro',short_name:'FamilyWallet',start_url:'.',display:'standalone',background_color:'#080a12',theme_color:'#080a12',orientation:'portrait',icons:[{src:icon,sizes:'192x192',type:'image/png'}]};
-    const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
-    document.getElementById('manifest-link').href=URL.createObjectURL(blob);
-    document.getElementById('apple-touch-icon').href=icon;
-    document.getElementById('favicon-link').href=icon;
-  }catch(e){}
-}
-function registerSW(){
-  if(!('serviceWorker' in navigator))return;
-  try{
-    const sw=`const C='fw-v1';self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',()=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res&&res.status===200)caches.open(C).then(c=>c.put(e.request,res.clone()));return res;}).catch(()=>r)));});`;
-    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
-  }catch(e){}
-}
-
-// ── INIT ──
-lang=localStorage.getItem('FW_LANG')||'en';
-applyDir();load();applyI18n();renderAll();setupManifest();registerSW();checkClaimLink();
-</script>
 </body>
 </html>
