@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#7c3aed">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Family Wallet Pro 3.0</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRmFtaWx5IFdhbGxldCBQcm8iLCJzaG9ydF9uYW1lIjoiV2FsbGV0UHJvIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMxYTEwMjEiLCJ0aGVtZV9jb2xvciI6IiM3YzNhZWQiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTVRBd0lpQm9aV2xuYUhROUlqRXdNQ0lnZG1sbGQwSnZlRDBpTUNBd0lERXdNQ0F3SWlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0l4TURBaUlHaGxhV2RvZEQwaU1UQXdJaUIyYVdWM1FtOTRQU0l3SURBZ01UQXdJREFpSUhocGJXRm5aWDBnZUQwaU1UQXdJaUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXhNREFpSUdobGFXZG9kRDBpTVRBd0lpQjJhV1YzUW05NFBTSXdJREFnTVRBd0lEQWlJSGhwYldGblpYMGdlRDBpTVRBd0lpQjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIZHBaSFJvUFNJeE1EQWlJR2hsYVdkb2REMGlNVEF3SWlCMmFXVjNRbTk0UFNJd0lEQWdNVEF3SURBaUlIaHBiV0ZuWlgwZ2VEMGlNVEF3SWlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0l4TURBaUlHaGxhV2RvZEQwaU1UQXdJaUIyYVdWM1FtOTRQU0l3SURBZ01UQXdJREFpSUhocGJXRm5aWDBnZUQwaU1UQXdJaUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lQZz09Iiwic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyJ9XX0=">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{tajawal:['Tajawal','sans-serif']},colors:{primary:'#7c3aed',secondary:'#a855f7',accent:'#ec4899',dark:'#1a1021',glass:'rgba(255,255,255,0.08)'}}};
+</script>
+<style>
+*{font-family:'Tajawal',sans-serif;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#0f0a1a;color:#fff;overflow-x:hidden;min-height:100vh;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(124,58,237,0.3)}50%{box-shadow:0 0 40px rgba(124,58,237,0.6)}}
+@keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes slide-up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes scale-in{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.bg-animated{background:linear-gradient(-45deg,#0f0a1a,#1a0b2e,#2d1b4e,#0f0a1a);background-size:400% 400%;animation:gradient-shift 15s ease infinite;position:fixed;top:0;left:0;right:0;bottom:0;z-index:-2;}
+.orbs{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;overflow:hidden;pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;animation:float 8s ease-in-out infinite;}
+.orb-1{width:400px;height:400px;background:radial-gradient(circle,#7c3aed,#transparent);top:-100px;right:-100px;animation-delay:0s;}
+.orb-2{width:300px;height:300px;background:radial-gradient(circle,#ec4899,#transparent);bottom:-50px;left:-50px;animation-delay:2s;}
+.orb-3{width:250px;height:250px;background:radial-gradient(circle,#a855f7,#transparent);top:50%;left:50%;animation-delay:4s;}
+.glass-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.3);}
+.glass-card-strong{background:rgba(255,255,255,0.08);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.15);border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+.glass-input{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:16px;color:#fff;padding:14px 18px;font-size:16px;transition:all 0.3s;width:100%;outline:none;}
+.glass-input:focus{border-color:#7c3aed;box-shadow:0 0 20px rgba(124,58,237,0.3);background:rgba(255,255,255,0.08);}
+.glass-input::placeholder{color:rgba(255,255,255,0.4);}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:16px;color:#fff;padding:14px 28px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 20px rgba(124,58,237,0.4);position:relative;overflow:hidden;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,0.6);}
+.btn-primary:active{transform:translateY(0);}
+.btn-secondary{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:16px;color:#fff;padding:14px 28px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-secondary:hover{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:16px;color:#fff;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-success{background:linear-gradient(135deg,#22c55e,#16a34a);border:none;border-radius:16px;color:#fff;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-warning{background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:16px;color:#fff;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.nav-item{padding:12px 16px;border-radius:14px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.7);font-weight:500;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-item.active{background:linear-gradient(135deg,rgba(124,58,237,0.3),rgba(168,85,247,0.2));color:#fff;border:1px solid rgba(124,58,237,0.4);}
+.tab-btn{padding:10px 20px;border-radius:12px;cursor:pointer;transition:all 0.3s;font-weight:600;border:none;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);}
+.tab-btn.active{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 4px 15px rgba(124,58,237,0.4);}
+.transaction-item{padding:16px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:10px;transition:all 0.3s;cursor:pointer;}
+.transaction-item:hover{background:rgba(255,255,255,0.06);transform:translateX(-4px);}
+.income-border{border-right:3px solid #22c55e;}
+.expense-border{border-right:3px solid #ef4444;}
+.loan-border{border-right:3px solid #f59e0b;}
+.trust-border{border-right:3px solid #3b82f6;}
+.badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge-owner{background:linear-gradient(135deg,#7c3aed,#a855f7);}
+.badge-admin{background:linear-gradient(135deg,#3b82f6,#2563eb);}
+.badge-editor{background:linear-gradient(135deg,#22c55e,#16a34a);}
+.badge-viewer{background:linear-gradient(135deg,#6b7280,#4b5563);}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.modal-overlay.active{opacity:1;pointer-events:all;}
+.modal-content{background:linear-gradient(145deg,#1a1021,#2d1b4e);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:28px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(0.9);transition:transform 0.3s;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.modal-overlay.active .modal-content{transform:scale(1);}
+.scrollbar-hide::-webkit-scrollbar{display:none;}
+.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none;}
+.loading-spinner{width:50px;height:50px;border:3px solid rgba(124,58,237,0.2);border-top-color:#7c3aed;border-radius:50%;animation:spin-slow 1s linear infinite;}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:14px 28px;border-radius:16px;font-weight:600;box-shadow:0 8px 30px rgba(124,58,237,0.4);z-index:2000;transition:transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:linear-gradient(135deg,#ef4444,#dc2626);}
+.toast.success{background:linear-gradient(135deg,#22c55e,#16a34a);}
+.stat-card{padding:20px;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);transition:all 0.3s;}
+.stat-card:hover{transform:translateY(-4px);background:rgba(255,255,255,0.06);}
+.member-card{padding:16px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;flex-shrink:0;}
+.invite-code{font-family:monospace;font-size:24px;font-weight:700;letter-spacing:4px;background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding:12px 24px;border-radius:12px;border:2px dashed rgba(124,58,237,0.5);text-align:center;}
+.book-card{padding:24px;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:all 0.3s;text-align:center;}
+.book-card:hover{transform:translateY(-6px);background:rgba(255,255,255,0.08);border-color:rgba(124,58,237,0.3);box-shadow:0 12px 40px rgba(124,58,237,0.2);}
+.book-icon{font-size:40px;margin-bottom:12px;}
+.person-row{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all 0.3s;}
+.person-row:hover{background:rgba(255,255,255,0.06);}
+.amount-positive{color:#22c55e;font-weight:700;}
+.amount-negative{color:#ef4444;font-weight:700;}
+.amount-neutral{color:#f59e0b;font-weight:700;}
+.section-title{font-size:20px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr;}}
+.pwa-install{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:14px 24px;border-radius:16px;font-weight:600;box-shadow:0 8px30px rgba(124,58,237,0.4);z-index:1500;cursor:pointer;display:none;align-items:center;gap:10px;animation:slide-up 0.5s ease;}
+.empty-state{text-align:center;padding:40px 20px;color:rgba(255,255,255,0.4);}
+.empty-state i{font-size:48px;margin-bottom:16px;display:block;}
+</style>
+</head>
+<body>
+<div class="bg-animated"></div>
+<div class="orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+<div id="toast" class="toast"></div>
+<div id="pwaInstall" class="pwa-install" onclick="installPWA()"><i class="fas fa-download"></i> تثبيت التطبيق</div>
+
+<!-- Loading Screen -->
+<div id="loadingScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0a1a;z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <div class="loading-spinner" style="margin-bottom:24px;"></div>
+  <div style="font-size:24px;font-weight:800;background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Family Wallet Pro</div>
+  <div style="color:rgba(255,255,255,0.5);margin-top:8px;font-size:14px;">جاري التحميل...</div>
+  <button id="skipLoading" class="btn-secondary" style="margin-top:24px;display:none;font-size:14px;padding:10px 20px;" onclick="skipLoading()">تخطي</button>
+</div>
+
+<!-- Auth Screen -->
+<div id="authScreen" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;">
+  <div style="width:100%;max-width:420px;animation:fade-in 0.6s ease;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:36px;box-shadow:0 8px30px rgba(124,58,237,0.4);">👛</div>
+      <h1 style="font-size:28px;font-weight:800;margin-bottom:6px;">Family Wallet Pro</h1>
+      <p style="color:rgba(255,255,255,0.5);font-size:15px;">محفظتك العائلية الذكية</p>
+    </div>
+
+    <div class="glass-card-strong" style="padding:28px;">
+      <div id="authTabs" style="display:flex;gap:8px;margin-bottom:24px;">
+        <button class="tab-btn active" style="flex:1;" onclick="switchAuthTab('login')" id="tabLogin">تسجيل الدخول</button>
+        <button class="tab-btn" style="flex:1;" onclick="switchAuthTab('register')" id="tabRegister">حساب جديد</button>
+      </div>
+
+      <div id="loginForm">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" class="glass-input" placeholder="example@email.com">
+        </div>
+        <div style="margin-bottom:20px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">كلمة المرور</label>
+          <input type="password" id="loginPassword" class="glass-input" placeholder="••••••••">
+        </div>
+        <button class="btn-primary" style="width:100%;margin-bottom:16px;" onclick="login()">تسجيل الدخول</button>
+        <button class="btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;" onclick="loginWithGoogle()">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          الدخول بحساب Google
+        </button>
+      </div>
+
+      <div id="registerForm" style="display:none;">
+        <div style="margin-bottom:14px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">الاسم الحقيقي *</label>
+          <input type="text" id="regRealName" class="glass-input" placeholder="محمد أحمد">
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">اسم المستخدم *</label>
+          <input type="text" id="regUsername" class="glass-input" placeholder="mohammed123">
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">البريد الإلكتروني *</label>
+          <input type="email" id="regEmail" class="glass-input" placeholder="example@email.com">
+        </div>
+        <div style="margin-bottom:20px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">كلمة المرور *</label>
+          <input type="password" id="regPassword" class="glass-input" placeholder="8 أحرف على الأقل">
+        </div>
+        <button class="btn-primary" style="width:100%;margin-bottom:16px;" onclick="register()">إنشاء الحساب</button>
+        <button class="btn-secondary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;" onclick="loginWithGoogle()">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          التسجيل بحساب Google
+        </button>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:20px;color:rgba(255,255,255,0.4);font-size:13px;">Family Wallet Pro v3.0 — محفظتك بأمان</p>
+  </div>
+</div>
+
+<!-- Mode Selection -->
+<div id="modeScreen" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;">
+  <div style="width:100%;max-width:500px;animation:fade-in 0.6s ease;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:30px;">👋</div>
+      <h2 style="font-size:24px;font-weight:800;margin-bottom:6px;">أهلاً، <span id="modeUserName">--</span>!</h2>
+      <p style="color:rgba(255,255,255,0.5);font-size:15px;">اختر طريقة استخدام المحفظة</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="book-card" onclick="selectMode('solo')">
+        <div class="book-icon">👤</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:6px;">وحدي</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5);">محفظة شخصية خاصة بك</div>
+      </div>
+      <div class="book-card" onclick="selectMode('family')">
+        <div class="book-icon">👨‍👩‍👧‍👦</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:6px;">مع العائلة</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5);">شارك المحفظة مع عائلتك</div>
+      </div>
+    </div>
+
+    <div id="familyOptions" style="display:none;margin-top:24px;" class="glass-card" style="padding:24px;">
+      <div id="familyJoinSection">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">عندك كود دعوة؟</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="joinCode" class="glass-input" placeholder="XXXXXX" style="flex:1;text-align:center;letter-spacing:4px;font-family:monospace;font-size:18px;text-transform:uppercase;">
+            <button class="btn-primary" onclick="joinFamily()" style="white-space:nowrap;">انضمام</button>
+          </div>
+        </div>
+        <div style="text-align:center;color:rgba(255,255,255,0.4);font-size:14px;margin:16px 0;">— أو —</div>
+        <button class="btn-secondary" style="width:100%;" onclick="showCreateFamily()">إنشاء عائلة جديدة</button>
+      </div>
+      <div id="familyCreateSection" style="display:none;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);font-weight:500;">اسم العائلة</label>
+          <input type="text" id="familyName" class="glass-input" placeholder="عائلة الأحمد">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-secondary" style="flex:1;" onclick="cancelCreateFamily()">رجوع</button>
+          <button class="btn-primary" style="flex:1;" onclick="createFamily()">إنشاء</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:24px;">
+      <button class="btn-secondary" style="font-size:14px;padding:10px 20px;" onclick="logout()">تسجيل الخروج</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="appScreen" style="display:none;">
+  <!-- Top Bar -->
+  <div style="position:sticky;top:0;z-index:100;background:rgba(15,10,26,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="avatar" style="width:36px;height:36px;font-size:14px;" id="topAvatar">--</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;" id="topUserName">--</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);" id="topFamilyName">--</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-secondary" style="padding:8px 12px;font-size:13px;" onclick="showNotifications()">
+        <i class="fas fa-bell"></i> <span id="notifBadge" style="display:none;background:#ef4444;color:#fff;border-radius:50%;padding:2px 6px;font-size:10px;margin-right:4px;">0</span>
+      </button>
+      <button class="btn-secondary" style="padding:8px 12px;font-size:13px;" onclick="showSettings()">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+  </div>
+
+  <div style="display:flex;min-height:calc(100vh - 60px);">
+    <!-- Sidebar -->
+    <div id="sidebar" style="width:260px;background:rgba(255,255,255,0.02);border-left:1px solid rgba(255,255,255,0.06);padding:16px;position:fixed;right:0;top:60px;bottom:0;overflow-y:auto;z-index:90;transition:transform 0.3s;" class="scrollbar-hide">
+      <div style="margin-bottom:8px;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;padding:0 8px;">القائمة الرئيسية</div>
+      <div class="nav-item active" onclick="navigateTo('dashboard')" id="navDashboard"><i class="fas fa-chart-pie"></i> لوحة التحكم</div>
+      <div class="nav-item" onclick="navigateTo('transactions')" id="navTransactions"><i class="fas fa-exchange-alt"></i> المعاملات</div>
+      <div class="nav-item" onclick="navigateTo('books')" id="navBooks"><i class="fas fa-book"></i> الدفاتر</div>
+      <div class="nav-item" onclick="navigateTo('people')" id="navPeople"><i class="fas fa-users"></i> الأشخاص</div>
+      <div class="nav-item" onclick="navigateTo('loans')" id="navLoans"><i class="fas fa-hand-holding-usd"></i> القروض</div>
+      <div class="nav-item" onclick="navigateTo('trusts')" id="navTrusts"><i class="fas fa-shield-alt"></i> الأمانات</div>
+      <div class="nav-item" onclick="navigateTo('reminders')" id="navReminders"><i class="fas fa-clock"></i> التذكيرات</div>
+      <div class="nav-item" onclick="navigateTo('analytics')" id="navAnalytics"><i class="fas fa-chart-line"></i> التحليلات</div>
+      <div class="nav-item" onclick="navigateTo('history')" id="navHistory"><i class="fas fa-history"></i> سجل العمليات</div>
+
+      <div id="familyNavSection" style="display:none;">
+        <div style="margin:16px 0 8px;font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;padding:0 8px;">العائلة</div>
+        <div class="nav-item" onclick="navigateTo('members')" id="navMembers"><i class="fas fa-user-friends"></i> الأعضاء</div>
+        <div class="nav-item" onclick="navigateTo('invites')" id="navInvites"><i class="fas fa-envelope-open-text"></i> الدعوات</div>
+      </div>
+
+      <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
+        <div class="nav-item" onclick="logout()" style="color:#ef4444;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button id="mobileMenuBtn" style="display:none;position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:#fff;font-size:20px;z-index:200;box-shadow:0 4px20px rgba(124,58,237,0.5);cursor:pointer;" onclick="toggleMobileMenu()">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Content Area -->
+    <div id="contentArea" style="flex:1;margin-right:260px;padding:24px;max-width:calc(100% - 260px);">
+
+      <!-- Dashboard -->
+      <div id="pageDashboard">
+        <div class="section-title"><i class="fas fa-chart-pie" style="color:#7c3aed;"></i> لوحة التحكم</div>
+        <div class="grid-2" style="margin-bottom:24px;">
+          <div class="stat-card" style="border-right:3px solid #22c55e;">
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">إجمالي الدخل</div>
+            <div style="font-size:28px;font-weight:800;color:#22c55e;" id="dashIncome">0 ر.س</div>
+          </div>
+          <div class="stat-card" style="border-right:3px solid #ef4444;">
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">إجمالي المصروفات</div>
+            <div style="font-size:28px;font-weight:800;color:#ef4444;" id="dashExpense">0 ر.س</div>
+          </div>
+          <div class="stat-card" style="border-right:3px solid #3b82f6;">
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">الرصيد الحالي</div>
+            <div style="font-size:28px;font-weight:800;color:#3b82f6;" id="dashBalance">0 ر.س</div>
+          </div>
+          <div class="stat-card" style="border-right:3px solid #f59e0b;">
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">المعاملات</div>
+            <div style="font-size:28px;font-weight:800;color:#f59e0b;" id="dashCount">0</div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding:24px;margin-bottom:24px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div class="section-title" style="margin:0;"><i class="fas fa-chart-bar" style="color:#a855f7;"></i> نظرة سريعة</div>
+            <button class="btn-primary" style="padding:10px 18px;font-size:14px;" onclick="showAddTransaction()">+ معاملة جديدة</button>
+          </div>
+          <div style="height:280px;">
+            <canvas id="dashChart"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding:24px;">
+          <div class="section-title" style="margin-bottom:16px;"><i class="fas fa-list" style="color:#ec4899;"></i> آخر المعاملات</div>
+          <div id="dashRecentTransactions"></div>
+        </div>
+      </div>
+
+      <!-- Transactions -->
+      <div id="pageTransactions" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div class="section-title" style="margin:0;"><i class="fas fa-exchange-alt" style="color:#7c3aed;"></i> المعاملات</div>
+          <button class="btn-primary" onclick="showAddTransaction()">+ معاملة جديدة</button>
+        </div>
+        <div class="glass-card" style="padding:20px;margin-bottom:20px;">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <input type="text" id="transSearch" class="glass-input" placeholder="بحث..." style="flex:1;min-width:200px;" oninput="filterTransactions()">
+            <select id="transFilterType" class="glass-input" style="width:140px;" onchange="filterTransactions()">
+              <option value="all">الكل</option>
+              <option value="income">دخل</option>
+              <option value="expense">مصروف</option>
+            </select>
+            <select id="transFilterCategory" class="glass-input" style="width:160px;" onchange="filterTransactions()">
+              <option value="all">كل الفئات</option>
+            </select>
+          </div>
+        </div>
+        <div id="transactionsList"></div>
+      </div>
+
+      <!-- Books -->
+      <div id="pageBooks" style="display:none;">
+        <div class="section-title"><i class="fas fa-book" style="color:#7c3aed;"></i> الدفاتر</div>
+        <div class="grid-2">
+          <div class="book-card" onclick="navigateTo('transactions')">
+            <div class="book-icon" style="color:#22c55e;">📗</div>
+            <div style="font-size:18px;font-weight:700;">دفتر الحسابات</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;" id="bookAccountCount">0 معاملة</div>
+          </div>
+          <div class="book-card" onclick="navigateTo('people')">
+            <div class="book-icon" style="color:#3b82f6;">📘</div>
+            <div style="font-size:18px;font-weight:700;">دفتر الأشخاص</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;" id="bookPeopleCount">0 شخص</div>
+          </div>
+          <div class="book-card" onclick="navigateTo('trusts')">
+            <div class="book-icon" style="color:#f59e0b;">📙</div>
+            <div style="font-size:18px;font-weight:700;">دفتر الأمانات</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;" id="bookTrustCount">0 أمانة</div>
+          </div>
+          <div class="book-card" onclick="navigateTo('loans')">
+            <div class="book-icon" style="color:#ef4444;">📕</div>
+            <div style="font-size:18px;font-weight:700;">دفتر القروض</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;" id="bookLoanCount">0 قرض</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- People -->
+      <div id="pagePeople" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div class="section-title" style="margin:0;"><i class="fas fa-users" style="color:#3b82f6;"></i> الأشخاص</div>
+          <button class="btn-primary" onclick="showAddPerson()">+ شخص جديد</button>
+        </div>
+        <div class="glass-card" style="padding:20px;margin-bottom:20px;">
+          <input type="text" id="peopleSearch" class="glass-input" placeholder="بحث عن شخص..." oninput="filterPeople()">
+        </div>
+        <div id="peopleList"></div>
+      </div>
+
+      <!-- Loans -->
+      <div id="pageLoans" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div class="section-title" style="margin:0;"><i class="fas fa-hand-holding-usd" style="color:#ef4444;"></i> القروض</div>
+          <button class="btn-primary" onclick="showAddLoan()">+ قرض جديد</button>
+        </div>
+        <div class="grid-2" style="margin-bottom:20px;">
+          <div class="stat-card" style="border-right:3px solid #22c55e;">
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);">لنا (مستحق)</div>
+            <div style="font-size:22px;font-weight:800;color:#22c55e;" id="loanOwed">0 ر.س</div>
+          </div>
+          <div class="stat-card" style="border-right:3px solid #ef4444;">
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);">علينا (مدينون)</div>
+            <div style="font-size:22px;font-weight:800;color:#ef4444;" id="loanDue">0 ر.س</div>
+          </div>
+        </div>
+        <div id="loansList"></div>
+      </div>
+
+      <!-- Trusts -->
+      <div id="pageTrusts" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div class="section-title" style="margin:0;"><i class="fas fa-shield-alt" style="color:#f59e0b;"></i> الأمانات</div>
+          <button class="btn-primary" onclick="showAddTrust()">+ أمانة جديدة</button>
+        </div>
+        <div id="trustsList"></div>
+      </div>
+
+      <!-- Reminders -->
+      <div id="pageReminders" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div class="section-title" style="margin:0;"><i class="fas fa-clock" style="color:#a855f7;"></i> التذكيرات والفواتير</div>
+          <button class="btn-primary" onclick="showAddReminder()">+ تذكير جديد</button>
+        </div>
+        <div id="remindersList"></div>
+      </div>
+
+      <!-- Analytics -->
+      <div id="pageAnalytics" style="display:none;">
+        <div class="section-title"><i class="fas fa-chart-line" style="color:#7c3aed;"></i> التحليلات</div>
+        <div class="grid-2" style="margin-bottom:24px;">
+          <div class="glass-card" style="padding:24px;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center;">توزيع المصروفات</div>
+            <div style="height:250px;"><canvas id="expenseChart"></canvas></div>
+          </div>
+          <div class="glass-card" style="padding:24px;">
+            <div style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center;">توزيع الدخل</div>
+            <div style="height:250px;"><canvas id="incomeChart"></canvas></div>
+          </div>
+        </div>
+        <div class="glass-card" style="padding:24px;margin-bottom:24px;">
+          <div style="font-size:16px;font-weight:700;margin-bottom:16px;text-align:center;">المعاملات عبر الزمن</div>
+          <div style="height:300px;"><canvas id="timelineChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div id="pageHistory" style="display:none;">
+        <div class="section-title"><i class="fas fa-history" style="color:#ec4899;"></i> سجل العمليات</div>
+        <div id="historyList"></div>
+      </div>
+
+      <!-- Members -->
+      <div id="pageMembers" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div class="section-title" style="margin:0;"><i class="fas fa-user-friends" style="color:#7c3aed;"></i> أعضاء العائلة</div>
+          <button class="btn-primary" onclick="showInviteMember()">+ دعوة عضو</button>
+        </div>
+        <div class="glass-card" style="padding:24px;margin-bottom:20px;">
+          <div style="font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:8px;">كود الدعوة</div>
+          <div class="invite-code" id="familyInviteCode">------</div>
+          <div style="text-align:center;margin-top:12px;">
+            <button class="btn-secondary" style="font-size:13px;padding:8px 16px;" onclick="copyInviteCode()">
+              <i class="fas fa-copy"></i> نسخ الكود
+            </button>
+          </div>
+        </div>
+        <div id="membersList"></div>
+      </div>
+
+      <!-- Invites -->
+      <div id="pageInvites" style="display:none;">
+        <div class="section-title"><i class="fas fa-envelope-open-text" style="color:#a855f7;"></i> طلبات الانضمام</div>
+        <div id="invitesList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+// ==================== FIREBASE CONFIG ====================
+const firebaseConfig = {
+  apiKey: "AIzaSyD4xN1z8p9x3x4x5x6x7x8x9x0x1x2x3x4x5",
+  authDomain: "money-calculator-69bb8.firebaseapp.com",
+  projectId: "money-calculator-69bb8",
+  storageBucket: "money-calculator-69bb8.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abcdef1234567890"
+};
+
+// Initialize Firebase
+try {
+  firebase.initializeApp(firebaseConfig);
+} catch(e) {
+  console.log("Firebase init error (expected if no config):", e);
+}
+const auth = firebase.auth ? firebase.auth() : null;
+const db = firebase.firestore ? firebase.firestore() : null;
+
+// ==================== STATE ====================
+let currentUser = null;
+let currentFamily = null;
+let appMode = 'solo';
+let transactions = [];
+let people = [];
+let loans = [];
+let trusts = [];
+let reminders = [];
+let historyLog = [];
+let members = [];
+let invites = [];
+let charts = {};
+let deferredPrompt = null;
+
+// Categories
+const expenseCategories = ['بقالة','مواصلات','فواتير','صحة','تعليم','ترفيه','تسوق','مطاعم','سفر','أخرى'];
+const incomeCategories = ['راتب','مكافأة','هبة','استثمار','بيع','أخرى'];
+
+// ==================== UTILS ====================
+function $(id){return document.getElementById(id);}
+function showToast(msg,type='info'){
+  const t=$('toast');
+  t.textContent=msg;
+  t.className='toast '+(type==='error'?'error':type==='success'?'success':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function formatMoney(n){return parseFloat(n||0).toLocaleString('ar-SA')+' ر.س';}
+function formatDate(d){if(!d)return'';const date=new Date(d);return date.toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'});}
+function generateCode(){return Math.random().toString(36).substring(2,8).toUpperCase();}
+function getInitials(name){return name?name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase():'??';}
+function generateId(){return Date.now().toString(36)+Math.random().toString(36).substring(2,9);}
+
+// ==================== LOADING ====================
+let loadingTimeout;
+window.addEventListener('load',()=>{
+  loadingTimeout=setTimeout(()=>{$('skipLoading').style.display='block';},5000);
+  initApp();
+});
+function skipLoading(){$('loadingScreen').style.display='none';checkAuth();}
+
+// ==================== AUTH ====================
+function initApp(){
+  if(auth){
+    auth.onAuthStateChanged(user=>{
+      if(user){
+        currentUser={uid:user.uid,email:user.email,displayName:user.displayName,photoURL:user.photoURL};
+        loadUserData().then(()=>{
+          $('loadingScreen').style.display='none';
+          clearTimeout(loadingTimeout);
+          showModeScreen();
+        }).catch(()=>{
+          $('loadingScreen').style.display='none';
+          clearTimeout(loadingTimeout);
+          showAuthScreen();
+        });
+      } else {
+        $('loadingScreen').style.display='none';
+        clearTimeout(loadingTimeout);
+        showAuthScreen();
+      }
+    });
+  } else {
+    // Fallback: check localStorage
+    const savedUser=localStorage.getItem('fw_user');
+    if(savedUser){
+      currentUser=JSON.parse(savedUser);
+      loadLocalData();
+      $('loadingScreen').style.display='none';
+      clearTimeout(loadingTimeout);
+      showModeScreen();
+    } else {
+      $('loadingScreen').style.display='none';
+      clearTimeout(loadingTimeout);
+      showAuthScreen();
+    }
+  }
+}
+
+function checkAuth(){
+  if(auth){
+    auth.onAuthStateChanged(user=>{
+      if(user){
+        currentUser={uid:user.uid,email:user.email,displayName:user.displayName,photoURL:user.photoURL};
+        loadUserData().then(()=>showModeScreen());
+      } else {
+        showAuthScreen();
+      }
+    });
+  } else {
+    const savedUser=localStorage.getItem('fw_user');
+    if(savedUser){
+      currentUser=JSON.parse(savedUser);
+      loadLocalData();
+      showModeScreen();
+    } else {
+      showAuthScreen();
+    }
+  }
+}
+
+function showAuthScreen(){
+  $('authScreen').style.display='flex';
+  $('modeScreen').style.display='none';
+  $('appScreen').style.display='none';
+}
+
+function showModeScreen(){
+  $('authScreen').style.display='none';
+  $('modeScreen').style.display='flex';
+  $('appScreen').style.display='none';
+  $('modeUserName').textContent=currentUser.displayName||currentUser.username||currentUser.email?.split('@')[0]||'مستخدم';
+}
+
+function switchAuthTab(tab){
+  $('tabLogin').classList.toggle('active',tab==='login');
+  $('tabRegister').classList.toggle('active',tab==='register');
+  $('loginForm').style.display=tab==='login'?'block':'none';
+  $('registerForm').style.display=tab==='register'?'block':'none';
+}
+
+async function register(){
+  const realName=$('regRealName').value.trim();
+  const username=$('regUsername').value.trim();
+  const email=$('regEmail').value.trim();
+  const password=$('regPassword').value;
+
+  if(!realName||!username||!email||!password){showToast('يرجى ملء جميع الحقول المطلوبة','error');return;}
+  if(password.length<6){showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل','error');return;}
+
+  try {
+    if(auth){
+      const cred=await auth.createUserWithEmailAndPassword(email,password);
+      await db.collection('users').doc(cred.user.uid).set({
+        uid:cred.user.uid,realName,username,email,createdAt:new Date().toISOString()
+      });
+      currentUser={uid:cred.user.uid,email,displayName:realName,username,realName};
+    } else {
+      // Local fallback
+      const uid=generateId();
+      currentUser={uid,email,displayName:realName,username,realName};
+      localStorage.setItem('fw_user',JSON.stringify(currentUser));
+    }
+    showToast('تم إنشاء الحساب بنجاح!','success');
+    showModeScreen();
+  } catch(e){
+    showToast(e.message||'حدث خطأ أثناء التسجيل','error');
+  }
+}
+
+async function login(){
+  const email=$('loginEmail').value.trim();
+  const password=$('loginPassword').value;
+  if(!email||!password){showToast('يرجى إدخال البريد وكلمة المرور','error');return;}
+
+  try {
+    if(auth){
+      const cred=await auth.signInWithEmailAndPassword(email,password);
+      const doc=await db.collection('users').doc(cred.user.uid).get();
+      const data=doc.data()||{};
+      currentUser={uid:cred.user.uid,email:cred.user.email,displayName:data.realName||cred.user.displayName,username:data.username,realName:data.realName};
+    } else {
+      showToast('Firebase غير متصل. استخدم التسجيل المحلي.','error');
+      return;
+    }
+    showToast('تم تسجيل الدخول!','success');
+    showModeScreen();
+  } catch(e){
+    showToast(e.message||'خطأ في البيانات','error');
+  }
+}
+
+async function loginWithGoogle(){
+  try {
+    if(!auth){showToast('Firebase غير متصل','error');return;}
+    const provider=new firebase.auth.GoogleAuthProvider();
+    const cred=await auth.signInWithPopup(provider);
+    const doc=await db.collection('users').doc(cred.user.uid).get();
+    if(!doc.exists){
+      await db.collection('users').doc(cred.user.uid).set({
+        uid:cred.user.uid,realName:cred.user.displayName,username:cred.user.email?.split('@')[0],email:cred.user.email,createdAt:new Date().toISOString()
+      });
+    }
+    const data=doc.data()||{};
+    currentUser={uid:cred.user.uid,email:cred.user.email,displayName:cred.user.displayName||data.realName,username:data.username||cred.user.email?.split('@')[0],realName:data.realName||cred.user.displayName,photoURL:cred.user.photoURL};
+    showToast('تم الدخول بحساب Google!','success');
+    showModeScreen();
+  } catch(e){
+    showToast(e.message||'خطأ في Google Sign-In','error');
+  }
+}
+
+function logout(){
+  if(auth)auth.signOut();
+  localStorage.removeItem('fw_user');
+  localStorage.removeItem('fw_data');
+  currentUser=null;currentFamily=null;appMode='solo';
+  transactions=[];people=[];loans=[];trusts=[];reminders=[];historyLog=[];members=[];invites=[];
+  showAuthScreen();
+  showToast('تم تسجيل الخروج');
+}
+
+// ==================== MODE SELECTION ====================
+function selectMode(mode){
+  appMode=mode;
+  if(mode==='solo'){
+    currentFamily=null;
+    $('familyNavSection').style.display='none';
+    startApp();
+  } else {
+    $('familyOptions').style.display='block';
+  }
+}
+
+function showCreateFamily(){
+  $('familyJoinSection').style.display='none';
+  $('familyCreateSection').style.display='block';
+}
+
+function cancelCreateFamily(){
+  $('familyJoinSection').style.display='block';
+  $('familyCreateSection').style.display='none';
+}
+
+async function createFamily(){
+  const name=$('familyName').value.trim();
+  if(!name){showToast('أدخل اسم العائلة','error');return;}
+
+  const code=generateCode();
+  currentFamily={id:generateId(),name,code,ownerId:currentUser.uid,createdAt:new Date().toISOString()};
+  members=[{uid:currentUser.uid,realName:currentUser.realName||currentUser.displayName,username:currentUser.username,email:currentUser.email,role:'owner',joinedAt:new Date().toISOString()}];
+
+  if(db){
+    await db.collection('families').doc(currentFamily.id).set(currentFamily);
+    await db.collection('families').doc(currentFamily.id).collection('members').doc(currentUser.uid).set(members[0]);
+  }
+
+  saveLocalData();
+  showToast('تم إنشاء العائلة! الكود: '+code,'success');
+  $('familyNavSection').style.display='block';
+  startApp();
+}
+
+async function joinFamily(){
+  const code=$('joinCode').value.trim().toUpperCase();
+  if(!code){showToast('أدخل كود الدعوة','error');return;}
+
+  if(db){
+    const snap=await db.collection('families').where('code','==',code).get();
+    if(snap.empty){showToast('كود غير صحيح','error');return;}
+    const fam=snap.docs[0];
+    currentFamily={id:fam.id,...fam.data()};
+
+    // Send join request
+    await db.collection('families').doc(fam.id).collection('invites').doc(currentUser.uid).set({
+      uid:currentUser.uid,realName:currentUser.realName||currentUser.displayName,username:currentUser.username,email:currentUser.email,status:'pending',requestedAt:new Date().toISOString()
+    });
+    showToast('تم إرسال طلب الانضمام! انتظر الموافقة.','success');
+  } else {
+    showToast('Firebase غير متصل','error');
+  }
+}
+
+// ==================== APP START ====================
+function startApp(){
+  $('authScreen').style.display='none';
+  $('modeScreen').style.display='none';
+  $('appScreen').style.display='block';
+
+  $('topUserName').textContent=currentUser.realName||currentUser.displayName||currentUser.username||'مستخدم';
+  $('topAvatar').textContent=getInitials(currentUser.realName||currentUser.displayName||currentUser.username);
+  $('topFamilyName').textContent=currentFamily?currentFamily.name:'وضع فردي';
+
+  setupRealtimeListeners();
+  updateAllViews();
+  navigateTo('dashboard');
+
+  // Setup mobile
+  if(window.innerWidth<768){
+    $('sidebar').style.transform='translateX(100%)';
+    $('mobileMenuBtn').style.display='flex';
+    $('contentArea').style.marginRight='0';
+    $('contentArea').style.maxWidth='100%';
+  }
+}
+
+function setupRealtimeListeners(){
+  if(!db||!currentUser)return;
+
+  const basePath=currentFamily?'families/'+currentFamily.id:'users/'+currentUser.uid;
+
+  // Transactions
+  db.collection(basePath).doc('data').collection('transactions').orderBy('date','desc').onSnapshot(snap=>{
+    transactions=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if($('pageDashboard').style.display!=='none')updateDashboard();
+    if($('pageTransactions').style.display!=='none')renderTransactions();
+    if($('pageAnalytics').style.display!=='none')updateAnalytics();
+  });
+
+  // People
+  db.collection(basePath).doc('data').collection('people').onSnapshot(snap=>{
+    people=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if($('pagePeople').style.display!=='none')renderPeople();
+    if($('pageBooks').style.display!=='none')updateBookCounts();
+  });
+
+  // Loans
+  db.collection(basePath).doc('data').collection('loans').onSnapshot(snap=>{
+    loans=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if($('pageLoans').style.display!=='none')renderLoans();
+    if($('pageBooks').style.display!=='none')updateBookCounts();
+  });
+
+  // Trusts
+  db.collection(basePath).doc('data').collection('trusts').onSnapshot(snap=>{
+    trusts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if($('pageTrusts').style.display!=='none')renderTrusts();
+    if($('pageBooks').style.display!=='none')updateBookCounts();
+  });
+
+  // Reminders
+  db.collection(basePath).doc('data').collection('reminders').onSnapshot(snap=>{
+    reminders=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if($('pageReminders').style.display!=='none')renderReminders();
+  });
+
+  // History
+  db.collection(basePath).doc('data').collection('history').orderBy('timestamp','desc').onSnapshot(snap=>{
+    historyLog=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if($('pageHistory').style.display!=='none')renderHistory();
+  });
+
+  // Family members
+  if(currentFamily){
+    db.collection('families').doc(currentFamily.id).collection('members').onSnapshot(snap=>{
+      members=snap.docs.map(d=>({id:d.id,...d.data()}));
+      if($('pageMembers').style.display!=='none')renderMembers();
+    });
+
+    db.collection('families').doc(currentFamily.id).collection('invites').onSnapshot(snap=>{
+      invites=snap.docs.map(d=>({id:d.id,...d.data()}));
+      const pending=invites.filter(i=>i.status==='pending').length;
+      $('notifBadge').style.display=pending>0?'inline':'none';
+      $('notifBadge').textContent=pending;
+      if($('pageInvites').style.display!=='none')renderInvites();
+    });
+  }
+}
+
+// ==================== NAVIGATION ====================
+function navigateTo(page){
+  document.querySelectorAll('[id^="page"]').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+
+  const pageEl=$(`page${page.charAt(0).toUpperCase()+page.slice(1)}`);
+  if(pageEl)pageEl.style.display='block';
+
+  const navEl=$(`nav${page.charAt(0).toUpperCase()+page.slice(1)}`);
+  if(navEl)navEl.classList.add('active');
+
+  // Close mobile menu
+  if(window.innerWidth<768){
+    $('sidebar').style.transform='translateX(100%)';
+  }
+
+  // Update view
+  switch(page){
+    case 'dashboard':updateDashboard();break;
+    case 'transactions':renderTransactions();break;
+    case 'books':updateBookCounts();break;
+    case 'people':renderPeople();break;
+    case 'loans':renderLoans();break;
+    case 'trusts':renderTrusts();break;
+    case 'reminders':renderReminders();break;
+    case 'analytics':updateAnalytics();break;
+    case 'history':renderHistory();break;
+    case 'members':renderMembers();break;
+    case 'invites':renderInvites();break;
+  }
+}
+
+function toggleMobileMenu(){
+  const sidebar=$('sidebar');
+  sidebar.style.transform=sidebar.style.transform==='translateX(0%)'?'translateX(100%)':'translateX(0%)';
+}
+
+// ==================== DASHBOARD ====================
+function updateDashboard(){
+  const income=transactions.filter(t=>t.type==='income').reduce((s,t)=>s+parseFloat(t.amount||0),0);
+  const expense=transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+parseFloat(t.amount||0),0);
+  $('dashIncome').textContent=formatMoney(income);
+  $('dashExpense').textContent=formatMoney(expense);
+  $('dashBalance').textContent=formatMoney(income-expense);
+  $('dashCount').textContent=transactions.length;
+
+  // Recent transactions
+  const recent=transactions.slice(0,5);
+  $('dashRecentTransactions').innerHTML=recent.length?recent.map(t=>`
+    <div class="transaction-item ${t.type==='income'?'income-border':'expense-border'}">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-weight:700;">${t.description||t.category}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);">${formatDate(t.date)} · ${t.category}</div>
+        </div>
+        <div style="font-weight:800;font-size:18px;" class="${t.type==='income'?'amount-positive':'amount-negative'}">
+          ${t.type==='income'?'+':'-'}${formatMoney(t.amount)}
+        </div>
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-inbox"></i><div>لا توجد معاملات بعد</div></div>';
+
+  // Chart
+  updateDashChart();
+}
+
+function updateDashChart(){
+  const ctx=$('dashChart').getContext('2d');
+  if(charts.dash)charts.dash.destroy();
+
+  const last7=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const dateStr=d.toISOString().split('T')[0];
+    const dayTrans=transactions.filter(t=>t.date&&t.date.startsWith(dateStr));
+    last7.push({
+      label:d.toLocaleDateString('ar-SA',{weekday:'short'}),
+      income:dayTrans.filter(t=>t.type==='income').reduce((s,t)=>s+parseFloat(t.amount||0),0),
+      expense:dayTrans.filter(t=>t.type==='expense').reduce((s,t)=>s+parseFloat(t.amount||0),0)
+    });
+  }
+
+  charts.dash=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:last7.map(d=>d.label),
+      datasets:[
+        {label:'دخل',data:last7.map(d=>d.income),backgroundColor:'rgba(34,197,94,0.7)',borderRadius:8},
+        {label:'مصروف',data:last7.map(d=>d.expense),backgroundColor:'rgba(239,68,68,0.7)',borderRadius:8}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'rgba(255,255,255,0.7)',font:{family:'Tajawal'}}}},
+      scales:{
+        x:{ticks:{color:'rgba(255,255,255,0.5)',font:{family:'Tajawal'}},grid:{color:'rgba(255,255,255,0.05)'}},
+        y:{ticks:{color:'rgba(255,255,255,0.5)',font:{family:'Tajawal'}},grid:{color:'rgba(255,255,255,0.05)'}}
+      }
+    }
+  });
+}
+
+// ==================== TRANSACTIONS ====================
+function renderTransactions(){
+  const list=$('transactionsList');
+  const filterType=$('transFilterType').value;
+  const filterCat=$('transFilterCategory').value;
+  const search=$('transSearch').value.toLowerCase();
+
+  let filtered=transactions;
+  if(filterType!=='all')filtered=filtered.filter(t=>t.type===filterType);
+  if(filterCat!=='all')filtered=filtered.filter(t=>t.category===filterCat);
+  if(search)filtered=filtered.filter(t=>(t.description||'').toLowerCase().includes(search)||(t.category||'').includes(search));
+
+  list.innerHTML=filtered.length?filtered.map(t=>`
+    <div class="transaction-item ${t.type==='income'?'income-border':'expense-border'}" onclick="showTransactionDetails('${t.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:44px;height:44px;border-radius:14px;background:${t.type==='income'?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.15)'};display:flex;align-items:center;justify-content:center;font-size:20px;">
+            ${t.type==='income'?'📈':'📉'}
+          </div>
+          <div>
+            <div style="font-weight:700;">${t.description||t.category}</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">${formatDate(t.date)} · ${t.category} ${t.personName?'· '+t.personName:''}</div>
+          </div>
+        </div>
+        <div style="font-weight:800;font-size:18px;" class="${t.type==='income'?'amount-positive':'amount-negative'}">
+          ${t.type==='income'?'+':'-'}${formatMoney(t.amount)}
+        </div>
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-inbox"></i><div>لا توجد معاملات</div></div>';
+
+  // Update category filter
+  const cats=[...new Set(transactions.map(t=>t.category).filter(Boolean))];
+  const catSelect=$('transFilterCategory');
+  const currentVal=catSelect.value;
+  catSelect.innerHTML='<option value="all">كل الفئات</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+  catSelect.value=currentVal;
+}
+
+function filterTransactions(){renderTransactions();}
+
+function showAddTransaction(){
+  const modal=$('modalContent');
+  modal.innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-plus-circle" style="color:#7c3aed;"></i> معاملة جديدة</h3>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">النوع</label>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="tab-btn active" style="flex:1;" onclick="selectTransType('income',this)" id="btnIncome">📈 دخل</button>
+        <button type="button" class="tab-btn" style="flex:1;" onclick="selectTransType('expense',this)" id="btnExpense">📉 مصروف</button>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">المبلغ</label>
+      <input type="number" id="transAmount" class="glass-input" placeholder="0.00">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الفئة</label>
+      <select id="transCategory" class="glass-input"></select>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الوصف</label>
+      <input type="text" id="transDesc" class="glass-input" placeholder="وصف المعاملة...">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">التاريخ</label>
+      <input type="date" id="transDate" class="glass-input" value="${new Date().toISOString().split('T')[0]}">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الشخص (اختياري)</label>
+      <select id="transPerson" class="glass-input"><option value="">بدون</option>${people.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إلغاء</button>
+      <button class="btn-primary" style="flex:1;" onclick="saveTransaction()">حفظ</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+  selectTransType('income',$('btnIncome'));
+}
+
+let currentTransType='income';
+function selectTransType(type,btn){
+  currentTransType=type;
+  document.querySelectorAll('#modalContent .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const catSelect=$('transCategory');
+  const cats=type==='income'?incomeCategories:expenseCategories;
+  catSelect.innerHTML=cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+async function saveTransaction(){
+  const amount=parseFloat($('transAmount').value);
+  const category=$('transCategory').value;
+  const description=$('transDesc').value.trim();
+  const date=$('transDate').value;
+  const personId=$('transPerson').value;
+
+  if(!amount||amount<=0){showToast('أدخل مبلغ صحيح','error');return;}
+
+  const trans={
+    id:generateId(),type:currentTransType,amount,category,description,date,
+    personId:personId||null,personName:personId?(people.find(p=>p.id===personId)?.name||''):'',
+    createdBy:currentUser.uid,createdByName:currentUser.realName||currentUser.displayName||currentUser.username,
+    createdAt:new Date().toISOString()
+  };
+
+  transactions.unshift(trans);
+
+  // Update person balance
+  if(personId){
+    const person=people.find(p=>p.id===personId);
+    if(person){
+      if(currentTransType==='income')person.balance=(parseFloat(person.balance)||0)+amount;
+      else person.balance=(parseFloat(person.balance)||0)-amount;
+      await savePerson(person);
+    }
+  }
+
+  await saveData('transactions',trans);
+  addHistory('معاملة جديدة',`${currentUser.realName||currentUser.displayName} أضاف ${currentTransType==='income'?'دخل':'مصروف'} ${category} بقيمة ${formatMoney(amount)}`);
+  closeModal();
+  showToast('تم حفظ المعاملة','success');
+  updateAllViews();
+}
+
+function showTransactionDetails(id){
+  const t=transactions.find(x=>x.id===id);if(!t)return;
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;">تفاصيل المعاملة</h3>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">النوع:</span> <span style="font-weight:700;">${t.type==='income'?'دخل':'مصروف'}</span></div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">المبلغ:</span> <span style="font-weight:800;font-size:20px;" class="${t.type==='income'?'amount-positive':'amount-negative'}">${t.type==='income'?'+':'-'}${formatMoney(t.amount)}</span></div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الفئة:</span> ${t.category}</div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الوصف:</span> ${t.description||'—'}</div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">التاريخ:</span> ${formatDate(t.date)}</div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">بواسطة:</span> ${t.createdByName||'—'}</div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إغلاق</button>
+      <button class="btn-danger" style="flex:1;" onclick="deleteTransaction('${t.id}')">حذف</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function deleteTransaction(id){
+  const t=transactions.find(x=>x.id===id);
+  if(t&&t.personId){
+    const person=people.find(p=>p.id===t.personId);
+    if(person){
+      if(t.type==='income')person.balance=(parseFloat(person.balance)||0)-parseFloat(t.amount);
+      else person.balance=(parseFloat(person.balance)||0)+parseFloat(t.amount);
+      await savePerson(person);
+    }
+  }
+  transactions=transactions.filter(x=>x.id!==id);
+  await deleteData('transactions',id);
+  addHistory('حذف معاملة',`${currentUser.realName||currentUser.displayName} حذف معاملة بقيمة ${formatMoney(t?.amount||0)}`);
+  closeModal();
+  showToast('تم الحذف');
+  updateAllViews();
+}
+
+// ==================== PEOPLE ====================
+function renderPeople(){
+  const search=$('peopleSearch').value.toLowerCase();
+  let filtered=people;
+  if(search)filtered=filtered.filter(p=>p.name.toLowerCase().includes(search));
+
+  $('peopleList').innerHTML=filtered.length?filtered.map(p=>`
+    <div class="person-row" onclick="showPersonDetails('${p.id}')">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="avatar" style="width:40px;height:40px;font-size:14px;">${getInitials(p.name)}</div>
+        <div>
+          <div style="font-weight:700;">${p.name}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);">${p.phone||p.email||''}</div>
+        </div>
+      </div>
+      <div style="font-weight:800;font-size:16px;" class="${parseFloat(p.balance||0)>0?'amount-positive':parseFloat(p.balance||0)<0?'amount-negative':'amount-neutral'}">
+        ${formatMoney(p.balance||0)}
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-users"></i><div>لا يوجد أشخاص</div></div>';
+}
+
+function filterPeople(){renderPeople();}
+
+function showAddPerson(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-user-plus" style="color:#3b82f6;"></i> شخص جديد</h3>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الاسم *</label><input type="text" id="personName" class="glass-input" placeholder="اسم الشخص"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">رقم الجوال</label><input type="tel" id="personPhone" class="glass-input" placeholder="05xxxxxxxx"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">البريد الإلكتروني</label><input type="email" id="personEmail" class="glass-input" placeholder="example@email.com"></div>
+    <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">ملاحظات</label><textarea id="personNotes" class="glass-input" rows="3" placeholder="ملاحظات..."></textarea></div>
+    <div style="display:flex;gap:10px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">إلغاء</button><button class="btn-primary" style="flex:1;" onclick="savePersonNew()">حفظ</button></div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function savePersonNew(){
+  const name=$('personName').value.trim();
+  if(!name){showToast('أدخل الاسم','error');return;}
+  const person={
+    id:generateId(),name,phone:$('personPhone').value.trim(),email:$('personEmail').value.trim(),
+    notes:$('personNotes').value.trim(),balance:0,createdBy:currentUser.uid,createdAt:new Date().toISOString()
+  };
+  people.push(person);
+  await saveData('people',person);
+  addHistory('شخص جديد',`${currentUser.realName||currentUser.displayName} أضاف ${name} لدفتر الأشخاص`);
+  closeModal();showToast('تم الإضافة','success');renderPeople();updateBookCounts();
+}
+
+function showPersonDetails(id){
+  const p=people.find(x=>x.id===id);if(!p)return;
+  const personTrans=transactions.filter(t=>t.personId===id);
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px;">${p.name}</h3>
+    <div style="text-align:center;padding:20px;background:rgba(255,255,255,0.03);border-radius:16px;margin-bottom:16px;">
+      <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:6px;">الرصيد</div>
+      <div style="font-size:32px;font-weight:800;" class="${parseFloat(p.balance||0)>0?'amount-positive':parseFloat(p.balance||0)<0?'amount-negative':'amount-neutral'}">${formatMoney(p.balance||0)}</div>
+    </div>
+    ${p.phone?`<div style="margin-bottom:8px;"><i class="fas fa-phone" style="color:rgba(255,255,255,0.4);width:20px;"></i> ${p.phone}</div>`:''}
+    ${p.email?`<div style="margin-bottom:8px;"><i class="fas fa-envelope" style="color:rgba(255,255,255,0.4);width:20px;"></i> ${p.email}</div>`:''}
+    ${p.notes?`<div style="margin-bottom:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;font-size:14px;">${p.notes}</div>`:''}
+    <div style="margin-bottom:8px;font-weight:700;">معاملات (${personTrans.length})</div>
+    <div style="max-height:200px;overflow-y:auto;" class="scrollbar-hide">
+      ${personTrans.length?personTrans.map(t=>`
+        <div style="padding:10px;background:rgba(255,255,255,0.03);border-radius:10px;margin-bottom:6px;font-size:13px;">
+          <div style="display:flex;justify-content:space-between;">
+            <span>${t.description||t.category}</span>
+            <span style="font-weight:700;" class="${t.type==='income'?'amount-positive':'amount-negative'}">${t.type==='income'?'+':'-'}${formatMoney(t.amount)}</span>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);">${formatDate(t.date)}</div>
+        </div>
+      `).join(''):'<div style="text-align:center;color:rgba(255,255,255,0.4);padding:12px;">لا توجد معاملات</div>'}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إغلاق</button>
+      <button class="btn-danger" style="flex:1;" onclick="deletePerson('${p.id}')">حذف</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function deletePerson(id){
+  people=people.filter(p=>p.id!==id);
+  await deleteData('people',id);
+  addHistory('حذف شخص',`${currentUser.realName||currentUser.displayName} حذف شخص من الدفتر`);
+  closeModal();showToast('تم الحذف');renderPeople();updateBookCounts();
+}
+
+async function savePerson(person){
+  const idx=people.findIndex(p=>p.id===person.id);
+  if(idx>=0)people[idx]=person;
+  else people.push(person);
+  await saveData('people',person);
+}
+
+// ==================== LOANS ====================
+function renderLoans(){
+  const owed=loans.filter(l=>l.type==='owed').reduce((s,l)=>s+parseFloat(l.remaining||l.amount||0),0);
+  const due=loans.filter(l=>l.type==='due').reduce((s,l)=>s+parseFloat(l.remaining||l.amount||0),0);
+  $('loanOwed').textContent=formatMoney(owed);
+  $('loanDue').textContent=formatMoney(due);
+
+  $('loansList').innerHTML=loans.length?loans.map(l=>`
+    <div class="transaction-item loan-border" onclick="showLoanDetails('${l.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-weight:700;">${l.personName} — ${l.description||'قرض'}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);">${formatDate(l.date)} · ${l.type==='owed'?'لنا (مستحق)':'علينا (مدينون)'}</div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-weight:800;" class="${l.type==='owed'?'amount-positive':'amount-negative'}">${formatMoney(l.remaining||l.amount)}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);">من ${formatMoney(l.amount)}</div>
+        </div>
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-hand-holding-usd"></i><div>لا توجد قروض</div></div>';
+}
+
+function showAddLoan(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-hand-holding-usd" style="color:#ef4444;"></i> قرض جديد</h3>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">النوع</label>
+      <div style="display:flex;gap:8px;">
+        <button class="tab-btn active" style="flex:1;" onclick="selectLoanType('owed',this)">لنا (مستحق)</button>
+        <button class="tab-btn" style="flex:1;" onclick="selectLoanType('due',this)">علينا (مدينون)</button>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الشخص *</label><input type="text" id="loanPerson" class="glass-input" placeholder="اسم الشخص"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">المبلغ *</label><input type="number" id="loanAmount" class="glass-input" placeholder="0.00"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الوصف</label><input type="text" id="loanDesc" class="glass-input" placeholder="وصف القرض..."></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">تاريخ الاستحقاق</label><input type="date" id="loanDueDate" class="glass-input"></div>
+    <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">ملاحظات</label><textarea id="loanNotes" class="glass-input" rows="2"></textarea></div>
+    <div style="display:flex;gap:10px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">إلغاء</button><button class="btn-primary" style="flex:1;" onclick="saveLoan()">حفظ</button></div>
+  `;
+  $('modalOverlay').classList.add('active');
+  currentLoanType='owed';
+}
+
+let currentLoanType='owed';
+function selectLoanType(type,btn){currentLoanType=type;document.querySelectorAll('#modalContent .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+
+async function saveLoan(){
+  const personName=$('loanPerson').value.trim();
+  const amount=parseFloat($('loanAmount').value);
+  if(!personName||!amount){showToast('أدخل الاسم والمبلغ','error');return;}
+  const loan={
+    id:generateId(),type:currentLoanType,personName,amount,remaining:amount,
+    description:$('loanDesc').value.trim(),date:new Date().toISOString().split('T')[0],
+    dueDate:$('loanDueDate').value,notes:$('loanNotes').value.trim(),
+    createdBy:currentUser.uid,createdAt:new Date().toISOString()
+  };
+  loans.push(loan);
+  await saveData('loans',loan);
+  addHistory('قرض جديد',`${currentUser.realName||currentUser.displayName} أضاف قرض ${currentLoanType==='owed'?'لنا':'علينا'} لـ ${personName} بقيمة ${formatMoney(amount)}`);
+  closeModal();showToast('تم الإضافة','success');renderLoans();updateBookCounts();
+}
+
+function showLoanDetails(id){
+  const l=loans.find(x=>x.id===id);if(!l)return;
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px;">تفاصيل القرض</h3>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الشخص:</span> ${l.personName}</div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">المبلغ الأصلي:</span> ${formatMoney(l.amount)}</div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">المتبقي:</span> <span style="font-weight:800;" class="${l.type==='owed'?'amount-positive':'amount-negative'}">${formatMoney(l.remaining||l.amount)}</span></div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">النوع:</span> ${l.type==='owed'?'لنا (مستحق)':'علينا (مدينون)'}</div>
+    ${l.dueDate?`<div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">تاريخ الاستحقاق:</span> ${formatDate(l.dueDate)}</div>`:''}
+    ${l.notes?`<div style="margin-bottom:16px;padding:12px;background:rgba(255,255,255,0.03);border-radius:12px;">${l.notes}</div>`:''}
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">سداد جزئي</label><input type="number" id="loanPayment" class="glass-input" placeholder="المبلغ المسدد"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إغلاق</button>
+      <button class="btn-success" style="flex:1;" onclick="payLoan('${l.id}')">تسجيل سداد</button>
+      <button class="btn-danger" style="flex:1;" onclick="deleteLoan('${l.id}')">حذف</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function payLoan(id){
+  const payment=parseFloat($('loanPayment').value);
+  if(!payment||payment<=0){showToast('أدخل مبلغ صحيح','error');return;}
+  const l=loans.find(x=>x.id===id);
+  if(l){l.remaining=Math.max(0,(parseFloat(l.remaining||l.amount)||0)-payment);await saveData('loans',l);}
+  addHistory('سداد قرض',`${currentUser.realName||currentUser.displayName} سدد ${formatMoney(payment)} من قرض ${l.personName}`);
+  closeModal();showToast('تم تسجيل السداد','success');renderLoans();
+}
+
+async function deleteLoan(id){
+  loans=loans.filter(l=>l.id!==id);
+  await deleteData('loans',id);
+  addHistory('حذف قرض',`${currentUser.realName||currentUser.displayName} حذف قرض`);
+  closeModal();showToast('تم الحذف');renderLoans();updateBookCounts();
+}
+
+// ==================== TRUSTS ====================
+function renderTrusts(){
+  $('trustsList').innerHTML=trusts.length?trusts.map(t=>`
+    <div class="transaction-item trust-border" onclick="showTrustDetails('${t.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-weight:700;">${t.itemName} — ${t.personName}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.5);">${formatDate(t.date)} · ${t.status==='active'?'🟢 نشط':'✅ مُسترجع'}</div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-weight:700;">${t.itemValue?formatMoney(t.itemValue):''}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);">${t.status==='active'?'لم يُسترجع':'مُسترجع'}</div>
+        </div>
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-shield-alt"></i><div>لا توجد أمانات</div></div>';
+}
+
+function showAddTrust(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-shield-alt" style="color:#f59e0b;"></i> أمانة جديدة</h3>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الشخص *</label><input type="text" id="trustPerson" class="glass-input" placeholder="اسم الشخص"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">اسم الغرض *</label><input type="text" id="trustItem" class="glass-input" placeholder="مثال: ساعة، مبلغ نقدي..."></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">القيمة التقديرية</label><input type="number" id="trustValue" class="glass-input" placeholder="0.00 (اختياري)"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">الوصف</label><input type="text" id="trustDesc" class="glass-input" placeholder="وصف..."></div>
+    <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">تاريخ الاسترجاع المتوقع</label><input type="date" id="trustReturnDate" class="glass-input"></div>
+    <div style="display:flex;gap:10px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">إلغاء</button><button class="btn-primary" style="flex:1;" onclick="saveTrust()">حفظ</button></div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function saveTrust(){
+  const personName=$('trustPerson').value.trim();
+  const itemName=$('trustItem').value.trim();
+  if(!personName||!itemName){showToast('أدخل الاسم والغرض','error');return;}
+  const trust={
+    id:generateId(),personName,itemName,itemValue:parseFloat($('trustValue').value)||0,
+    description:$('trustDesc').value.trim(),date:new Date().toISOString().split('T')[0],
+    returnDate:$('trustReturnDate').value,status:'active',
+    createdBy:currentUser.uid,createdAt:new Date().toISOString()
+  };
+  trusts.push(trust);
+  await saveData('trusts',trust);
+  addHistory('أمانة جديدة',`${currentUser.realName||currentUser.displayName} سجل أمانة ${itemName} عند ${personName}`);
+  closeModal();showToast('تم الإضافة','success');renderTrusts();updateBookCounts();
+}
+
+function showTrustDetails(id){
+  const t=trusts.find(x=>x.id===id);if(!t)return;
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px;">تفاصيل الأمانة</h3>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الشخص:</span> ${t.personName}</div>
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الغرض:</span> ${t.itemName}</div>
+    ${t.itemValue?`<div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">القيمة:</span> ${formatMoney(t.itemValue)}</div>`:''}
+    ${t.description?`<div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الوصف:</span> ${t.description}</div>`:''}
+    <div style="margin-bottom:12px;"><span style="color:rgba(255,255,255,0.5);">الحالة:</span> ${t.status==='active'?'🟢 لم يُسترجع':'✅ مُسترجع'}</div>
+    ${t.returnDate?`<div style="margin-bottom:16px;"><span style="color:rgba(255,255,255,0.5);">تاريخ الاسترجاع المتوقع:</span> ${formatDate(t.returnDate)}</div>`:''}
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إغلاق</button>
+      ${t.status==='active'?`<button class="btn-success" style="flex:1;" onclick="returnTrust('${t.id}')">تسجيل استرجاع</button>`:''}
+      <button class="btn-danger" style="flex:1;" onclick="deleteTrust('${t.id}')">حذف</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function returnTrust(id){
+  const t=trusts.find(x=>x.id===id);
+  if(t){t.status='returned';t.returnedAt=new Date().toISOString();await saveData('trusts',t);}
+  addHistory('استرجاع أمانة',`${currentUser.realName||currentUser.displayName} استرجع ${t.itemName} من ${t.personName}`);
+  closeModal();showToast('تم تسجيل الاسترجاع','success');renderTrusts();
+}
+
+async function deleteTrust(id){
+  trusts=trusts.filter(t=>t.id!==id);
+  await deleteData('trusts',id);
+  addHistory('حذف أمانة',`${currentUser.realName||currentUser.displayName} حذف أمانة`);
+  closeModal();showToast('تم الحذف');renderTrusts();updateBookCounts();
+}
+
+// ==================== REMINDERS ====================
+function renderReminders(){
+  const now=new Date().toISOString().split('T')[0];
+  const upcoming=reminders.filter(r=>r.dueDate>=now).sort((a,b)=>a.dueDate.localeCompare(b.dueDate));
+  const past=reminders.filter(r=>r.dueDate<now);
+
+  $('remindersList').innerHTML=`
+    ${upcoming.length?`<div style="font-size:14px;font-weight:700;color:#22c55e;margin-bottom:12px;">📅 قادمة</div>`+upcoming.map(r=>`
+      <div class="transaction-item" style="border-right:3px solid #22c55e;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:700;">${r.title}</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">${formatDate(r.dueDate)} ${r.repeat?'· 🔄 متكرر':''} ${r.amount?`· ${formatMoney(r.amount)}`:''}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-success" style="padding:6px 12px;font-size:12px;" onclick="markReminderDone('${r.id}')">✓</button>
+            <button class="btn-danger" style="padding:6px 12px;font-size:12px;" onclick="deleteReminder('${r.id}')">🗑</button>
+          </div>
+        </div>
+      </div>
+    `).join(''):''}
+    ${past.length?`<div style="font-size:14px;font-weight:700;color:#ef4444;margin:16px 0 12px;">⚠️ متأخرة</div>`+past.map(r=>`
+      <div class="transaction-item" style="border-right:3px solid #ef4444;opacity:0.7;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:700;">${r.title}</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">${formatDate(r.dueDate)} ${r.amount?`· ${formatMoney(r.amount)}`:''}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-success" style="padding:6px 12px;font-size:12px;" onclick="markReminderDone('${r.id}')">✓</button>
+            <button class="btn-danger" style="padding:6px 12px;font-size:12px;" onclick="deleteReminder('${r.id}')">🗑</button>
+          </div>
+        </div>
+      </div>
+    `).join(''):''}
+    ${!reminders.length?'<div class="empty-state"><i class="fas fa-clock"></i><div>لا توجد تذكيرات</div></div>':''}
+  `;
+}
+
+function showAddReminder(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-clock" style="color:#a855f7;"></i> تذكير جديد</h3>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">العنوان *</label><input type="text" id="remTitle" class="glass-input" placeholder="مثال: فاتورة الكهرباء"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">المبلغ (اختياري)</label><input type="number" id="remAmount" class="glass-input" placeholder="0.00"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">تاريخ الاستحقاق *</label><input type="date" id="remDueDate" class="glass-input" value="${new Date().toISOString().split('T')[0]}"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">التكرار</label><select id="remRepeat" class="glass-input"><option value="">بدون</option><option value="daily">يومي</option><option value="weekly">أسبوعي</option><option value="monthly">شهري</option><option value="yearly">سنوي</option></select></div>
+    <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:6px;font-size:14px;color:rgba(255,255,255,0.7);">ملاحظات</label><textarea id="remNotes" class="glass-input" rows="2"></textarea></div>
+    <div style="display:flex;gap:10px;"><button class="btn-secondary" style="flex:1;" onclick="closeModal()">إلغاء</button><button class="btn-primary" style="flex:1;" onclick="saveReminder()">حفظ</button></div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+async function saveReminder(){
+  const title=$('remTitle').value.trim();
+  const dueDate=$('remDueDate').value;
+  if(!title||!dueDate){showToast('أدخل العنوان والتاريخ','error');return;}
+  const rem={
+    id:generateId(),title,amount:parseFloat($('remAmount').value)||0,dueDate,repeat:$('remRepeat').value,
+    notes:$('remNotes').value.trim(),status:'pending',createdBy:currentUser.uid,createdAt:new Date().toISOString()
+  };
+  reminders.push(rem);
+  await saveData('reminders',rem);
+  addHistory('تذكير جديد',`${currentUser.realName||currentUser.displayName} أضاف تذكير: ${title}`);
+  closeModal();showToast('تم الإضافة','success');renderReminders();
+}
+
+async function markReminderDone(id){
+  const r=reminders.find(x=>x.id===id);
+  if(r){
+    if(r.repeat&&r.repeat!==''){
+      const d=new Date(r.dueDate);
+      if(r.repeat==='daily')d.setDate(d.getDate()+1);
+      else if(r.repeat==='weekly')d.setDate(d.getDate()+7);
+      else if(r.repeat==='monthly')d.setMonth(d.getMonth()+1);
+      else if(r.repeat==='yearly')d.setFullYear(d.getFullYear()+1);
+      r.dueDate=d.toISOString().split('T')[0];
+      await saveData('reminders',r);
+      showToast('تم التحديث للتكرار التالي');
+    } else {
+      r.status='done';r.doneAt=new Date().toISOString();await saveData('reminders',r);
+      showToast('تم الإنجاز');
+    }
+  }
+  renderReminders();
+}
+
+async function deleteReminder(id){
+  reminders=reminders.filter(r=>r.id!==id);
+  await deleteData('reminders',id);
+  renderReminders();showToast('تم الحذف');
+}
+
+// ==================== ANALYTICS ====================
+function updateAnalytics(){
+  // Expense categories
+  const expByCat={};
+  transactions.filter(t=>t.type==='expense').forEach(t=>{expByCat[t.category]=(expByCat[t.category]||0)+parseFloat(t.amount||0);});
+  const expCtx=$('expenseChart').getContext('2d');
+  if(charts.expense)charts.expense.destroy();
+  charts.expense=new Chart(expCtx,{
+    type:'doughnut',
+    data:{labels:Object.keys(expByCat),datasets:[{data:Object.values(expByCat),backgroundColor:['#ef4444','#f97316','#f59e0b','#84cc16','#22c55e','#14b8a6','#06b6d4','#3b82f6','#8b5cf6','#d946ef'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'rgba(255,255,255,0.7)',font:{family:'Tajawal',size:11}}}},cutout:'65%'}
+  });
+
+  // Income categories
+  const incByCat={};
+  transactions.filter(t=>t.type==='income').forEach(t=>{incByCat[t.category]=(incByCat[t.category]||0)+parseFloat(t.amount||0);});
+  const incCtx=$('incomeChart').getContext('2d');
+  if(charts.income)charts.income.destroy();
+  charts.income=new Chart(incCtx,{
+    type:'doughnut',
+    data:{labels:Object.keys(incByCat),datasets:[{data:Object.values(incByCat),backgroundColor:['#22c55e','#14b8a6','#3b82f6','#8b5cf6','#a855f7','#d946ef'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'rgba(255,255,255,0.7)',font:{family:'Tajawal',size:11}}}},cutout:'65%'}
+  });
+
+  // Timeline
+  const last30=[];
+  for(let i=29;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const dateStr=d.toISOString().split('T')[0];
+    const dayTrans=transactions.filter(t=>t.date&&t.date.startsWith(dateStr));
+    last30.push({
+      label:d.getDate(),
+      income:dayTrans.filter(t=>t.type==='income').reduce((s,t)=>s+parseFloat(t.amount||0),0),
+      expense:dayTrans.filter(t=>t.type==='expense').reduce((s,t)=>s+parseFloat(t.amount||0),0)
+    });
+  }
+  const timeCtx=$('timelineChart').getContext('2d');
+  if(charts.timeline)charts.timeline.destroy();
+  charts.timeline=new Chart(timeCtx,{
+    type:'line',
+    data:{
+      labels:last30.map(d=>d.label),
+      datasets:[
+        {label:'دخل',data:last30.map(d=>d.income),borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,0.1)',tension:0.4,fill:true},
+        {label:'مصروف',data:last30.map(d=>d.expense),borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',tension:0.4,fill:true}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'rgba(255,255,255,0.7)',font:{family:'Tajawal'}}}},
+      scales:{
+        x:{ticks:{color:'rgba(255,255,255,0.5)',font:{family:'Tajawal'}},grid:{color:'rgba(255,255,255,0.05)'}},
+        y:{ticks:{color:'rgba(255,255,255,0.5)',font:{family:'Tajawal'}},grid:{color:'rgba(255,255,255,0.05)'}}
+      }
+    }
+  });
+}
+
+// ==================== HISTORY ====================
+function renderHistory(){
+  $('historyList').innerHTML=historyLog.length?historyLog.slice(0,50).map(h=>`
+    <div style="padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:600;font-size:14px;">${h.action}</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:2px;">${h.details}</div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;">${formatDate(h.timestamp)}</div>
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-history"></i><div>لا يوجد سجل</div></div>';
+}
+
+async function addHistory(action,details){
+  const entry={id:generateId(),action,details,timestamp:new Date().toISOString(),userId:currentUser?.uid,userName:currentUser?.realName||currentUser?.displayName};
+  historyLog.unshift(entry);
+  await saveData('history',entry);
+}
+
+// ==================== MEMBERS ====================
+function renderMembers(){
+  $('familyInviteCode').textContent=currentFamily?.code||'------';
+  $('membersList').innerHTML=members.length?members.map(m=>`
+    <div class="member-card">
+      <div class="avatar">${getInitials(m.realName||m.username||'??')}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;">${m.realName||m.username||'عضو'}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);">${m.email||''}</div>
+      </div>
+      <span class="badge badge-${m.role||'viewer'}">${m.role==='owner'?'مالك':m.role==='admin'?'مشرف':m.role==='editor'?'محرر':'مشاهد'}</span>
+      ${m.uid!==currentUser.uid&&getMyRole()==='owner'?`<button class="btn-danger" style="padding:6px 12px;font-size:12px;" onclick="removeMember('${m.uid}')">طرد</button>`:''}
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-user-friends"></i><div>لا يوجد أعضاء</div></div>';
+}
+
+function getMyRole(){
+  const me=members.find(m=>m.uid===currentUser?.uid);
+  return me?.role||'viewer';
+}
+
+function showInviteMember(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:16px;">دعوة عضو</h3>
+    <div style="text-align:center;padding:20px;background:rgba(255,255,255,0.03);border-radius:16px;margin-bottom:16px;">
+      <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:8px;">كود الدعوة</div>
+      <div class="invite-code">${currentFamily?.code||'------'}</div>
+    </div>
+    <p style="font-size:14px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:16px;">شارك هذا الكود مع من تريد دعوته للانضمام للعائلة</p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إغلاق</button>
+      <button class="btn-primary" style="flex:1;" onclick="copyInviteCode();closeModal();">نسخ الكود</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+function copyInviteCode(){
+  const code=currentFamily?.code||'';
+  if(code){navigator.clipboard.writeText(code).then(()=>showToast('تم النسخ!','success'));}
+}
+
+async function removeMember(uid){
+  if(!confirm('هل أنت متأكد من طرد هذا العضو؟'))return;
+  members=members.filter(m=>m.uid!==uid);
+  if(db)await db.collection('families').doc(currentFamily.id).collection('members').doc(uid).delete();
+  showToast('تم الطرد');renderMembers();
+}
+
+// ==================== INVITES ====================
+function renderInvites(){
+  const pending=invites.filter(i=>i.status==='pending');
+  $('invitesList').innerHTML=pending.length?pending.map(i=>`
+    <div class="member-card">
+      <div class="avatar">${getInitials(i.realName||i.username||'??')}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;">${i.realName||i.username||'مستخدم'}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);">${i.email||''}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-success" style="padding:8px 16px;font-size:13px;" onclick="acceptInvite('${i.uid}')">موافقة</button>
+        <button class="btn-danger" style="padding:8px 16px;font-size:13px;" onclick="rejectInvite('${i.uid}')">رفض</button>
+      </div>
+    </div>
+  `).join(''):'<div class="empty-state"><i class="fas fa-envelope-open-text"></i><div>لا توجد طلبات</div></div>';
+}
+
+async function acceptInvite(uid){
+  const invite=invites.find(i=>i.uid===uid);if(!invite)return;
+  const newMember={uid:invite.uid,realName:invite.realName,username:invite.username,email:invite.email,role:'editor',joinedAt:new Date().toISOString()};
+  members.push(newMember);
+  if(db){
+    await db.collection('families').doc(currentFamily.id).collection('members').doc(uid).set(newMember);
+    await db.collection('families').doc(currentFamily.id).collection('invites').doc(uid).update({status:'accepted'});
+  }
+  showToast('تم قبول العضو','success');renderInvites();renderMembers();
+}
+
+async function rejectInvite(uid){
+  if(db)await db.collection('families').doc(currentFamily.id).collection('invites').doc(uid).update({status:'rejected'});
+  invites=invites.filter(i=>i.uid!==uid);
+  showToast('تم الرفض');renderInvites();
+}
+
+// ==================== SETTINGS & NOTIFICATIONS ====================
+function showSettings(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-cog" style="color:#7c3aed;"></i> الإعدادات</h3>
+    <div style="margin-bottom:16px;">
+      <div style="font-weight:700;margin-bottom:8px;">معلومات الحساب</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.6);">الاسم: ${currentUser?.realName||currentUser?.displayName||'—'}</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.6);">المستخدم: ${currentUser?.username||'—'}</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.6);">البريد: ${currentUser?.email||'—'}</div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-weight:700;margin-bottom:8px;">الوضع</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.6);">${currentFamily?'عائلي: '+currentFamily.name:'فردي'}</div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <div style="font-weight:700;margin-bottom:8px;">البيانات</div>
+      <button class="btn-secondary" style="width:100%;margin-bottom:8px;" onclick="exportData()">📥 تصدير البيانات (JSON)</button>
+      <button class="btn-secondary" style="width:100%;" onclick="importDataPrompt()">📤 استيراد البيانات</button>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إغلاق</button>
+      <button class="btn-danger" style="flex:1;" onclick="closeModal();logout();">تسجيل الخروج</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+function showNotifications(){
+  const pending=invites.filter(i=>i.status==='pending');
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;"><i class="fas fa-bell" style="color:#f59e0b;"></i> الإشعارات</h3>
+    ${pending.length?pending.map(i=>`
+      <div style="padding:14px;background:rgba(255,255,255,0.03);border-radius:14px;margin-bottom:10px;">
+        <div style="font-weight:600;">طلب انضمام جديد</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">${i.realName||i.username} يريد الانضمام للعائلة</div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn-success" style="flex:1;padding:8px;font-size:13px;" onclick="acceptInvite('${i.uid}');closeModal();">موافقة</button>
+          <button class="btn-danger" style="flex:1;padding:8px;font-size:13px;" onclick="rejectInvite('${i.uid}');closeModal();">رفض</button>
+        </div>
+      </div>
+    `).join(''):'<div class="empty-state"><i class="fas fa-bell-slash"></i><div>لا توجد إشعارات</div></div>'}
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+// ==================== DATA MANAGEMENT ====================
+async function loadUserData(){
+  if(!db||!currentUser)return;
+  const doc=await db.collection('users').doc(currentUser.uid).get();
+  const data=doc.data()||{};
+  currentUser={...currentUser,...data};
+
+  // Check if user has family
+  const famSnap=await db.collection('families').where('ownerId','==',currentUser.uid).get();
+  if(!famSnap.empty){
+    currentFamily={id:famSnap.docs[0].id,...famSnap.docs[0].data()};
+  } else {
+    const memberSnap=await db.collectionGroup('members').where('uid','==',currentUser.uid).get();
+    if(!memberSnap.empty){
+      const famId=memberSnap.docs[0].ref.parent.parent.id;
+      const famDoc=await db.collection('families').doc(famId).get();
+      currentFamily={id:famId,...famDoc.data()};
+    }
+  }
+
+  loadLocalData();
+}
+
+function loadLocalData(){
+  const key=currentFamily?'fw_family_'+currentFamily.id:'fw_solo_'+currentUser?.uid;
+  const saved=localStorage.getItem(key);
+  if(saved){
+    const data=JSON.parse(saved);
+    transactions=data.transactions||[];
+    people=data.people||[];
+    loans=data.loans||[];
+    trusts=data.trusts||[];
+    reminders=data.reminders||[];
+    historyLog=data.historyLog||[];
+    members=data.members||[];
+    invites=data.invites||[];
+  }
+}
+
+function saveLocalData(){
+  const key=currentFamily?'fw_family_'+currentFamily.id:'fw_solo_'+currentUser?.uid;
+  localStorage.setItem(key,JSON.stringify({transactions,people,loans,trusts,reminders,historyLog,members,invites,currentFamily}));
+}
+
+async function saveData(collection,doc){
+  saveLocalData();
+  if(db){
+    const basePath=currentFamily?'families/'+currentFamily.id:'users/'+currentUser.uid;
+    await db.collection(basePath).doc('data').collection(collection).doc(doc.id).set(doc);
+  }
+}
+
+async function deleteData(collection,id){
+  saveLocalData();
+  if(db){
+    const basePath=currentFamily?'families/'+currentFamily.id:'users/'+currentUser.uid;
+    await db.collection(basePath).doc('data').collection(collection).doc(id).delete();
+  }
+}
+
+function updateAllViews(){
+  updateDashboard();renderTransactions();updateBookCounts();renderPeople();renderLoans();renderTrusts();renderReminders();renderHistory();renderMembers();renderInvites();
+}
+
+function updateBookCounts(){
+  $('bookAccountCount').textContent=transactions.length+' معاملة';
+  $('bookPeopleCount').textContent=people.length+' شخص';
+  $('bookTrustCount').textContent=trusts.length+' أمانة';
+  $('bookLoanCount').textContent=loans.length+' قرض';
+}
+
+function closeModal(){$('modalOverlay').classList.remove('active');}
+
+// ==================== EXPORT/IMPORT ====================
+function exportData(){
+  const data={transactions,people,loans,trusts,reminders,historyLog,exportDate:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='family-wallet-backup.json';a.click();
+  URL.revokeObjectURL(url);showToast('تم التصدير','success');
+}
+
+function importDataPrompt(){
+  $('modalContent').innerHTML=`
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:20px;">استيراد البيانات</h3>
+    <div style="margin-bottom:20px;">
+      <label style="display:block;margin-bottom:8px;font-size:14px;color:rgba(255,255,255,0.7);">اختر ملف JSON</label>
+      <input type="file" id="importFile" class="glass-input" accept=".json" style="padding:10px;">
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-secondary" style="flex:1;" onclick="closeModal()">إلغاء</button>
+      <button class="btn-primary" style="flex:1;" onclick="doImport()">استيراد</button>
+    </div>
+  `;
+  $('modalOverlay').classList.add('active');
+}
+
+function doImport(){
+  const file=$('importFile').files[0];if(!file){showToast('اختر ملف','error');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.transactions)transactions=data.transactions;
+      if(data.people)people=data.people;
+      if(data.loans)loans=data.loans;
+      if(data.trusts)trusts=data.trusts;
+      if(data.reminders)reminders=data.reminders;
+      if(data.historyLog)historyLog=data.historyLog;
+      saveLocalData();updateAllViews();closeModal();showToast('تم الاستيراد بنجاح','success');
+    }catch(err){showToast('ملف غير صالح','error');}
+  };
+  reader.readAsText(file);
+}
+
+// ==================== PWA ====================
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('pwaInstall').style.display='flex';});
+function installPWA(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{$('pwaInstall').style.display='none';deferredPrompt=null;});}}
+window.addEventListener('appinstalled',()=>{$('pwaInstall').style.display='none';deferredPrompt=null;});
+
+// Check if standalone
+if(window.matchMedia('(display-mode:standalone)').matches||window.navigator.standalone){$('pwaInstall').style.display='none';}
+
+// Responsive
+window.addEventListener('resize',()=>{
+  if(window.innerWidth<768){
+    $('sidebar').style.transform='translateX(100%)';
+    $('mobileMenuBtn').style.display='flex';
+    $('contentArea').style.marginRight='0';
+    $('contentArea').style.maxWidth='100%';
+  } else {
+    $('sidebar').style.transform='translateX(0%)';
+    $('mobileMenuBtn').style.display='none';
+    $('contentArea').style.marginRight='260px';
+    $('contentArea').style.maxWidth='calc(100% - 260px)';
+  }
+});
+
+// Initial responsive check
+if(window.innerWidth<768){
+  $('sidebar').style.transform='translateX(100%)';
+  $('mobileMenuBtn').style.display='flex';
+  $('contentArea').style.marginRight='0';
+  $('contentArea').style.maxWidth='100%';
+}
+
+// Service Worker for PWA
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('data:text/javascript;base64,'+btoa(`
+    self.addEventListener('install',e=>{self.skipWaiting();});
+    self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim());});
+    self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>new Response('Offline')));});
+  `)).catch(()=>{});
+}
+
+console.log('Family Wallet Pro 3.0 loaded');
+</script>
+</body>
+</html>
