@@ -1,0 +1,3857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="مكين">
+    <meta name="theme-color" content="#0f0c29">
+    <title>مكين Makeen</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiFe2Yp9mE2YrYqSDYp9mE2YXYudmK2KfYq9iMIiwic2hvcnRfbmFtZSI6ItmK2KfZhdi52YoiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBhMGEwYSIsInRoZW1lX2NvbG9yIjoiI2E4NTVmNyIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnJTNFLTNDY2lyY2xlIGN4PSc1MCcgY3k9JzUwJyByPSc1MCcgZmlsbD0nI2E4NTVmNycvJTNELTNDdGV4dCB4PSc1MCcgeT0nNjUnIGZvbnQtc2l6ZT0nNDUnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZpbGw9J3doaXRlJyUzRSVGMCU5RiU5MiU5OSUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #a855f7;
+            --primary-light: #c084fc;
+            --primary-dark: #7e22ce;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --glass: rgba(255,255,255,0.06);
+            --glass-border: rgba(255,255,255,0.12);
+            --glass-hover: rgba(255,255,255,0.1);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --bg: #0a0a0a;
+            --bg-secondary: #111111;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --card-bg: #141414;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { height: 100%; font-size: 14px; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            overscroll-behavior-y: none;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .bg-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a103c 50%, #0f0f23 100%);
+            overflow: hidden;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35;
+            animation: float 20s infinite ease-in-out;
+        }
+        .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -80px; right: -80px; animation-delay: 0s; }
+        .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -60px; left: -60px; animation-delay: -5s; }
+        .orb-3 { width: 200px; height: 200px; background: var(--accent); top: 40%; left: 40%; animation-delay: -10s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -20px) scale(1.08); }
+            50% { transform: translate(-15px, 15px) scale(0.95); }
+            75% { transform: translate(15px, 8px) scale(1.03); }
+        }
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+        .glass-hover:hover {
+            background: var(--glass-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+        }
+
+        /* ===== Top Navbar ===== */
+        .top-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            padding-top: calc(12px + env(safe-area-inset-top));
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .top-navbar .menu-btn {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .top-navbar .app-title {
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .top-navbar .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .top-navbar .user-pill .avatar {
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 800;
+        }
+
+        /* ===== Sidebar (Drawer) ===== */
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+        .sidebar {
+            position: fixed;
+            top: 0; right: 0;
+            width: 280px;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--glass-border);
+            z-index: 201;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px;
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar .logo {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 4px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 16px;
+        }
+        .sidebar .logo-icon {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .sidebar .logo-text h1 { font-size: 17px; font-weight: 900; }
+        .sidebar .logo-text p { font-size: 11px; color: var(--text-muted); }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-bottom: 4px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: var(--glass);
+            color: var(--text);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(126,34,206,0.15));
+            border: 1px solid rgba(168,85,247,0.3);
+            color: white;
+        }
+        .nav-item i { width: 22px; text-align: center; font-size: 15px; }
+        .nav-badge {
+            margin-right: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 20px;
+            min-width: 20px;
+            text-align: center;
+        }
+        .sidebar .user-section {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--glass-border);
+        }
+        .user-card {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px;
+            border-radius: 14px;
+            background: var(--glass);
+            margin-bottom: 10px;
+        }
+        .user-avatar {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px;
+        }
+        .user-info h4 { font-size: 13px; font-weight: 800; }
+        .user-info p { font-size: 11px; color: var(--text-muted); }
+
+        /* ===== Main Content ===== */
+        .main-content {
+            padding: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        }
+        .page { display: none; animation: fadeIn 0.35s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Master Summary Card ===== */
+        .master-summary {
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(236,72,153,0.08) 100%);
+            border: 1px solid rgba(168,85,247,0.25);
+        }
+        .master-summary::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -30%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .master-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .master-summary-item { text-align: center; }
+        .master-summary-item .label {
+            font-size: 11px; color: var(--text-muted);
+            margin-bottom: 4px; font-weight: 500;
+        }
+        .master-summary-item .value {
+            font-size: 20px; font-weight: 900;
+        }
+        .master-summary-item .value.income { color: var(--success); }
+        .master-summary-item .value.expense { color: var(--danger); }
+        .master-summary-item .value.balance { color: var(--primary-light); }
+        .master-summary-bottom {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--glass-border);
+            position: relative; z-index: 1;
+        }
+        .mini-stat {
+            text-align: center;
+            padding: 10px 4px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+        }
+        .mini-stat .label { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; }
+        .mini-stat .value { font-size: 15px; font-weight: 800; }
+
+        /* ===== Cards & Stats ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+        }
+        .stat-icon {
+            width: 44px; height: 44px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .stat-icon.income { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+        .stat-icon.expense { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .stat-icon.balance { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+        .stat-icon.family { background: rgba(236, 72, 153, 0.15); color: var(--secondary); }
+        .stat-icon.wallet { background: rgba(168, 85, 247, 0.15); color: var(--primary-light); }
+        .stat-icon.trust { background: rgba(6, 182, 212, 0.15); color: var(--accent); }
+        .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-value { font-size: 26px; font-weight: 900; }
+        .stat-change { font-size: 11px; margin-top: 6px; font-weight: 600; }
+
+        /* ===== Buttons ===== */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 6px 24px rgba(168, 85, 247, 0.35);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.45); }
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+        .btn-secondary:hover { background: var(--glass-hover); }
+        .btn-success { background: linear-gradient(135deg, var(--success), #16a34a); color: white; }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #dc2626); color: white; }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #d97706); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 8px; }
+        .btn-lg { padding: 14px 28px; font-size: 15px; }
+
+        /* ===== Forms ===== */
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--text-muted); }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.25s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.07);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+        }
+        .form-textarea { min-height: 80px; resize: vertical; }
+
+        /* ===== Tables ===== */
+        .table-container { overflow-x: auto; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .data-table th {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .data-table tr:hover { background: var(--glass-hover); }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge-info { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+        .badge-primary { background: rgba(168, 85, 247, 0.15); color: var(--primary-light); }
+
+        /* ===== Modals ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalUp 0.3s ease;
+        }
+        @keyframes modalUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-title { font-size: 18px; font-weight: 900; }
+        .modal-close {
+            width: 32px; height: 32px;
+            border-radius: 10px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* ===== Auth ===== */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .auth-box {
+            width: 100%;
+            max-width: 420px;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .auth-logo {
+            width: 64px; height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 16px 48px rgba(168, 85, 247, 0.35);
+        }
+        .auth-title { font-size: 26px; font-weight: 900; margin-bottom: 6px; }
+        .auth-subtitle { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+        .auth-tabs {
+            display: flex; gap: 6px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.04);
+            padding: 4px;
+            border-radius: 12px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 13px;
+        }
+        .auth-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ===== Toggles ===== */
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .toggle-option {
+            flex: 1;
+            padding: 16px;
+            border-radius: 14px;
+            border: 2px solid var(--glass-border);
+            background: var(--glass);
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
+        }
+        .toggle-option:hover { border-color: var(--primary); }
+        .toggle-option.active {
+            border-color: var(--primary);
+            background: rgba(168, 85, 247, 0.12);
+        }
+        .toggle-option i { font-size: 24px; margin-bottom: 6px; display: block; }
+        .toggle-option h4 { font-size: 14px; margin-bottom: 2px; }
+        .toggle-option p { font-size: 11px; color: var(--text-muted); }
+
+        /* ===== Charts ===== */
+        .chart-container {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .chart-title { font-size: 15px; font-weight: 900; }
+
+        /* ===== Empty State ===== */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+        }
+        .empty-state i { font-size: 48px; color: var(--text-muted); margin-bottom: 12px; display: block; }
+        .empty-state h3 { font-size: 17px; margin-bottom: 6px; font-weight: 800; }
+        .empty-state p { color: var(--text-muted); margin-bottom: 20px; font-size: 13px; }
+
+        /* ===== Toasts ===== */
+        .toast-container {
+            position: fixed;
+            top: 70px;
+            left: 16px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.3s ease;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+            min-width: 260px;
+            font-size: 13px;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .toast-icon { font-size: 18px; }
+        .toast-success { border-color: var(--success); }
+        .toast-success .toast-icon { color: var(--success); }
+        .toast-error { border-color: var(--danger); }
+        .toast-error .toast-icon { color: var(--danger); }
+
+        /* ===== Activities ===== */
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 6px;
+            transition: all 0.25s;
+        }
+        .activity-item:hover { background: var(--glass-hover); }
+        .activity-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .activity-content h4 { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+        .activity-content p { font-size: 12px; color: var(--text-muted); }
+        .activity-time { font-size: 10px; color: var(--text-muted); margin-right: auto; white-space: nowrap; }
+
+        /* ===== Quick Actions ===== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quick-action {
+            padding: 16px 8px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .quick-action i { font-size: 20px; margin-bottom: 6px; display: block; }
+        .quick-action span { font-size: 12px; font-weight: 700; }
+
+        /* ===== Bank Cards ===== */
+        .bank-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+        }
+        .bank-card {
+            position: relative;
+            border-radius: 20px;
+            padding: 18px;
+            min-height: 160px;
+            cursor: pointer;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #1e1b4b 100%);
+        }
+        .bank-card.positive { background: linear-gradient(135deg, #064e3b 0%, #065f46 55%, #064e3b 100%); }
+        .bank-card.negative { background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 55%, #7f1d1d 100%); }
+        .bank-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .bank-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -20%;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .bank-card-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+        .bank-card-person { display: flex; align-items: center; gap: 10px; }
+        .bank-card-avatar {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 800;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+        .bank-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .bank-card-name { font-size: 15px; font-weight: 800; }
+        .bank-card-sub { font-size: 11px; opacity: 0.75; margin-top: 1px; }
+        .bank-card-chip { font-size: 22px; opacity: 0.85; }
+        .bank-card-mid { position: relative; z-index: 1; margin: 14px 0 2px; }
+        .bank-card-number { font-family: monospace; letter-spacing: 3px; font-size: 13px; opacity: 0.5; }
+        .bank-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; gap: 8px; flex-wrap: wrap; }
+        .bank-card-balance-label { font-size: 10px; opacity: 0.7; margin-bottom: 2px; }
+        .bank-card-balance-value { font-size: 20px; font-weight: 900; }
+        .bank-card-counters {
+            display: flex; gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .bank-card-counter {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+            font-weight: 700;
+        }
+
+        /* ===== Ledger Cards ===== */
+        .ledger-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .ledger-card {
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            text-align: center;
+        }
+        .ledger-card:hover { transform: translateY(-3px); }
+        .ledger-card-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 10px;
+            background: rgba(168,85,247,0.15);
+            color: var(--primary-light);
+        }
+        .ledger-card-name { font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+        .ledger-card-balance { font-size: 20px; font-weight: 900; color: var(--warning); }
+        .ledger-card-label { font-size: 11px; color: var(--text-muted); }
+        .add-ledger-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px dashed var(--glass-border);
+            background: transparent;
+            min-height: 130px;
+            color: var(--text-muted);
+        }
+        .add-ledger-card i { font-size: 24px; margin-bottom: 6px; }
+        .add-ledger-card:hover { border-color: var(--primary); color: var(--primary-light); }
+
+        /* ===== Personal Wallet Card ===== */
+        .my-wallet-card {
+            position: relative;
+            border-radius: 24px;
+            padding: 28px 24px;
+            color: #fff;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a855f7 100%);
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.3);
+        }
+        .my-wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -40%; right: -20%;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .my-wallet-card::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -40px;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .my-wallet-top { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; }
+        .my-wallet-name { font-size: 16px; font-weight: 800; }
+        .my-wallet-role { font-size: 11px; opacity: 0.8; }
+        .my-wallet-mid { position: relative; z-index: 1; margin: 24px 0 8px; }
+        .my-wallet-balance-label { font-size: 12px; opacity: 0.7; margin-bottom: 4px; }
+        .my-wallet-balance { font-size: 36px; font-weight: 900; }
+        .my-wallet-bottom { display: flex; gap: 16px; position: relative; z-index: 1; margin-top: 16px; }
+        .my-wallet-stat { flex: 1; }
+        .my-wallet-stat-label { font-size: 10px; opacity: 0.7; }
+        .my-wallet-stat-value { font-size: 16px; font-weight: 800; }
+
+        /* ===== Action Buttons Grid ===== */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .action-btn {
+            padding: 12px 8px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--text);
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+        }
+        .action-btn i { font-size: 16px; }
+        .action-btn:hover { transform: translateY(-2px); background: var(--glass-hover); }
+        .action-btn.sel { border-color: var(--primary); color: var(--primary-light); }
+
+        /* ===== Ledger TX Items ===== */
+        .ledger-tx-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.03);
+        }
+        .ledger-tx-icon {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            font-size: 13px;
+        }
+        .receipt-thumb {
+            width: 100%; max-width: 160px;
+            border-radius: 10px;
+            margin-top: 8px;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+        }
+
+        /* ===== Photo Upload ===== */
+        .photo-upload {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .photo-upload-preview {
+            width: 60px; height: 60px;
+            border-radius: 16px;
+            background: var(--glass);
+            border: 1px dashed var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .photo-upload-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-upload-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        /* ===== Invite Code ===== */
+        .invite-code {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            background: rgba(168, 85, 247, 0.08);
+            border: 2px dashed var(--primary);
+            border-radius: 14px;
+            margin: 14px 0;
+        }
+        .invite-code-text {
+            font-family: monospace;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--primary-light);
+            flex: 1;
+            text-align: center;
+        }
+
+        /* ===== Members ===== */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        .member-card {
+            padding: 16px;
+            text-align: center;
+            transition: all 0.25s;
+        }
+        .member-card:hover { transform: translateY(-3px); }
+        .member-avatar {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            margin: 0 auto 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+        }
+        .member-name { font-weight: 800; font-size: 13px; margin-bottom: 2px; }
+        .member-role { font-size: 11px; margin-bottom: 8px; }
+
+        /* ===== Loan Card ===== */
+        .loan-card {
+            padding: 16px;
+            margin-bottom: 12px;
+            border-right: 3px solid;
+        }
+
+        /* ===== Settings ===== */
+        .settings-section {
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .settings-title {
+            font-size: 15px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .settings-title i { color: var(--primary-light); font-size: 16px; }
+
+        /* ===== Savings / Jar ===== */
+        .savings-card {
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(59,130,246,0.05));
+            border: 1px solid rgba(6,182,212,0.2);
+        }
+        .savings-amount { font-size: 32px; font-weight: 900; color: var(--accent); margin: 8px 0; }
+        .savings-label { font-size: 12px; color: var(--text-muted); }
+        .savings-actions { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
+
+        /* ===== Page Header ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .page-header h2 { font-size: 22px; font-weight: 900; }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .hidden { display: none !important; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            html { font-size: 13px; }
+            .master-summary-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .master-summary-item .value { font-size: 16px; }
+            .master-summary-bottom { grid-template-columns: repeat(2, 1fr); }
+            .quick-actions { grid-template-columns: repeat(3, 1fr); }
+            .bank-cards-grid { grid-template-columns: 1fr; }
+            .ledger-grid { grid-template-columns: repeat(2, 1fr); }
+            .card-grid { grid-template-columns: 1fr; }
+            .auth-box { padding: 28px 20px; }
+            .modal { padding: 20px; }
+            .my-wallet-balance { font-size: 28px; }
+        }
+        @media (max-width: 380px) {
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .master-summary-grid { grid-template-columns: 1fr 1fr; }
+            .master-summary-item:nth-child(3) { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Auth Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box glass">
+            <div class="auth-logo">💎</div>
+            <h1 class="auth-title">مكين Makeen</h1>
+            <p class="auth-subtitle">نظام المحفظة الذكي</p>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">تسجيل الدخول</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">حساب جديد</button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-sign-in-alt"></i> دخول
+                </button>
+            </form>
+            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">الاسم الكامل</label>
+                    <input type="text" class="form-input" id="regName" placeholder="محمد أحمد" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">اسم المستخدم</label>
+                    <input type="text" class="form-input" id="regUsername" placeholder="mohammed123" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" class="form-input" id="regPassword" placeholder="8 أحرف على الأقل" minlength="8" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">تأكيد كلمة المرور</label>
+                    <input type="password" class="form-input" id="regPasswordConfirm" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-user-plus"></i> إنشاء حساب
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>التطبيق يعمل بالكامل على جهازك — بياناتك محمية 🔒</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Selection -->
+    <div id="modeContainer" class="auth-container hidden">
+        <div class="auth-box glass">
+            <div class="auth-logo">🎯</div>
+            <h1 class="auth-title">اختر وضعك</h1>
+            <p class="auth-subtitle">كيف تريد استخدام مكين؟</p>
+            <div class="toggle-group">
+                <div class="toggle-option" onclick="selectMode('solo')">
+                    <i class="fas fa-user"></i>
+                    <h4>وحدي</h4>
+                    <p>محفظة شخصية خاصة بك فقط</p>
+                </div>
+                <div class="toggle-option" onclick="selectMode('family')">
+                    <i class="fas fa-users"></i>
+                    <h4>مع العائلة</h4>
+                    <p>شارك المحفظة مع أفراد عائلتك</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Family Setup -->
+    <div id="familySetupContainer" class="auth-container hidden">
+        <div class="auth-box glass" id="familySetupBox">
+            <div class="auth-logo">👨‍👩‍👧‍👦</div>
+            <h1 class="auth-title">الوضع العائلي</h1>
+            <p class="auth-subtitle">اختر إنشاء عائلة جديدة أو الانضمام لعائلة موجودة</p>
+            <div class="toggle-group">
+                <div class="toggle-option" onclick="showCreateFamily()">
+                    <i class="fas fa-plus-circle"></i>
+                    <h4>إنشاء عائلة</h4>
+                    <p>أنشئ عائلة جديدة وأنت المالك</p>
+                </div>
+                <div class="toggle-option" onclick="showJoinFamily()">
+                    <i class="fas fa-door-open"></i>
+                    <h4>انضمام لعائلة</h4>
+                    <p>ادخل كود الدعوة للانضمام</p>
+                </div>
+            </div>
+            <div id="createFamilyForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">اسم العائلة</label>
+                    <input type="text" class="form-input" id="familyName" placeholder="عائلة الأحمد" required>
+                </div>
+                <button class="btn btn-primary btn-lg" style="width:100%" onclick="createFamily()">
+                    <i class="fas fa-plus"></i> إنشاء العائلة
+                </button>
+            </div>
+            <div id="joinFamilyForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">كود الدعوة</label>
+                    <input type="text" class="form-input" id="inviteCodeInput" placeholder="XXXXXX" maxlength="6" style="text-align:center;letter-spacing:8px;font-size:18px;font-weight:900">
+                </div>
+                <button class="btn btn-primary btn-lg" style="width:100%" onclick="joinFamily()">
+                    <i class="fas fa-paper-plane"></i> إرسال طلب الانضمام
+                </button>
+            </div>
+            <button class="btn btn-secondary" style="width:100%;margin-top:14px" onclick="backToMode()">
+                <i class="fas fa-arrow-right"></i> رجوع
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appContainer" class="hidden">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="app-title">مكين Makeen</div>
+            <div class="user-pill" onclick="showPage('settings')">
+                <div class="avatar" id="topbarAvatar">👤</div>
+                <span id="topbarName">...</span>
+            </div>
+        </div>
+
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar Drawer -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <div class="logo-icon">💎</div>
+                <div class="logo-text">
+                    <h1>مكين Makeen</h1>
+                    <p>Pro 3.0</p>
+                </div>
+            </div>
+            <nav style="flex:1">
+                <div class="nav-item active" onclick="showPage('dashboard')">
+                    <i class="fas fa-home"></i><span>الرئيسية</span>
+                </div>
+                <div class="nav-item" onclick="showPage('accounts')">
+                    <i class="fas fa-book"></i><span>دفتر الحسابات</span>
+                </div>
+                <div class="nav-item" onclick="showPage('personal')">
+                    <i class="fas fa-wallet"></i><span>محفظتي الشخصية</span>
+                </div>
+                <div class="nav-item" onclick="showPage('people')">
+                    <i class="fas fa-address-book"></i><span>الآخرين (سلف وأمانات)</span>
+                </div>
+                <div class="nav-item" onclick="showPage('openaccounts')">
+                    <i class="fas fa-receipt"></i><span>الحسابات المفتوحة</span>
+                </div>
+                <div class="nav-item" onclick="showPage('reminders')">
+                    <i class="fas fa-bell"></i><span>التذكيرات</span>
+                    <span id="sidebarNotifBadge" class="nav-badge hidden">0</span>
+                </div>
+                <div class="nav-item" onclick="showPage('family')">
+                    <i class="fas fa-users"></i><span>العائلة</span>
+                </div>
+                <div class="nav-item" onclick="showPage('logs')">
+                    <i class="fas fa-history"></i><span>سجل العمليات</span>
+                </div>
+                <div class="nav-item" onclick="showPage('settings')">
+                    <i class="fas fa-cog"></i><span>الإعدادات</span>
+                </div>
+            </nav>
+            <div class="user-section">
+                <div class="user-card">
+                    <div class="user-avatar" id="sidebarAvatar">👤</div>
+                    <div class="user-info">
+                        <h4 id="sidebarName">المستخدم</h4>
+                        <p id="sidebarRole">وضع فردي</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="width:100%" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+
+            <!-- Dashboard -->
+            <div id="page-dashboard" class="page active">
+                <div style="margin-bottom:16px">
+                    <h2 style="font-size:22px;font-weight:900;margin-bottom:2px">مرحباً، <span id="dashName">...</span> 👋</h2>
+                    <p style="color:var(--text-muted);font-size:13px" id="dashDate">...</p>
+                </div>
+
+                <!-- Master Summary Card -->
+                <div class="master-summary glass">
+                    <div class="master-summary-grid">
+                        <div class="master-summary-item">
+                            <div class="label">الرصيد</div>
+                            <div class="value balance" id="msBalance">0 ر.س</div>
+                        </div>
+                        <div class="master-summary-item">
+                            <div class="label">الدخل</div>
+                            <div class="value income" id="msIncome">0 ر.س</div>
+                        </div>
+                        <div class="master-summary-item">
+                            <div class="label">المصروفات</div>
+                            <div class="value expense" id="msExpense">0 ر.س</div>
+                        </div>
+                    </div>
+                    <div class="master-summary-bottom">
+                        <div class="mini-stat">
+                            <div class="label">سلف لي</div>
+                            <div class="value" style="color:var(--success)" id="msLoansOut">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">سلف علي</div>
+                            <div class="value" style="color:var(--danger)" id="msLoansIn">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">أمانات عندي</div>
+                            <div class="value" style="color:var(--accent)" id="msTrustsIn">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">أماناتي عند غيري</div>
+                            <div class="value" style="color:var(--warning)" id="msTrustsOut">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">ديوني</div>
+                            <div class="value" style="color:var(--danger)" id="msMyDebts">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">التجميعة</div>
+                            <div class="value" style="color:var(--primary-light)" id="msSavings">0</div>
+                        </div>
+                        <div class="mini-stat" id="msFamilyStat" style="display:none">
+                            <div class="label">أفراد العائلة</div>
+                            <div class="value" style="color:var(--secondary)" id="msFamilyCount">0</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="label">حسابات مفتوحة</div>
+                            <div class="value" style="color:var(--info)" id="msOpenAccs">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="quick-action glass glass-hover" onclick="openQuickAdd('income')">
+                        <i class="fas fa-arrow-down" style="color:var(--success)"></i>
+                        <span>دخل</span>
+                    </div>
+                    <div class="quick-action glass glass-hover" onclick="openQuickAdd('expense')">
+                        <i class="fas fa-arrow-up" style="color:var(--danger)"></i>
+                        <span>مصروف</span>
+                    </div>
+                    <div class="quick-action glass glass-hover" onclick="openQuickAdd('loan')">
+                        <i class="fas fa-hand-holding-dollar" style="color:var(--warning)"></i>
+                        <span>سلفة</span>
+                    </div>
+                    <div class="quick-action glass glass-hover" onclick="openQuickAdd('trust')">
+                        <i class="fas fa-box-open" style="color:var(--accent)"></i>
+                        <span>أمانة</span>
+                    </div>
+                    <div class="quick-action glass glass-hover" onclick="openQuickAdd('saving')">
+                        <i class="fas fa-piggy-bank" style="color:var(--primary-light)"></i>
+                        <span>ادخار</span>
+                    </div>
+                    <div class="quick-action glass glass-hover" onclick="showPage('openaccounts')">
+                        <i class="fas fa-receipt" style="color:var(--info)"></i>
+                        <span>فاتورة</span>
+                    </div>
+                </div>
+
+                <div class="chart-container glass">
+                    <div class="chart-header">
+                        <h3 class="chart-title"><i class="fas fa-chart-pie" style="color:var(--primary-light);margin-left:6px"></i>توزيع المصروفات</h3>
+                        <select class="form-select" style="width:auto;min-width:130px;font-size:12px" id="chartPeriod" onchange="updateCharts()">
+                            <option value="month">هذا الشهر</option>
+                            <option value="3months">آخر 3 أشهر</option>
+                            <option value="year">هذا العام</option>
+                            <option value="all">الكل</option>
+                        </select>
+                    </div>
+                    <div style="height:260px"><canvas id="expenseChart"></canvas></div>
+                </div>
+
+                <div class="chart-container glass">
+                    <div class="chart-header">
+                        <h3 class="chart-title"><i class="fas fa-chart-line" style="color:var(--accent);margin-left:6px"></i>التدفق النقدي</h3>
+                    </div>
+                    <div style="height:240px"><canvas id="flowChart"></canvas></div>
+                </div>
+
+                <div class="glass" style="padding:20px">
+                    <h3 style="font-size:15px;font-weight:900;margin-bottom:14px"><i class="fas fa-clock" style="color:var(--warning);margin-left:6px"></i>آخر النشاطات</h3>
+                    <div id="dashActivity">
+                        <div class="empty-state" style="padding:30px 20px">
+                            <i class="fas fa-inbox"></i>
+                            <h3>لا توجد نشاطات بعد</h3>
+                            <p>ستظهر هنا آخر العمليات من كل الأقسام</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accounts -->
+            <div id="page-accounts" class="page">
+                <div class="page-header">
+                    <h2>دفتر الحسابات 📗</h2>
+                    <button class="btn btn-primary" onclick="openModal('transactionModal')">
+                        <i class="fas fa-plus"></i> عملية جديدة
+                    </button>
+                </div>
+                <p style="color:var(--text-muted);margin-bottom:16px;font-size:13px">
+                    💡 <strong>تلميح:</strong> اختر "الجهة" عند إضافة عملية لتوجيهها تلقائياً للقسم المناسب (شخص، حساب مفتوح، محفظتك...)
+                </p>
+                <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:20px">
+                    <div class="stat-card glass" style="padding:16px">
+                        <div class="stat-label">الدخل الكلي</div>
+                        <div class="stat-value tx-income" style="font-size:20px" id="accTotalIncome">0 ر.س</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:16px">
+                        <div class="stat-label">المصروفات الكلية</div>
+                        <div class="stat-value tx-expense" style="font-size:20px" id="accTotalExpense">0 ر.س</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:16px">
+                        <div class="stat-label">الرصيد</div>
+                        <div class="stat-value" style="font-size:20px" id="accBalance">0 ر.س</div>
+                    </div>
+                </div>
+                <div class="glass" style="padding:20px">
+                    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+                        <select class="form-select" style="width:auto;font-size:13px" id="accFilterType" onchange="renderAccounts()">
+                            <option value="all">الكل</option>
+                            <option value="income">دخل فقط</option>
+                            <option value="expense">مصروفات فقط</option>
+                        </select>
+                        <select class="form-select" style="width:auto;font-size:13px" id="accFilterCategory" onchange="renderAccounts()">
+                            <option value="all">جميع الفئات</option>
+                        </select>
+                        <input type="text" class="form-input" style="width:auto;min-width:160px;font-size:13px" id="accSearch" placeholder="بحث..." oninput="renderAccounts()">
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="accountsTable">
+                            <thead>
+                                <tr><th>التاريخ</th><th>النوع</th><th>الفئة</th><th>الوصف</th><th>المبلغ</th><th>الجهة</th><th>إجراءات</th></tr>
+                            </thead>
+                            <tbody id="accountsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="accountsEmpty" class="empty-state hidden">
+                        <i class="fas fa-book-open"></i>
+                        <h3>لا توجد عمليات مسجلة</h3>
+                        <p>اضغط "عملية جديدة" لتسجيل أول عملية</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Wallet -->
+            <div id="page-personal" class="page">
+                <div class="page-header">
+                    <h2>محفظتي الشخصية 💳</h2>
+                </div>
+
+                <!-- My Wallet Card -->
+                <div class="my-wallet-card">
+                    <div class="my-wallet-top">
+                        <div>
+                            <div class="my-wallet-name" id="pwName">...</div>
+                            <div class="my-wallet-role" id="pwRole">وضع فردي</div>
+                        </div>
+                        <div style="font-size:28px;opacity:0.9"><i class="fas fa-gem"></i></div>
+                    </div>
+                    <div class="my-wallet-mid">
+                        <div class="my-wallet-balance-label">الرصيد المتاح</div>
+                        <div class="my-wallet-balance" id="pwBalance">0 ر.س</div>
+                    </div>
+                    <div class="my-wallet-bottom">
+                        <div class="my-wallet-stat">
+                            <div class="my-wallet-stat-label">التجميعة</div>
+                            <div class="my-wallet-stat-value" id="pwSavings">0 ر.س</div>
+                        </div>
+                        <div class="my-wallet-stat">
+                            <div class="my-wallet-stat-label">إجمالي الديون</div>
+                            <div class="my-wallet-stat-value" style="color:#fca5a5" id="pwDebts">0 ر.س</div>
+                        </div>
+                        <div class="my-wallet-stat">
+                            <div class="my-wallet-stat-label">الدخل هذا الشهر</div>
+                            <div class="my-wallet-stat-value" style="color:#86efac" id="pwIncome">0 ر.س</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Savings Jar -->
+                <div class="savings-card glass">
+                    <div class="savings-label">💰 التجميعة / الادخار</div>
+                    <div class="savings-amount" id="savingsAmount">0 ر.س</div>
+                    <div class="savings-label">ادخر شوي شوي وشوف فلوسك تتجمع!</div>
+                    <div class="savings-actions">
+                        <button class="btn btn-success" onclick="openSavingsModal('add')">
+                            <i class="fas fa-plus"></i> أضف للتجميعة
+                        </button>
+                        <button class="btn btn-warning" onclick="openSavingsModal('spend')">
+                            <i class="fas fa-minus"></i> صرف من التجميعة
+                        </button>
+                    </div>
+                </div>
+
+                <div class="page-header" style="margin-top:24px">
+                    <h3 style="font-size:16px;font-weight:900">ديوني الشخصية</h3>
+                    <button class="btn btn-primary btn-sm" onclick="openPersonalDebtModal()">
+                        <i class="fas fa-plus"></i> دين جديد
+                    </button>
+                </div>
+                <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:16px">
+                    <div class="stat-card glass" style="padding:16px">
+                        <div class="stat-label">إجمالي الديون</div>
+                        <div class="stat-value tx-expense" style="font-size:20px" id="personalTotalDebt">0 ر.س</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:16px">
+                        <div class="stat-label">تم سداده</div>
+                        <div class="stat-value tx-income" style="font-size:20px" id="personalTotalPaid">0 ر.س</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:16px">
+                        <div class="stat-label">الديون النشطة</div>
+                        <div class="stat-value" style="font-size:20px" id="personalActiveCount">0</div>
+                    </div>
+                </div>
+                <div id="personalDebtsList"></div>
+                <div id="personalEmpty" class="empty-state hidden">
+                    <i class="fas fa-wallet"></i>
+                    <h3>ما عليك أي دين مسجل 🎉</h3>
+                    <p>سجل ديونك هنا عشان تتابعها</p>
+                </div>
+            </div>
+
+            <!-- People -->
+            <div id="page-people" class="page">
+                <div class="page-header">
+                    <h2>الآخرين — سلف وأمانات 💳</h2>
+                    <button class="btn btn-primary" onclick="openPersonModal()">
+                        <i class="fas fa-user-plus"></i> شخص جديد
+                    </button>
+                </div>
+                <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:16px">
+                    <div class="stat-card glass" style="padding:14px">
+                        <div class="stat-label">لي عند الناس</div>
+                        <div class="stat-value tx-income" style="font-size:18px" id="peopleTotalOweUs">0 ر.س</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:14px">
+                        <div class="stat-label">علي للناس</div>
+                        <div class="stat-value tx-expense" style="font-size:18px" id="peopleTotalWeOwe">0 ر.س</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:14px">
+                        <div class="stat-label">أمانات عندي</div>
+                        <div class="stat-value" style="font-size:18px;color:var(--accent)" id="peopleTotalTrustHeld">0</div>
+                        <div class="stat-change" style="color:var(--text-muted);font-size:10px" id="peopleTotalTrustHeldSub">0 قطعة</div>
+                    </div>
+                    <div class="stat-card glass" style="padding:14px">
+                        <div class="stat-label">أماناتي عند غيري</div>
+                        <div class="stat-value" style="font-size:18px;color:var(--warning)" id="peopleTotalTrustOut">0</div>
+                        <div class="stat-change" style="color:var(--text-muted);font-size:10px" id="peopleTotalTrustOutSub">0 قطعة</div>
+                    </div>
+                </div>
+                <div class="bank-cards-grid" id="peopleGrid"></div>
+                <div id="peopleEmpty" class="empty-state hidden">
+                    <i class="fas fa-address-book"></i>
+                    <h3>لا يوجد أشخاص مسجلين</h3>
+                    <p>سجل الأشخاص اللي تتعامل معهم بالسلف أو الأمانات</p>
+                </div>
+            </div>
+
+            <!-- Open Accounts -->
+            <div id="page-openaccounts" class="page">
+                <div class="page-header">
+                    <h2>الحسابات المفتوحة 🧾</h2>
+                    <button class="btn btn-primary" onclick="openAddLedgerCategory()">
+                        <i class="fas fa-plus"></i> فئة جديدة
+                    </button>
+                </div>
+                <p style="color:var(--text-muted);margin-bottom:16px;font-size:13px">
+                    كل فئة (بقالة، نت، كهرباء...) لها مجموع واحد. أضف فواتير تتجمع تلقائياً، وسدد من المجموع الكلي مباشرة.
+                </p>
+                <div class="ledger-grid" id="ledgerGrid"></div>
+            </div>
+
+            <!-- Reminders -->
+            <div id="page-reminders" class="page">
+                <div class="page-header">
+                    <h2>التذكيرات والفواتير 🔔</h2>
+                    <button class="btn btn-primary" onclick="openModal('reminderModal')">
+                        <i class="fas fa-plus"></i> تذكير جديد
+                    </button>
+                </div>
+                <div id="remindersList"></div>
+                <div id="remindersEmpty" class="empty-state hidden">
+                    <i class="fas fa-bell"></i>
+                    <h3>لا توجد تذكيرات</h3>
+                    <p>أضف تذكيرات للفواتير والالتزامات</p>
+                </div>
+            </div>
+
+            <!-- Family -->
+            <div id="page-family" class="page">
+                <div class="page-header">
+                    <h2 id="familyTitle">العائلة 👨‍👩‍👧‍👦</h2>
+                    <div style="display:flex;gap:6px">
+                        <button class="btn btn-secondary btn-sm" onclick="copyInviteCode()" id="copyCodeBtn">
+                            <i class="fas fa-copy"></i> نسخ الكود
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('inviteModal')" id="inviteBtn">
+                            <i class="fas fa-user-plus"></i> دعوة
+                        </button>
+                    </div>
+                </div>
+                <div class="glass" style="padding:20px;margin-bottom:20px" id="familyInfoBox">
+                    <div class="invite-code">
+                        <i class="fas fa-key" style="font-size:20px;color:var(--primary-light)"></i>
+                        <div class="invite-code-text" id="familyCodeDisplay">------</div>
+                        <button class="btn btn-secondary btn-sm" onclick="copyInviteCode()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p style="text-align:center;color:var(--text-muted);font-size:13px">شارك هذا الكود مع أفراد عائلتك للانضمام</p>
+                </div>
+                <h3 style="font-size:15px;font-weight:900;margin-bottom:12px">الأعضاء</h3>
+                <div class="members-grid" id="familyMembersGrid"></div>
+                <div id="familyRequestsSection" class="hidden" style="margin-top:24px">
+                    <h3 style="font-size:15px;font-weight:900;margin-bottom:12px">طلبات الانضمام</h3>
+                    <div id="familyRequestsList"></div>
+                </div>
+                <div id="familySwitchSection" style="margin-top:24px">
+                    <div class="settings-section glass">
+                        <div class="settings-title"><i class="fas fa-exchange-alt"></i> تبديل الوضع</div>
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
+                            تقدر تبديل بين الوضع الفردي والعائلي في أي وقت. بياناتك محفوظة.
+                        </p>
+                        <button class="btn btn-secondary" onclick="switchToSolo()" id="switchToSoloBtn">
+                            <i class="fas fa-user"></i> التبديل للوضع الفردي
+                        </button>
+                        <button class="btn btn-primary" onclick="showJoinFromSettings()" id="joinFamilyBtn" style="margin-top:8px">
+                            <i class="fas fa-users"></i> الانضمام لعائلة أخرى
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs -->
+            <div id="page-logs" class="page">
+                <h2 style="font-size:22px;font-weight:900;margin-bottom:20px">سجل العمليات 📝</h2>
+                <div class="glass" style="padding:20px">
+                    <div id="logsList"></div>
+                    <div id="logsEmpty" class="empty-state hidden">
+                        <i class="fas fa-history"></i>
+                        <h3>لا توجد سجلات</h3>
+                        <p>ستظهر هنا جميع العمليات</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div id="page-settings" class="page">
+                <h2 style="font-size:22px;font-weight:900;margin-bottom:20px">الإعدادات ⚙️</h2>
+
+                <div class="settings-section glass">
+                    <div class="settings-title"><i class="fas fa-database"></i> النسخ الاحتياطي</div>
+                    <p style="color:var(--text-muted);margin-bottom:14px;font-size:13px">احفظ بياناتك أو استرجعها من ملف JSON</p>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download"></i> تصدير
+                        </button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                            <i class="fas fa-upload"></i> استيراد
+                        </button>
+                        <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+                    </div>
+                </div>
+
+                <div class="settings-section glass">
+                    <div class="settings-title"><i class="fas fa-users-cog"></i> إدارة العائلة</div>
+                    <div id="settingsFamilyBox">
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
+                            إنشاء عائلة جديدة أو الانضمام لعائلة موجودة
+                        </p>
+                        <div class="toggle-group">
+                            <div class="toggle-option" onclick="createFamilyFromSettings()">
+                                <i class="fas fa-plus-circle"></i>
+                                <h4>إنشاء عائلة</h4>
+                            </div>
+                            <div class="toggle-option" onclick="joinFamilyFromSettings()">
+                                <i class="fas fa-door-open"></i>
+                                <h4>انضمام لعائلة</h4>
+                            </div>
+                        </div>
+                        <div id="settingsJoinForm" class="hidden">
+                            <div class="form-group">
+                                <label class="form-label">كود الدعوة</label>
+                                <input type="text" class="form-input" id="settingsJoinCode" placeholder="XXXXXX" maxlength="6" style="text-align:center;letter-spacing:6px;font-size:16px;font-weight:900">
+                            </div>
+                            <button class="btn btn-primary" style="width:100%" onclick="submitJoinFromSettings()">
+                                <i class="fas fa-paper-plane"></i> إرسال طلب الانضمام
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section glass">
+                    <div class="settings-title"><i class="fas fa-cloud"></i> ربط Firebase (اختياري)</div>
+                    <p style="color:var(--text-muted);margin-bottom:14px;font-size:13px">ربط بـ Firebase لمزامنة البيانات بين الأجهزة</p>
+                    <div class="form-group">
+                        <label class="form-label">Firebase Config (JSON)</label>
+                        <textarea class="form-textarea" id="firebaseConfig" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}' rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveFirebaseConfig()">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                </div>
+
+                <div class="settings-section glass">
+                    <div class="settings-title"><i class="fas fa-trash"></i> إدارة البيانات</div>
+                    <p style="color:var(--text-muted);margin-bottom:14px;font-size:13px">احذف البيانات بحذر — لا يمكن التراجع!</p>
+                    <button class="btn btn-danger" onclick="clearAllData()">
+                        <i class="fas fa-trash-alt"></i> مسح جميع البيانات
+                    </button>
+                </div>
+
+                <div class="settings-section glass">
+                    <div class="settings-title"><i class="fas fa-info-circle"></i> عن التطبيق</div>
+                    <p style="color:var(--text-muted);font-size:13px;line-height:1.8">
+                        <strong>مكين Makeen 3.0</strong><br>
+                        نظام محفظة ذكي يعمل بالكامل على متصفحك.<br>
+                        بياناتك تُحفظ محلياً ولا تُرسل لأي خادم.<br>
+                        يمكنك ربط Firebase لاحقاً للمزامنة بين الأجهزة.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Transaction Modal (with Destination) -->
+    <div class="modal-overlay" id="transactionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">عملية جديدة</h3>
+                <button class="modal-close" onclick="closeModal('transactionModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveTransaction(event)">
+                <div class="form-group">
+                    <label class="form-label">النوع</label>
+                    <div class="toggle-group">
+                        <div class="toggle-option active" onclick="setTxType('income')" id="txTypeIncome">
+                            <i class="fas fa-arrow-down" style="color:var(--success)"></i>
+                            <h4>دخل</h4>
+                        </div>
+                        <div class="toggle-option" onclick="setTxType('expense')" id="txTypeExpense">
+                            <i class="fas fa-arrow-up" style="color:var(--danger)"></i>
+                            <h4>مصروف</h4>
+                        </div>
+                    </div>
+                    <input type="hidden" id="txType" value="income">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" class="form-input" id="txAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الفئة</label>
+                    <select class="form-select" id="txCategory" required>
+                        <option value="">اختر الفئة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوصف</label>
+                    <input type="text" class="form-input" id="txDesc" placeholder="وصف العملية..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الجهة (اختياري — توجيه ذكي)</label>
+                    <select class="form-select" id="txDestination" onchange="handleTxDestination()">
+                        <option value="">عام — دفتر الحسابات فقط</option>
+                        <option value="person">شخص محدد (سلفة / أمانة)</option>
+                        <option value="ledger">حساب مفتوح (فاتورة)</option>
+                        <option value="savings">التجميعة / الادخار</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="txPersonGroup">
+                    <label class="form-label">اختر الشخص</label>
+                    <select class="form-select" id="txPersonId"></select>
+                </div>
+                <div class="form-group hidden" id="txLedgerGroup">
+                    <label class="form-label">اختر الحساب المفتوح</label>
+                    <select class="form-select" id="txLedgerId"></select>
+                </div>
+                <div class="form-group hidden" id="txActionGroup">
+                    <label class="form-label">نوع العملية</label>
+                    <select class="form-select" id="txPersonAction">
+                        <option value="loan_given">سلّفته / أقرضته</option>
+                        <option value="loan_taken">أخذت دين منه</option>
+                        <option value="trust_given">أعطيته أمانة</option>
+                        <option value="trust_received">أعطاني أمانة (عندي)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">التاريخ</label>
+                    <input type="date" class="form-input" id="txDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ العملية
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Person Modal -->
+    <div class="modal-overlay" id="personModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">شخص جديد</h3>
+                <button class="modal-close" onclick="closeModal('personModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="savePerson(event)">
+                <input type="hidden" id="personId">
+                <div class="photo-upload">
+                    <div class="photo-upload-preview" id="personPhotoPreview">👤</div>
+                    <div class="photo-upload-actions">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('personPhotoInput').click()">
+                            <i class="fas fa-camera"></i> صورة
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="clearPersonPhoto()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <input type="file" accept="image/*" class="hidden" id="personPhotoInput" onchange="handlePersonPhoto(event)">
+                    </div>
+                </div>
+                <input type="hidden" id="personPhoto">
+                <div class="form-group">
+                    <label class="form-label">الاسم</label>
+                    <input type="text" class="form-input" id="personName" placeholder="اسم الشخص" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">رقم الجوال (اختياري)</label>
+                    <input type="tel" class="form-input" id="personPhone" placeholder="05xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ملاحظات</label>
+                    <textarea class="form-textarea" id="personNotes" placeholder="ملاحظات..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Person Detail Modal -->
+    <div class="modal-overlay" id="personDetailModal">
+        <div class="modal" style="max-width:600px">
+            <div class="modal-header">
+                <h3 class="modal-title" id="personDetailName">الشخص</h3>
+                <div style="display:flex;gap:6px">
+                    <button class="modal-close" onclick="openPersonModal(document.getElementById('personDetailId').value)"><i class="fas fa-pen"></i></button>
+                    <button class="modal-close" onclick="closeModal('personDetailModal')"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <input type="hidden" id="personDetailId">
+            <div id="personDetailCard" style="margin-bottom:16px"></div>
+            <div class="action-grid">
+                <button type="button" class="action-btn" style="border-color:var(--success);color:var(--success)" onclick="openPersonAction('loan_given')">
+                    <i class="fas fa-hand-holding-dollar"></i> سلّفته
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--success);color:var(--success)" onclick="openPersonAction('loan_given_repaid')">
+                    <i class="fas fa-rotate-left"></i> رجع لي
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--danger);color:var(--danger)" onclick="openPersonAction('loan_taken')">
+                    <i class="fas fa-hand-holding-dollar"></i> أخذت منه
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--danger);color:var(--danger)" onclick="openPersonAction('loan_taken_repaid')">
+                    <i class="fas fa-rotate-left"></i> رجعت له
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--accent);color:var(--accent)" onclick="openPersonAction('trust_given')">
+                    <i class="fas fa-box-open"></i> أعطيته أمانة
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--accent);color:var(--accent)" onclick="openPersonAction('trust_given_returned')">
+                    <i class="fas fa-box"></i> استرجعتها
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--warning);color:var(--warning)" onclick="openPersonAction('trust_received')">
+                    <i class="fas fa-box-open"></i> أعطاني أمانة
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--warning);color:var(--warning)" onclick="openPersonAction('trust_received_returned')">
+                    <i class="fas fa-box"></i> أخذها مني
+                </button>
+            </div>
+            <h4 style="font-size:14px;font-weight:900;margin-bottom:10px;margin-top:16px">السجل التفصيلي</h4>
+            <div id="personDetailLedger"></div>
+        </div>
+    </div>
+
+    <!-- Person Action Modal -->
+    <div class="modal-overlay" id="personActionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="personActionTitle">عملية جديدة</h3>
+                <button class="modal-close" onclick="closeModal('personActionModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="savePersonAction(event)">
+                <input type="hidden" id="paPersonId">
+                <input type="hidden" id="paType">
+                <div class="form-group" id="paOpenItemGroup">
+                    <label class="form-label">اختر العملية المفتوحة</label>
+                    <select class="form-select" id="paOpenItem"></select>
+                </div>
+                <div class="form-group" id="paItemGroup">
+                    <label class="form-label" id="paItemLabel">الوصف / العنصر</label>
+                    <input type="text" class="form-input" id="paItem" placeholder="مثال: سلفة مشتريات، لابتوب...">
+                </div>
+                <div class="form-group" id="paAmountGroup">
+                    <label class="form-label" id="paAmountLabel">المبلغ</label>
+                    <input type="number" class="form-input" id="paAmount" placeholder="0.00" step="0.01" min="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">التاريخ</label>
+                    <input type="date" class="form-input" id="paDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">صورة إثبات (اختياري)</label>
+                    <div class="photo-upload">
+                        <div class="photo-upload-preview" id="paReceiptPreview"><i class="fas fa-receipt"></i></div>
+                        <div class="photo-upload-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('paReceiptInput').click()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="clearReceiptPhoto()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <input type="file" accept="image/*" class="hidden" id="paReceiptInput" onchange="handleReceiptPhoto(event)">
+                        </div>
+                    </div>
+                    <input type="hidden" id="paReceipt">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ملاحظات (اختياري)</label>
+                    <textarea class="form-textarea" id="paNotes" placeholder="ملاحظات..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Personal Debt Modal -->
+    <div class="modal-overlay" id="personalDebtModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="personalDebtTitle">دين جديد علي</h3>
+                <button class="modal-close" onclick="closeModal('personalDebtModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="savePersonalDebt(event)">
+                <input type="hidden" id="pdId">
+                <div class="form-group">
+                    <label class="form-label">جهة/سبب الدين</label>
+                    <input type="text" class="form-input" id="pdTitle" placeholder="مثال: بنك الراجحي..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ الكلي</label>
+                    <input type="number" class="form-input" id="pdAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">تاريخ الاستحقاق (اختياري)</label>
+                    <input type="date" class="form-input" id="pdDueDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ملاحظات</label>
+                    <textarea class="form-textarea" id="pdNotes" placeholder="ملاحظات..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="payPersonalDebtModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">سداد جزء من الدين</h3>
+                <button class="modal-close" onclick="closeModal('payPersonalDebtModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="payPersonalDebt(event)">
+                <input type="hidden" id="pdPayId">
+                <div class="form-group">
+                    <label class="form-label">المتبقي</label>
+                    <div class="form-input" id="pdPayRemaining" style="background:rgba(255,255,255,0.03);font-weight:800">0 ر.س</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">مبلغ السداد</label>
+                    <input type="number" class="form-input" id="pdPayAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-check"></i> تأكيد السداد
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Savings Modal -->
+    <div class="modal-overlay" id="savingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="savingsModalTitle">التجميعة</h3>
+                <button class="modal-close" onclick="closeModal('savingsModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveSavingsAction(event)">
+                <input type="hidden" id="savingsActionType">
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" class="form-input" id="savingsAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوصف (اختياري)</label>
+                    <input type="text" class="form-input" id="savingsDesc" placeholder="مثال: باقي الراتب...">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> تأكيد
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ledger Category Modal (with custom icon) -->
+    <div class="modal-overlay" id="ledgerCategoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">فئة حساب جديدة</h3>
+                <button class="modal-close" onclick="closeModal('ledgerCategoryModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveLedgerCategory(event)">
+                <div class="form-group">
+                    <label class="form-label">اسم الفئة</label>
+                    <input type="text" class="form-input" id="lcName" placeholder="مثال: صيدلية، بنزين..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">أيقونة جاهزة</label>
+                    <select class="form-select" id="lcIcon" onchange="document.getElementById('lcCustomIcon').value=''">
+                        <option value="fa-basket-shopping">🛒 بقالة</option>
+                        <option value="fa-wifi">📶 إنترنت</option>
+                        <option value="fa-bolt">⚡ كهرباء</option>
+                        <option value="fa-droplet">💧 ماء</option>
+                        <option value="fa-mobile-screen">📱 جوال</option>
+                        <option value="fa-prescription-bottle-medical">💊 صيدلية</option>
+                        <option value="fa-gas-pump">⛽ بنزين</option>
+                        <option value="fa-soap">🧼 مغسلة</option>
+                        <option value="fa-utensils">🍽️ مطعم</option>
+                        <option value="fa-car">🚗 سيارة</option>
+                        <option value="fa-graduation-cap">🎓 تعليم</option>
+                        <option value="fa-receipt">🧾 أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">أو أيقونة مخصصة (FontAwesome)</label>
+                    <input type="text" class="form-input" id="lcCustomIcon" placeholder="مثال: fa-coffee" oninput="document.getElementById('lcIcon').value=''">
+                    <p style="font-size:11px;color:var(--text-muted);margin-top:4px">اكتب اسم الأيقونة من FontAwesome مثل: fa-coffee, fa-gamepad...</p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ الفئة
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ledger Detail Modal -->
+    <div class="modal-overlay" id="ledgerDetailModal">
+        <div class="modal" style="max-width:600px">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ledgerDetailName">حساب</h3>
+                <button class="modal-close" onclick="closeModal('ledgerDetailModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="hidden" id="ledgerDetailId">
+            <div class="glass" style="padding:18px;text-align:center;margin-bottom:16px">
+                <div class="stat-label">إجمالي المستحق حالياً</div>
+                <div class="stat-value" style="font-size:28px;color:var(--warning)" id="ledgerDetailBalance">0 ر.س</div>
+            </div>
+            <div class="action-grid" style="grid-template-columns:1fr 1fr">
+                <button type="button" class="action-btn" style="border-color:var(--danger);color:var(--danger)" onclick="openLedgerTx('invoice')">
+                    <i class="fas fa-plus"></i> إضافة فاتورة
+                </button>
+                <button type="button" class="action-btn" style="border-color:var(--success);color:var(--success)" onclick="openLedgerTx('payment')">
+                    <i class="fas fa-check"></i> تسديد من الحساب
+                </button>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" style="margin-bottom:14px" onclick="deleteLedgerCategory()">
+                <i class="fas fa-trash"></i> حذف الفئة
+            </button>
+            <h4 style="font-size:14px;font-weight:900;margin-bottom:10px">سجل الفواتير والتسديدات</h4>
+            <div id="ledgerDetailTxList"></div>
+        </div>
+    </div>
+
+    <!-- Ledger TX Modal -->
+    <div class="modal-overlay" id="ledgerTxModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="ledgerTxTitle">إضافة فاتورة</h3>
+                <button class="modal-close" onclick="closeModal('ledgerTxModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveLedgerTx(event)">
+                <input type="hidden" id="ltAccountId">
+                <input type="hidden" id="ltType">
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" class="form-input" id="ltAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوصف (اختياري)</label>
+                    <input type="text" class="form-input" id="ltDesc" placeholder="وصف...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">التاريخ</label>
+                    <input type="date" class="form-input" id="ltDate">
+                </div>
+                <div class="form-group" id="ltReceiptGroup">
+                    <label class="form-label">صورة الفاتورة (اختياري)</label>
+                    <div class="photo-upload">
+                        <div class="photo-upload-preview" id="ltReceiptPreview"><i class="fas fa-receipt"></i></div>
+                        <div class="photo-upload-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('ltReceiptInput').click()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="clearLtReceiptPhoto()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <input type="file" accept="image/*" class="hidden" id="ltReceiptInput" onchange="handleLtReceiptPhoto(event)">
+                        </div>
+                    </div>
+                    <input type="hidden" id="ltReceipt">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reminder Modal -->
+    <div class="modal-overlay" id="reminderModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">تذكير جديد</h3>
+                <button class="modal-close" onclick="closeModal('reminderModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveReminder(event)">
+                <div class="form-group">
+                    <label class="form-label">العنوان</label>
+                    <input type="text" class="form-input" id="remTitle" placeholder="مثال: فاتورة الكهرباء" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" class="form-input" id="remAmount" placeholder="0.00" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">تاريخ الاستحقاق</label>
+                    <input type="date" class="form-input" id="remDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">التكرار</label>
+                    <select class="form-select" id="remRepeat">
+                        <option value="none">بدون تكرار</option>
+                        <option value="daily">يومي</option>
+                        <option value="weekly">أسبوعي</option>
+                        <option value="monthly">شهري</option>
+                        <option value="yearly">سنوي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ملاحظات</label>
+                    <textarea class="form-textarea" id="remNotes" placeholder="ملاحظات..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ التذكير
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Invite Modal -->
+    <div class="modal-overlay" id="inviteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">دعوة عضو جديد</h3>
+                <button class="modal-close" onclick="closeModal('inviteModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="text-align:center;padding:16px 0">
+                <div class="invite-code" style="margin:0 0 14px 0">
+                    <div class="invite-code-text" id="modalInviteCode">------</div>
+                    <button class="btn btn-secondary btn-sm" onclick="copyInviteCode()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <p style="color:var(--text-muted);font-size:13px">شارك هذا الكود مع الشخص اللي تبيه ينضم</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Add Modal -->
+    <div class="modal-overlay" id="quickAddModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="quickAddTitle">إضافة سريعة</h3>
+                <button class="modal-close" onclick="closeModal('quickAddModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveQuickAdd(event)">
+                <input type="hidden" id="quickAddType">
+                <div class="form-group" id="quickAddCategoryGroup">
+                    <label class="form-label">الفئة</label>
+                    <select class="form-select" id="quickAddCategory">
+                        <option value="">اختر الفئة</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="quickAddPersonGroup">
+                    <label class="form-label">الشخص</label>
+                    <select class="form-select" id="quickAddPerson"></select>
+                </div>
+                <div class="form-group hidden" id="quickAddActionGroup">
+                    <label class="form-label">نوع العملية</label>
+                    <select class="form-select" id="quickAddAction">
+                        <option value="loan_given">سلّفته</option>
+                        <option value="loan_taken">أخذت منه</option>
+                        <option value="trust_given">أعطيته أمانة</option>
+                        <option value="trust_received">أعطاني أمانة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ</label>
+                    <input type="number" class="form-input" id="quickAddAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوصف</label>
+                    <input type="text" class="form-input" id="quickAddDesc" placeholder="وصف..." required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div class="modal-overlay" id="imgLightbox" onclick="closeModal('imgLightbox')" style="align-items:center">
+        <img id="imgLightboxSrc" src="" style="max-width:95%;max-height:85vh;border-radius:16px">
+    </div>
+
+
+    <script>
+    // ==================== DATA STORE ====================
+    const DB = {
+        get(key) {
+            try { return JSON.parse(localStorage.getItem('fw_' + key)) || null; }
+            catch(e) { return null; }
+        },
+        set(key, value) {
+            localStorage.setItem('fw_' + key, JSON.stringify(value));
+        },
+        remove(key) {
+            localStorage.removeItem('fw_' + key);
+        }
+    };
+
+    let currentUser = null;
+    let currentFamily = null;
+    let expenseChart = null;
+    let flowChart = null;
+
+    const LEDGER_ICONS = {
+        'fa-basket-shopping':'🛒','fa-wifi':'📶','fa-bolt':'⚡','fa-droplet':'💧',
+        'fa-mobile-screen':'📱','fa-prescription-bottle-medical':'💊','fa-gas-pump':'⛽',
+        'fa-soap':'🧼','fa-utensils':'🍽️','fa-car':'🚗','fa-graduation-cap':'🎓','fa-receipt':'🧾'
+    };
+    const PA_LABELS = {
+        loan_given: { title: 'سلّفته / أقرضته', item: 'وصف السلفة', badge: 'سلفة', color: 'success' },
+        loan_taken: { title: 'أخذت دين منه', item: 'وصف الدين', badge: 'دين', color: 'danger' },
+        trust_given: { title: 'أعطيته أمانة', item: 'اسم الأمانة', badge: 'أمانة عنده', color: 'info' },
+        trust_received: { title: 'أعطاني أمانة (عندي)', item: 'اسم الأمانة', badge: 'أمانة عندي', color: 'warning' }
+    };
+    const INCOME_CATS = ['راتب', 'مكافأة', 'هبة', 'استثمار', 'بيع', 'أخرى'];
+    const EXPENSE_CATS = ['بقالة', 'مواصلات', 'فواتير', 'صحة', 'تعليم', 'ترفيه', 'تسوق', 'إيجار', 'أخرى'];
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        const user = DB.get('currentUser');
+        if (user) {
+            currentUser = user;
+            const family = currentUser.familyId ? DB.get('family_' + user.familyId) : null;
+            currentFamily = family || null;
+            showApp();
+        }
+        document.getElementById('txDate').valueAsDate = new Date();
+        document.getElementById('remDate').valueAsDate = new Date();
+    });
+
+    // ==================== AUTH ====================
+    function showAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+        document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const users = DB.get('users') || {};
+        const user = Object.values(users).find(u => u.email === email && u.password === password);
+        if (!user) { showToast('خطأ في البريد أو كلمة المرور', 'error'); return; }
+        currentUser = user;
+        DB.set('currentUser', user);
+        if (user.familyId) currentFamily = DB.get('family_' + user.familyId) || null;
+        showApp();
+        showToast('تم تسجيل الدخول بنجاح', 'success');
+    }
+
+    function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const username = document.getElementById('regUsername').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regPasswordConfirm').value;
+        if (password !== confirm) { showToast('كلمات المرور غير متطابقة', 'error'); return; }
+        let users = DB.get('users') || {};
+        if (Object.values(users).some(u => u.email === email)) { showToast('البريد مستخدم', 'error'); return; }
+        if (Object.values(users).some(u => u.username === username)) { showToast('اسم المستخدم مستخدم', 'error'); return; }
+        const user = {
+            id: generateId(), name, username, email, password,
+            familyId: null, role: 'owner', mode: null,
+            createdAt: new Date().toISOString()
+        };
+        users[user.id] = user;
+        DB.set('users', users);
+        currentUser = user;
+        DB.set('currentUser', user);
+        showToast('تم إنشاء الحساب', 'success');
+        document.getElementById('authContainer').classList.add('hidden');
+        document.getElementById('modeContainer').classList.remove('hidden');
+    }
+
+    function logout() {
+        currentUser = null; currentFamily = null;
+        DB.remove('currentUser');
+        location.reload();
+    }
+
+    // ==================== MODE SELECTION ====================
+    function selectMode(mode) {
+        if (mode === 'solo') {
+            currentUser.mode = 'solo';
+            let users = DB.get('users') || {};
+            users[currentUser.id] = currentUser;
+            DB.set('users', users);
+            DB.set('currentUser', currentUser);
+            showApp();
+            showToast('تم تفعيل الوضع الفردي', 'success');
+        } else {
+            document.getElementById('modeContainer').classList.add('hidden');
+            document.getElementById('familySetupContainer').classList.remove('hidden');
+        }
+    }
+
+    function backToMode() {
+        document.getElementById('familySetupContainer').classList.add('hidden');
+        document.getElementById('modeContainer').classList.remove('hidden');
+    }
+
+    function showCreateFamily() {
+        document.getElementById('createFamilyForm').classList.remove('hidden');
+        document.getElementById('joinFamilyForm').classList.add('hidden');
+    }
+    function showJoinFamily() {
+        document.getElementById('createFamilyForm').classList.add('hidden');
+        document.getElementById('joinFamilyForm').classList.remove('hidden');
+    }
+
+    function createFamily() {
+        const name = document.getElementById('familyName').value.trim();
+        if (!name) { showToast('أدخل اسم العائلة', 'error'); return; }
+        const code = generateCode();
+        const family = {
+            id: generateId(), name, code, ownerId: currentUser.id,
+            members: [{ userId: currentUser.id, role: 'owner', name: currentUser.name, joinedAt: new Date().toISOString() }],
+            requests: [], createdAt: new Date().toISOString()
+        };
+        DB.set('family_' + family.id, family);
+        currentUser.familyId = family.id;
+        currentUser.mode = 'family';
+        currentUser.role = 'owner';
+        let users = DB.get('users') || {};
+        users[currentUser.id] = currentUser;
+        DB.set('users', users);
+        DB.set('currentUser', currentUser);
+        currentFamily = family;
+        showApp();
+        showToast('تم إنشاء العائلة! الكود: ' + code, 'success');
+    }
+
+    function joinFamily() {
+        const code = document.getElementById('inviteCodeInput').value.trim().toUpperCase();
+        if (!code || code.length !== 6) { showToast('أدخل كود صحيح من 6 أحرف', 'error'); return; }
+        submitJoinRequest(code);
+    }
+
+    function submitJoinRequest(code) {
+        const families = Object.keys(localStorage).filter(k => k.startsWith('fw_family_')).map(k => DB.get(k.replace('fw_', '')));
+        const family = families.find(f => f && f.code === code);
+        if (!family) { showToast('كود غير صحيح', 'error'); return; }
+        if (family.members.some(m => m.userId === currentUser.id)) { showToast('أنت عضو بالفعل', 'warning'); return; }
+        if (family.requests.some(r => r.userId === currentUser.id)) { showToast('طلبك قيد المراجعة', 'warning'); return; }
+        family.requests.push({
+            userId: currentUser.id, name: currentUser.name, username: currentUser.username,
+            requestedAt: new Date().toISOString()
+        });
+        DB.set('family_' + family.id, family);
+        showToast('تم إرسال طلب الانضمام', 'success');
+    }
+
+    function approveRequest(requestUserId) {
+        if (!currentFamily || currentFamily.ownerId !== currentUser.id) { showToast('ليس لديك صلاحية', 'error'); return; }
+        const req = currentFamily.requests.find(r => r.userId === requestUserId);
+        if (!req) return;
+        currentFamily.requests = currentFamily.requests.filter(r => r.userId !== requestUserId);
+        currentFamily.members.push({ userId: req.userId, role: 'editor', name: req.name, joinedAt: new Date().toISOString() });
+        DB.set('family_' + currentFamily.id, currentFamily);
+        let users = DB.get('users') || {};
+        if (users[req.userId]) {
+            users[req.userId].familyId = currentFamily.id;
+            users[req.userId].mode = 'family';
+            users[req.userId].role = 'editor';
+            DB.set('users', users);
+        }
+        renderFamily();
+        showToast('تم قبول العضو', 'success');
+        addLog('قبول عضو', req.name + ' انضم للعائلة');
+    }
+
+    function rejectRequest(requestUserId) {
+        if (!currentFamily || currentFamily.ownerId !== currentUser.id) return;
+        currentFamily.requests = currentFamily.requests.filter(r => r.userId !== requestUserId);
+        DB.set('family_' + currentFamily.id, currentFamily);
+        renderFamily();
+        showToast('تم رفض الطلب', 'warning');
+    }
+
+    // ==================== APP NAVIGATION ====================
+    function showApp() {
+        document.getElementById('authContainer').classList.add('hidden');
+        document.getElementById('modeContainer').classList.add('hidden');
+        document.getElementById('familySetupContainer').classList.add('hidden');
+        document.getElementById('appContainer').classList.remove('hidden');
+
+        document.getElementById('sidebarName').textContent = currentUser.name;
+        document.getElementById('sidebarAvatar').textContent = currentUser.name.charAt(0);
+        document.getElementById('topbarName').textContent = currentUser.name;
+        document.getElementById('topbarAvatar').textContent = currentUser.name.charAt(0);
+        document.getElementById('dashName').textContent = currentUser.name;
+        document.getElementById('dashDate').textContent = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('pwName').textContent = currentUser.name;
+
+        if (currentUser.mode === 'family' && currentFamily) {
+            document.getElementById('sidebarRole').textContent = 'عائلة: ' + currentFamily.name;
+            document.getElementById('pwRole').textContent = 'عائلة: ' + currentFamily.name;
+            document.getElementById('msFamilyStat').style.display = 'block';
+            document.getElementById('familyInfoBox').style.display = 'block';
+            document.getElementById('copyCodeBtn').style.display = 'inline-flex';
+            document.getElementById('inviteBtn').style.display = 'inline-flex';
+            document.getElementById('familyTitle').textContent = currentFamily.name + ' 👨‍👩‍👧‍👦';
+            document.getElementById('familyCodeDisplay').textContent = currentFamily.code;
+            document.getElementById('modalInviteCode').textContent = currentFamily.code;
+            document.getElementById('switchToSoloBtn').style.display = 'inline-flex';
+            document.getElementById('settingsFamilyBox').style.display = 'none';
+        } else {
+            document.getElementById('sidebarRole').textContent = 'وضع فردي';
+            document.getElementById('pwRole').textContent = 'وضع فردي';
+            document.getElementById('msFamilyStat').style.display = 'none';
+            document.getElementById('familyInfoBox').style.display = 'none';
+            document.getElementById('copyCodeBtn').style.display = 'none';
+            document.getElementById('inviteBtn').style.display = 'none';
+            document.getElementById('familyTitle').textContent = 'العائلة 👨‍👩‍👧‍👦';
+            document.getElementById('switchToSoloBtn').style.display = 'none';
+            document.getElementById('settingsFamilyBox').style.display = 'block';
+        }
+        updateDashboard();
+        renderAccounts();
+        renderPeople();
+        renderPersonal();
+        renderLedgerAccounts();
+        renderReminders();
+        renderFamily();
+        renderLogs();
+        updateNotifBadge();
+        populateSelects();
+    }
+
+    let currentPage = 'dashboard';
+    function showPage(page) {
+        currentPage = page;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const el = document.getElementById('page-' + page);
+        if (el) el.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageMap = ['dashboard','accounts','personal','people','openaccounts','reminders','family','logs','settings'];
+        const idx = pageMap.indexOf(page);
+        if (idx >= 0 && navItems[idx]) navItems[idx].classList.add('active');
+
+        if (page === 'dashboard') updateDashboard();
+        if (page === 'accounts') renderAccounts();
+        if (page === 'people') renderPeople();
+        if (page === 'personal') renderPersonal();
+        if (page === 'openaccounts') renderLedgerAccounts();
+        if (page === 'reminders') renderReminders();
+        if (page === 'family') renderFamily();
+        if (page === 'logs') renderLogs();
+
+        toggleSidebar(false);
+    }
+
+    function toggleSidebar(force) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const isOpen = sidebar.classList.contains('open');
+        const shouldOpen = force !== undefined ? force : !isOpen;
+        sidebar.classList.toggle('open', shouldOpen);
+        overlay.classList.toggle('active', shouldOpen);
+    }
+
+    // ==================== DASHBOARD ====================
+    function updateDashboard() {
+        const txs = getTransactions();
+        const now = new Date();
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const monthTxs = txs.filter(t => new Date(t.date) >= monthStart);
+        const income = monthTxs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+        const expense = monthTxs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+        const balance = income - expense;
+
+        // Master Summary
+        document.getElementById('msBalance').textContent = formatCurrency(balance);
+        document.getElementById('msIncome').textContent = formatCurrency(income);
+        document.getElementById('msExpense').textContent = formatCurrency(expense);
+
+        // Loans & Trusts
+        const pledger = getPersonLedger();
+        const loansOut = pledger.filter(l => l.type === 'loan_given' && l.status === 'active').reduce((s, l) => s + l.remaining, 0);
+        const loansIn = pledger.filter(l => l.type === 'loan_taken' && l.status === 'active').reduce((s, l) => s + l.remaining, 0);
+        const trustsIn = pledger.filter(l => l.type === 'trust_received' && l.status === 'active').length;
+        const trustsOut = pledger.filter(l => l.type === 'trust_given' && l.status === 'active').length;
+        document.getElementById('msLoansOut').textContent = formatCurrency(loansOut);
+        document.getElementById('msLoansIn').textContent = formatCurrency(loansIn);
+        document.getElementById('msTrustsIn').textContent = trustsIn;
+        document.getElementById('msTrustsOut').textContent = trustsOut;
+
+        // Personal debts
+        const pdebts = getPersonalDebts().filter(d => d.status === 'active').reduce((s, d) => s + d.remaining, 0);
+        document.getElementById('msMyDebts').textContent = formatCurrency(pdebts);
+
+        // Savings
+        const savings = getSavings();
+        document.getElementById('msSavings').textContent = formatCurrency(savings);
+
+        // Family
+        if (currentFamily) {
+            document.getElementById('msFamilyCount').textContent = currentFamily.members.length;
+        }
+
+        // Open accounts count
+        document.getElementById('msOpenAccs').textContent = getLedgerAccounts().length;
+
+        // Account page stats
+        document.getElementById('accTotalIncome').textContent = formatCurrency(income);
+        document.getElementById('accTotalExpense').textContent = formatCurrency(expense);
+        document.getElementById('accBalance').textContent = formatCurrency(balance);
+
+        // Personal wallet card
+        document.getElementById('pwBalance').textContent = formatCurrency(balance);
+        document.getElementById('pwSavings').textContent = formatCurrency(savings);
+        document.getElementById('pwDebts').textContent = formatCurrency(pdebts);
+        document.getElementById('pwIncome').textContent = formatCurrency(income);
+        document.getElementById('savingsAmount').textContent = formatCurrency(savings);
+
+        updateCharts();
+        renderActivity();
+    }
+
+    function renderActivity() {
+        const logs = getLogs().slice(0, 8);
+        const container = document.getElementById('dashActivity');
+        if (logs.length === 0) {
+            container.innerHTML = '<div class="empty-state" style="padding:24px 20px"><i class="fas fa-inbox"></i><h3>لا توجد نشاطات بعد</h3><p>ستظهر هنا آخر العمليات من كل الأقسام</p></div>';
+            return;
+        }
+        container.innerHTML = logs.map(log => `
+            <div class="activity-item">
+                <div class="activity-icon" style="background:${log.color || 'var(--glass)'};color:${log.iconColor || 'var(--text)'}">
+                    <i class="fas ${log.icon || 'fa-info'}"></i>
+                </div>
+                <div class="activity-content">
+                    <h4>${log.title}</h4>
+                    <p>${log.desc}</p>
+                </div>
+                <div class="activity-time">${timeAgo(log.time)}</div>
+            </div>
+        `).join('');
+    }
+
+    // ==================== CHARTS ====================
+    function updateCharts() {
+        const period = document.getElementById('chartPeriod').value;
+        const txs = getTransactions();
+        let filtered = txs;
+        const now = new Date();
+        if (period === 'month') {
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            filtered = txs.filter(t => new Date(t.date) >= start);
+        } else if (period === '3months') {
+            const start = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+            filtered = txs.filter(t => new Date(t.date) >= start);
+        } else if (period === 'year') {
+            const start = new Date(now.getFullYear(), 0, 1);
+            filtered = txs.filter(t => new Date(t.date) >= start);
+        }
+        const expenses = filtered.filter(t => t.type === 'expense');
+        const cats = {};
+        expenses.forEach(t => { cats[t.category] = (cats[t.category] || 0) + t.amount; });
+        const catLabels = Object.keys(cats);
+        const catData = Object.values(cats);
+        const ctx1 = document.getElementById('expenseChart');
+        if (expenseChart) expenseChart.destroy();
+        expenseChart = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: catLabels.length ? catLabels : ['لا توجد بيانات'],
+                datasets: [{
+                    data: catData.length ? catData : [1],
+                    backgroundColor: ['#a855f7', '#ec4899', '#06b6d4', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#14b8a6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#f1f5f9', font: { family: 'Tajawal', size: 11 }, boxWidth: 12 } }
+                }
+            }
+        });
+        const months = {};
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const key = d.toLocaleDateString('ar-SA', { month: 'short' });
+            months[key] = { income: 0, expense: 0 };
+        }
+        filtered.forEach(t => {
+            const d = new Date(t.date);
+            const key = d.toLocaleDateString('ar-SA', { month: 'short' });
+            if (months[key]) {
+                if (t.type === 'income') months[key].income += t.amount;
+                else months[key].expense += t.amount;
+            }
+        });
+        const ctx2 = document.getElementById('flowChart');
+        if (flowChart) flowChart.destroy();
+        flowChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(months),
+                datasets: [
+                    { label: 'الدخل', data: Object.values(months).map(m => m.income), backgroundColor: '#22c55e', borderRadius: 6 },
+                    { label: 'المصروفات', data: Object.values(months).map(m => m.expense), backgroundColor: '#ef4444', borderRadius: 6 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#f1f5f9', font: { family: 'Tajawal', size: 11 } } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                }
+            }
+        });
+    }
+
+    // ==================== TRANSACTIONS (with Smart Destination) ====================
+    function setTxType(type) {
+        document.getElementById('txType').value = type;
+        document.getElementById('txTypeIncome').classList.toggle('active', type === 'income');
+        document.getElementById('txTypeExpense').classList.toggle('active', type === 'expense');
+        populateCategories();
+    }
+    function populateCategories() {
+        const type = document.getElementById('txType').value;
+        const select = document.getElementById('txCategory');
+        const cats = type === 'income' ? INCOME_CATS : EXPENSE_CATS;
+        select.innerHTML = '<option value="">اختر الفئة</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function handleTxDestination() {
+        const dest = document.getElementById('txDestination').value;
+        document.getElementById('txPersonGroup').classList.toggle('hidden', dest !== 'person');
+        document.getElementById('txLedgerGroup').classList.toggle('hidden', dest !== 'ledger');
+        document.getElementById('txActionGroup').classList.toggle('hidden', dest !== 'person');
+        if (dest === 'person') {
+            const sel = document.getElementById('txPersonId');
+            const people = getPeople();
+            sel.innerHTML = people.map(p => `<option value="${p.id}">${p.name}</option>`).join('') || '<option value="">لا يوجد أشخاص</option>';
+        }
+        if (dest === 'ledger') {
+            const sel = document.getElementById('txLedgerId');
+            const accs = getLedgerAccounts();
+            sel.innerHTML = accs.map(a => `<option value="${a.id}">${a.name}</option>`).join('') || '<option value="">لا يوجد حسابات</option>';
+        }
+    }
+
+    function saveTransaction(e) {
+        e.preventDefault();
+        const dest = document.getElementById('txDestination').value;
+        const amount = parseFloat(document.getElementById('txAmount').value);
+        const type = document.getElementById('txType').value;
+        const category = document.getElementById('txCategory').value;
+        const desc = document.getElementById('txDesc').value;
+        const date = document.getElementById('txDate').value;
+
+        if (dest === 'person') {
+            const personId = document.getElementById('txPersonId').value;
+            const action = document.getElementById('txPersonAction').value;
+            if (!personId) { showToast('اختر الشخص', 'error'); return; }
+            const person = getPeople().find(p => p.id === personId);
+            let items = getPersonLedger();
+            const isMoney = action.startsWith('loan');
+            items.push({
+                id: generateId(), personId, personName: person.name, type: action,
+                item: desc || (isMoney ? 'سلفة' : 'أمانة'), amount: isMoney ? amount : 0,
+                remaining: isMoney ? amount : 0, status: 'active',
+                notes: 'تمت من دفتر الحسابات', date, userId: currentUser.id,
+                createdAt: new Date().toISOString()
+            });
+            setPersonLedger(items);
+            addLog(PA_LABELS[action].title, `${currentUser.name}: ${PA_LABELS[action].title} — ${person.name} ${isMoney ? formatCurrency(amount) : ''}`);
+            showToast('تمت العملية وتم توجيهها للشخص', 'success');
+        } else if (dest === 'ledger') {
+            const accId = document.getElementById('txLedgerId').value;
+            if (!accId) { showToast('اختر الحساب المفتوح', 'error'); return; }
+            let accs = getLedgerAccounts();
+            const acc = accs.find(a => a.id === accId);
+            if (type === 'expense') {
+                acc.balance = Math.round((acc.balance + amount) * 100) / 100;
+                setLedgerAccounts(accs);
+                let txs = getLedgerTxs();
+                txs.push({ id: generateId(), accountId: accId, type: 'invoice', amount, desc, date, userId: currentUser.id, createdAt: new Date().toISOString() });
+                setLedgerTxs(txs);
+                addLog('فاتورة جديدة', `${currentUser.name}: ${acc.name} — ${formatCurrency(amount)}`);
+                showToast('تمت إضافة الفاتورة للحساب المفتوح', 'success');
+            } else {
+                showToast('الحساب المفتوح يقبل المصروفات فقط', 'warning');
+                return;
+            }
+        } else if (dest === 'savings') {
+            if (type === 'income') {
+                addSavings(amount, desc || 'إضافة من دفتر الحسابات');
+                showToast('تمت الإضافة للتجميعة', 'success');
+            } else {
+                const sav = getSavings();
+                if (amount > sav) { showToast('المبلغ أكبر من التجميعة', 'error'); return; }
+                addSavings(-amount, desc || 'صرف من دفتر الحسابات');
+                showToast('تم الصرف من التجميعة', 'success');
+            }
+        } else {
+            const tx = {
+                id: generateId(), type, amount, category, desc, date,
+                userId: currentUser.id, userName: currentUser.name, createdAt: new Date().toISOString()
+            };
+            let txs = getTransactions(); txs.push(tx); setTransactions(txs);
+            addLog(type === 'income' ? 'دخل جديد' : 'مصروف جديد',
+                `${currentUser.name} أضاف ${type === 'income' ? 'دخل' : 'مصروف'} ${category} بقيمة ${formatCurrency(amount)}`);
+            showToast('تم حفظ العملية', 'success');
+        }
+        closeModal('transactionModal');
+        e.target.reset();
+        document.getElementById('txDate').valueAsDate = new Date();
+        document.getElementById('txPersonGroup').classList.add('hidden');
+        document.getElementById('txLedgerGroup').classList.add('hidden');
+        document.getElementById('txActionGroup').classList.add('hidden');
+        updateDashboard();
+        renderAccounts();
+        renderPeople();
+        renderLedgerAccounts();
+        renderPersonal();
+    }
+
+    function deleteTransaction(id) {
+        if (!confirm('هل أنت متأكد من الحذف؟')) return;
+        let txs = getTransactions().filter(t => t.id !== id);
+        setTransactions(txs);
+        showToast('تم الحذف', 'success');
+        renderAccounts();
+        updateDashboard();
+    }
+
+    function renderAccounts() {
+        const typeFilter = document.getElementById('accFilterType').value;
+        const catFilter = document.getElementById('accFilterCategory').value;
+        const search = document.getElementById('accSearch').value.toLowerCase();
+        let txs = getTransactions();
+        if (typeFilter !== 'all') txs = txs.filter(t => t.type === typeFilter);
+        if (catFilter !== 'all') txs = txs.filter(t => t.category === catFilter);
+        if (search) txs = txs.filter(t => (t.desc + t.category + (t.userName||'')).toLowerCase().includes(search));
+        txs.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const tbody = document.getElementById('accountsTableBody');
+        const empty = document.getElementById('accountsEmpty');
+        const table = document.getElementById('accountsTable');
+        if (txs.length === 0) {
+            tbody.innerHTML = '';
+            empty.classList.remove('hidden');
+            table.classList.add('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+        table.classList.remove('hidden');
+        tbody.innerHTML = txs.map(t => `
+            <tr>
+                <td>${formatDate(t.date)}</td>
+                <td><span class="badge ${t.type === 'income' ? 'badge-success' : 'badge-danger'}">${t.type === 'income' ? 'دخل' : 'مصروف'}</span></td>
+                <td>${t.category}</td>
+                <td>${t.desc}</td>
+                <td class="${t.type === 'income' ? 'tx-income' : 'tx-expense'}" style="font-weight:800">${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}</td>
+                <td>${t.userName || 'أنت'}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="deleteTransaction('${t.id}')"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+        const catSelect = document.getElementById('accFilterCategory');
+        const allCats = [...new Set(getTransactions().map(t => t.category))];
+        catSelect.innerHTML = '<option value="all">جميع الفئات</option>' + allCats.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    // ==================== PEOPLE (with counters) ====================
+    function handlePersonPhoto(e) {
+        const file = e.target.files[0];
+        readImageAsBase64(file, data => {
+            document.getElementById('personPhoto').value = data;
+            document.getElementById('personPhotoPreview').innerHTML = `<img src="${data}">`;
+        });
+    }
+    function clearPersonPhoto() {
+        document.getElementById('personPhoto').value = '';
+        document.getElementById('personPhotoPreview').innerHTML = '👤';
+    }
+    function openPersonModal(id) {
+        document.getElementById('personModal').querySelector('.modal-title').textContent = id ? 'تعديل الشخص' : 'شخص جديد';
+        if (id) {
+            const p = getPeople().find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('personId').value = p.id;
+            document.getElementById('personName').value = p.name;
+            document.getElementById('personPhone').value = p.phone || '';
+            document.getElementById('personNotes').value = p.notes || '';
+            document.getElementById('personPhoto').value = p.photo || '';
+            document.getElementById('personPhotoPreview').innerHTML = p.photo ? `<img src="${p.photo}">` : '👤';
+        } else {
+            document.getElementById('personId').value = '';
+            document.getElementById('personName').value = '';
+            document.getElementById('personPhone').value = '';
+            document.getElementById('personNotes').value = '';
+            clearPersonPhoto();
+        }
+        openModal('personModal');
+    }
+    function savePerson(e) {
+        e.preventDefault();
+        const id = document.getElementById('personId').value;
+        let people = getPeople();
+        if (id) {
+            const p = people.find(x => x.id === id);
+            p.name = document.getElementById('personName').value.trim();
+            p.phone = document.getElementById('personPhone').value.trim();
+            p.notes = document.getElementById('personNotes').value.trim();
+            p.photo = document.getElementById('personPhoto').value;
+        } else {
+            people.push({
+                id: generateId(),
+                name: document.getElementById('personName').value.trim(),
+                phone: document.getElementById('personPhone').value.trim(),
+                notes: document.getElementById('personNotes').value.trim(),
+                photo: document.getElementById('personPhoto').value,
+                userId: currentUser.id, createdAt: new Date().toISOString()
+            });
+        }
+        setPeople(people);
+        closeModal('personModal');
+        e.target.reset();
+        clearPersonPhoto();
+        showToast('تم الحفظ', 'success');
+        renderPeople();
+        populateSelects();
+    }
+
+    function personSummary(personId) {
+        const items = getPersonLedger().filter(l => l.personId === personId);
+        const loanGiven = items.filter(l => l.type === 'loan_given' && l.status === 'active');
+        const loanTaken = items.filter(l => l.type === 'loan_taken' && l.status === 'active');
+        const trustGiven = items.filter(l => l.type === 'trust_given' && l.status === 'active');
+        const trustReceived = items.filter(l => l.type === 'trust_received' && l.status === 'active');
+        const loanGivenValue = loanGiven.reduce((s, l) => s + l.remaining, 0);
+        const loanTakenValue = loanTaken.reduce((s, l) => s + l.remaining, 0);
+        const trustGivenValue = trustGiven.reduce((s, l) => s + (l.amount || 0), 0);
+        const trustReceivedValue = trustReceived.reduce((s, l) => s + (l.amount || 0), 0);
+        return {
+            loanGiven, loanTaken, trustGiven, trustReceived,
+            loanGivenValue, loanTakenValue, trustGivenValue, trustReceivedValue,
+            net: loanGivenValue - loanTakenValue,
+            loanGivenCount: loanGiven.length, loanTakenCount: loanTaken.length,
+            trustGivenCount: trustGiven.length, trustReceivedCount: trustReceived.length
+        };
+    }
+
+    function renderPeople() {
+        const people = getPeople();
+        const grid = document.getElementById('peopleGrid');
+        const empty = document.getElementById('peopleEmpty');
+        let totalOweUs = 0, totalWeOwe = 0, totalTrustHeldCount = 0, totalTrustOutCount = 0;
+        let totalTrustHeldValue = 0, totalTrustOutValue = 0;
+
+        if (people.length === 0) {
+            grid.innerHTML = '';
+            empty.classList.remove('hidden');
+        } else {
+            empty.classList.add('hidden');
+            grid.innerHTML = people.map(p => {
+                const s = personSummary(p.id);
+                totalOweUs += s.loanGivenValue;
+                totalWeOwe += s.loanTakenValue;
+                totalTrustHeldCount += s.trustReceivedCount;
+                totalTrustOutCount += s.trustGivenCount;
+                totalTrustHeldValue += s.trustReceivedValue;
+                totalTrustOutValue += s.trustGivenValue;
+
+                const cardClass = s.net > 0 ? 'positive' : (s.net < 0 ? 'negative' : '');
+                const avatar = p.photo ? `<img src="${p.photo}">` : (p.name || '?').charAt(0);
+                const counters = [];
+                if (s.loanGivenCount) counters.push(`<span class="bank-card-counter">💰 سلف لي ${s.loanGivenCount}</span>`);
+                if (s.loanTakenCount) counters.push(`<span class="bank-card-counter">💸 ديون ${s.loanTakenCount}</span>`);
+                if (s.trustGivenCount) counters.push(`<span class="bank-card-counter">📦 أماناتي ${s.trustGivenCount}</span>`);
+                if (s.trustReceivedCount) counters.push(`<span class="bank-card-counter">📪 عندي ${s.trustReceivedCount}</span>`);
+
+                return `
+                <div class="bank-card ${cardClass}" onclick="openPersonDetail('${p.id}')">
+                    <div class="bank-card-top">
+                        <div class="bank-card-person">
+                            <div class="bank-card-avatar">${avatar}</div>
+                            <div>
+                                <div class="bank-card-name">${p.name}</div>
+                                <div class="bank-card-sub">${p.phone || 'بدون رقم'}</div>
+                            </div>
+                        </div>
+                        <div class="bank-card-chip"><i class="fas fa-wallet"></i></div>
+                    </div>
+                    <div class="bank-card-mid">
+                        <div class="bank-card-number">•••• •••• •••• ${p.id.slice(-4).toUpperCase()}</div>
+                    </div>
+                    <div class="bank-card-bottom">
+                        <div>
+                            <div class="bank-card-balance-label">${s.net >= 0 ? 'له عندي' : 'علي له'}</div>
+                            <div class="bank-card-balance-value">${formatCurrency(Math.abs(s.net))}</div>
+                        </div>
+                        <div class="bank-card-counters">${counters.join('')}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        document.getElementById('peopleTotalOweUs').textContent = formatCurrency(totalOweUs);
+        document.getElementById('peopleTotalWeOwe').textContent = formatCurrency(totalWeOwe);
+        document.getElementById('peopleTotalTrustHeld').textContent = totalTrustHeldValue > 0 ? formatCurrency(totalTrustHeldValue) : totalTrustHeldCount;
+        document.getElementById('peopleTotalTrustOut').textContent = totalTrustOutValue > 0 ? formatCurrency(totalTrustOutValue) : totalTrustOutCount;
+        document.getElementById('peopleTotalTrustHeldSub').textContent = totalTrustHeldCount + ' قطعة';
+        document.getElementById('peopleTotalTrustOutSub').textContent = totalTrustOutCount + ' قطعة';
+    }
+
+    function openPersonDetail(personId) {
+        const p = getPeople().find(x => x.id === personId);
+        if (!p) return;
+        document.getElementById('personDetailId').value = personId;
+        document.getElementById('personDetailName').textContent = p.name;
+        const s = personSummary(personId);
+        const cardClass = s.net > 0 ? 'positive' : (s.net < 0 ? 'negative' : '');
+        const avatar = p.photo ? `<img src="${p.photo}">` : (p.name || '?').charAt(0);
+        const counters = [];
+        if (s.loanGivenCount) counters.push(`<span class="bank-card-counter">💰 سلف لي ${s.loanGivenCount} • ${formatCurrency(s.loanGivenValue)}</span>`);
+        if (s.loanTakenCount) counters.push(`<span class="bank-card-counter">💸 ديون ${s.loanTakenCount} • ${formatCurrency(s.loanTakenValue)}</span>`);
+        if (s.trustGivenCount) counters.push(`<span class="bank-card-counter">📦 أماناتي ${s.trustGivenCount}</span>`);
+        if (s.trustReceivedCount) counters.push(`<span class="bank-card-counter">📪 عندي ${s.trustReceivedCount}</span>`);
+
+        document.getElementById('personDetailCard').innerHTML = `
+            <div class="bank-card ${cardClass}" style="cursor:default">
+                <div class="bank-card-top">
+                    <div class="bank-card-person">
+                        <div class="bank-card-avatar">${avatar}</div>
+                        <div>
+                            <div class="bank-card-name">${p.name}</div>
+                            <div class="bank-card-sub">${p.phone || 'بدون رقم'}</div>
+                        </div>
+                    </div>
+                    <div class="bank-card-chip"><i class="fas fa-wallet"></i></div>
+                </div>
+                <div class="bank-card-bottom">
+                    <div>
+                        <div class="bank-card-balance-label">${s.net >= 0 ? 'له عندي المستحق' : 'علي له'}</div>
+                        <div class="bank-card-balance-value">${formatCurrency(Math.abs(s.net))}</div>
+                    </div>
+                    <div class="bank-card-counters">${counters.join('')}</div>
+                </div>
+            </div>`;
+        renderPersonLedgerList(personId);
+        openModal('personDetailModal');
+    }
+
+    function ledgerTypeIcon(type) {
+        if (type === 'loan_given') return { icon: 'fa-hand-holding-dollar', bg: 'rgba(34,197,94,0.15)', color: 'var(--success)' };
+        if (type === 'loan_taken') return { icon: 'fa-hand-holding-dollar', bg: 'rgba(239,68,68,0.15)', color: 'var(--danger)' };
+        if (type === 'trust_given') return { icon: 'fa-box-open', bg: 'rgba(59,130,246,0.15)', color: 'var(--info)' };
+        return { icon: 'fa-box', bg: 'rgba(245,158,11,0.15)', color: 'var(--warning)' };
+    }
+    function ledgerTypeLabel(type) {
+        return { loan_given: 'سلفة مني', loan_taken: 'دين علي', trust_given: 'أمانة عنده', trust_received: 'أمانة عندي' }[type] || type;
+    }
+
+    function renderPersonLedgerList(personId) {
+        const items = getPersonLedger().filter(l => l.personId === personId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const container = document.getElementById('personDetailLedger');
+        if (items.length === 0) {
+            container.innerHTML = '<div class="empty-state" style="padding:24px"><i class="fas fa-inbox"></i><h3>لا يوجد سجل بعد</h3><p>استخدم الأزرار فوق لإضافة سلفة أو أمانة</p></div>';
+            return;
+        }
+        container.innerHTML = items.map(it => {
+            const st = ledgerTypeIcon(it.type);
+            const isMoney = it.type === 'loan_given' || it.type === 'loan_taken';
+            const statusBadge = it.status === 'active'
+                ? `<span class="badge badge-warning">${isMoney ? 'متبقي ' + formatCurrency(it.remaining) : 'قائمة'}</span>`
+                : `<span class="badge badge-success">${isMoney ? 'مسدد بالكامل' : 'مُرجعة'}</span>`;
+            const receipt = it.receipt ? `<img src="${it.receipt}" class="receipt-thumb" onclick="event.stopPropagation();openLightbox('${it.receipt}')">` : '';
+            return `
+            <div class="ledger-tx-item" style="flex-direction:column;align-items:stretch">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <div class="ledger-tx-icon" style="background:${st.bg};color:${st.color}"><i class="fas ${st.icon}"></i></div>
+                    <div style="flex:1">
+                        <div style="font-weight:800;font-size:13px">${it.item || ledgerTypeLabel(it.type)}</div>
+                        <div style="font-size:11px;color:var(--text-muted)">${ledgerTypeLabel(it.type)} • ${formatDate(it.createdAt)}</div>
+                    </div>
+                    <div style="text-align:left">
+                        <div style="font-weight:800;font-size:14px">${it.amount ? formatCurrency(it.amount) : ''}</div>
+                        ${statusBadge}
+                    </div>
+                </div>
+                ${receipt}
+                ${it.notes ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px">${it.notes}</div>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    // ==================== PERSON ACTIONS ====================
+    let currentPAType = null;
+    function openPersonAction(actionType) {
+        const personId = document.getElementById('personDetailId').value;
+        document.getElementById('paPersonId').value = personId;
+        document.getElementById('paType').value = actionType;
+        currentPAType = actionType;
+        document.getElementById('paDate').value = new Date().toISOString().split('T')[0];
+        clearReceiptPhoto();
+        document.getElementById('paNotes').value = '';
+        const isNew = ['loan_given', 'loan_taken', 'trust_given', 'trust_received'].includes(actionType);
+        document.getElementById('paOpenItemGroup').classList.toggle('hidden', isNew);
+        document.getElementById('paItemGroup').classList.toggle('hidden', !isNew);
+        document.getElementById('paAmountGroup').classList.toggle('hidden', false);
+        if (isNew) {
+            const label = PA_LABELS[actionType];
+            document.getElementById('personActionTitle').textContent = label.title;
+            document.getElementById('paItemLabel').textContent = label.item;
+            document.getElementById('paItem').value = '';
+            document.getElementById('paAmount').value = '';
+            const isTrust = actionType.startsWith('trust');
+            document.getElementById('paAmountLabel').textContent = isTrust ? 'القيمة التقديرية (اختياري)' : 'المبلغ';
+            document.getElementById('paAmount').required = !isTrust;
+            document.getElementById('paItem').required = isTrust;
+        } else {
+            const openType = actionType === 'loan_given_repaid' ? 'loan_given' : actionType === 'loan_taken_repaid' ? 'loan_taken' : actionType === 'trust_given_returned' ? 'trust_given' : 'trust_received';
+            const titles = { loan_given_repaid: 'رجع لي السلف', loan_taken_repaid: 'رجعت الدين', trust_given_returned: 'استرجعت أمانتي', trust_received_returned: 'أخذ أمانته مني' };
+            document.getElementById('personActionTitle').textContent = titles[actionType];
+            const openItems = getPersonLedger().filter(l => l.personId === personId && l.type === openType && l.status === 'active');
+            const sel = document.getElementById('paOpenItem');
+            if (openItems.length === 0) {
+                sel.innerHTML = '<option value="">لا يوجد شيء مفتوح حالياً</option>';
+            } else {
+                sel.innerHTML = openItems.map(it => `<option value="${it.id}">${it.item || ledgerTypeLabel(it.type)} — ${it.type.startsWith('loan') ? formatCurrency(it.remaining) + ' متبقي' : formatDate(it.createdAt)}</option>`).join('');
+            }
+            const isMoneyType = openType.startsWith('loan');
+            document.getElementById('paAmountLabel').textContent = 'المبلغ';
+            document.getElementById('paAmountGroup').classList.toggle('hidden', !isMoneyType);
+            document.getElementById('paAmount').required = isMoneyType;
+            document.getElementById('paItem').required = false;
+            if (isMoneyType) document.getElementById('paAmount').value = '';
+        }
+        openModal('personActionModal');
+    }
+
+    function handleReceiptPhoto(e) {
+        const file = e.target.files[0];
+        readImageAsBase64(file, data => {
+            document.getElementById('paReceipt').value = data;
+            document.getElementById('paReceiptPreview').innerHTML = `<img src="${data}">`;
+        });
+    }
+    function clearReceiptPhoto() {
+        document.getElementById('paReceipt').value = '';
+        document.getElementById('paReceiptPreview').innerHTML = '<i class="fas fa-receipt"></i>';
+    }
+
+    function savePersonAction(e) {
+        e.preventDefault();
+        const personId = document.getElementById('paPersonId').value;
+        const type = document.getElementById('paType').value;
+        const person = getPeople().find(p => p.id === personId);
+        const notes = document.getElementById('paNotes').value.trim();
+        const receipt = document.getElementById('paReceipt').value;
+        const date = document.getElementById('paDate').value || new Date().toISOString().split('T')[0];
+        let items = getPersonLedger();
+
+        if (['loan_given', 'loan_taken', 'trust_given', 'trust_received'].includes(type)) {
+            const amount = parseFloat(document.getElementById('paAmount').value) || 0;
+            const itemDesc = document.getElementById('paItem').value.trim();
+            if (type.startsWith('loan') && amount <= 0) { showToast('أدخل المبلغ', 'error'); return; }
+            items.push({
+                id: generateId(), personId, personName: person.name, type,
+                item: itemDesc, amount, remaining: amount, status: 'active',
+                notes, receipt, date, userId: currentUser.id, createdAt: new Date().toISOString()
+            });
+            setPersonLedger(items);
+            addLog(PA_LABELS[type].title, `${currentUser.name}: ${PA_LABELS[type].title} — ${person.name}${amount ? ' بقيمة ' + formatCurrency(amount) : ''}`);
+        } else {
+            const openId = document.getElementById('paOpenItem').value;
+            if (!openId) { showToast('لا يوجد شيء مفتوح لإغلاقه', 'error'); return; }
+            const it = items.find(x => x.id === openId);
+            if (!it) return;
+            if (it.type.startsWith('loan')) {
+                const amount = parseFloat(document.getElementById('paAmount').value) || 0;
+                if (amount <= 0) { showToast('أدخل المبلغ', 'error'); return; }
+                if (amount > it.remaining + 0.001) { showToast('المبلغ أكبر من المتبقي', 'error'); return; }
+                it.remaining = Math.round((it.remaining - amount) * 100) / 100;
+                it.payments = it.payments || [];
+                it.payments.push({ amount, date, receipt, notes });
+                if (it.remaining <= 0.009) it.status = 'settled';
+            } else {
+                it.status = 'settled';
+                it.returnedAt = new Date().toISOString();
+                it.returnNotes = notes;
+                if (receipt) it.returnReceipt = receipt;
+            }
+            setPersonLedger(items);
+            addLog('تحديث', `${currentUser.name}: تحديث سجل ${person.name}`);
+        }
+        closeModal('personActionModal');
+        e.target.reset();
+        clearReceiptPhoto();
+        showToast('تم الحفظ بنجاح', 'success');
+        renderPeople();
+        openPersonDetail(personId);
+        updateDashboard();
+    }
+
+    // ==================== PERSONAL DEBTS & SAVINGS ====================
+    function openPersonalDebtModal(id) {
+        document.getElementById('personalDebtTitle').textContent = id ? 'تعديل الدين' : 'دين جديد علي';
+        if (id) {
+            const d = getPersonalDebts().find(x => x.id === id);
+            if (!d) return;
+            document.getElementById('pdId').value = d.id;
+            document.getElementById('pdTitle').value = d.title;
+            document.getElementById('pdAmount').value = d.amount;
+            document.getElementById('pdDueDate').value = d.dueDate || '';
+            document.getElementById('pdNotes').value = d.notes || '';
+        } else {
+            document.getElementById('pdId').value = '';
+            document.getElementById('pdTitle').value = '';
+            document.getElementById('pdAmount').value = '';
+            document.getElementById('pdDueDate').value = '';
+            document.getElementById('pdNotes').value = '';
+        }
+        openModal('personalDebtModal');
+    }
+    function savePersonalDebt(e) {
+        e.preventDefault();
+        const id = document.getElementById('pdId').value;
+        let debts = getPersonalDebts();
+        const amount = parseFloat(document.getElementById('pdAmount').value);
+        if (id) {
+            const d = debts.find(x => x.id === id);
+            d.title = document.getElementById('pdTitle').value.trim();
+            d.amount = amount;
+            if (d.remaining > amount) d.remaining = amount;
+            d.dueDate = document.getElementById('pdDueDate').value;
+            d.notes = document.getElementById('pdNotes').value.trim();
+        } else {
+            debts.push({
+                id: generateId(), title: document.getElementById('pdTitle').value.trim(),
+                amount, remaining: amount, dueDate: document.getElementById('pdDueDate').value,
+                notes: document.getElementById('pdNotes').value.trim(),
+                status: 'active', payments: [], userId: currentUser.id, createdAt: new Date().toISOString()
+            });
+            addLog('دين جديد', `${currentUser.name} سجل دين علي بقيمة ${formatCurrency(amount)}`);
+        }
+        setPersonalDebts(debts);
+        closeModal('personalDebtModal');
+        e.target.reset();
+        showToast('تم الحفظ', 'success');
+        renderPersonal();
+        updateDashboard();
+    }
+    function openPayPersonalDebt(id) {
+        const d = getPersonalDebts().find(x => x.id === id);
+        if (!d) return;
+        document.getElementById('pdPayId').value = id;
+        document.getElementById('pdPayRemaining').textContent = formatCurrency(d.remaining);
+        openModal('payPersonalDebtModal');
+    }
+    function payPersonalDebt(e) {
+        e.preventDefault();
+        const id = document.getElementById('pdPayId').value;
+        const amount = parseFloat(document.getElementById('pdPayAmount').value);
+        let debts = getPersonalDebts();
+        const d = debts.find(x => x.id === id);
+        if (!d) return;
+        if (amount > d.remaining) { showToast('المبلغ أكبر من المتبقي', 'error'); return; }
+        d.remaining = Math.round((d.remaining - amount) * 100) / 100;
+        d.payments = d.payments || [];
+        d.payments.push({ amount, date: new Date().toISOString() });
+        if (d.remaining <= 0.009) d.status = 'settled';
+        setPersonalDebts(debts);
+        closeModal('payPersonalDebtModal');
+        e.target.reset();
+        showToast('تم تسجيل السداد', 'success');
+        addLog('سداد دين', `${currentUser.name} سدد ${formatCurrency(amount)} من دين ${d.title}`);
+        renderPersonal();
+        updateDashboard();
+    }
+    function deletePersonalDebt(id) {
+        if (!confirm('هل أنت متأكد من حذف هذا الدين؟')) return;
+        setPersonalDebts(getPersonalDebts().filter(d => d.id !== id));
+        showToast('تم الحذف', 'success');
+        renderPersonal();
+        updateDashboard();
+    }
+
+    // Savings
+    function openSavingsModal(action) {
+        document.getElementById('savingsModalTitle').textContent = action === 'add' ? 'إضافة للتجميعة 💰' : 'صرف من التجميعة 💸';
+        document.getElementById('savingsActionType').value = action;
+        document.getElementById('savingsAmount').value = '';
+        document.getElementById('savingsDesc').value = '';
+        openModal('savingsModal');
+    }
+    function saveSavingsAction(e) {
+        e.preventDefault();
+        const action = document.getElementById('savingsActionType').value;
+        const amount = parseFloat(document.getElementById('savingsAmount').value);
+        const desc = document.getElementById('savingsDesc').value.trim();
+        if (action === 'spend') {
+            const current = getSavings();
+            if (amount > current) { showToast('المبلغ أكبر من التجميعة', 'error'); return; }
+            addSavings(-amount, desc || 'صرف من التجميعة');
+            showToast('تم الصرف من التجميعة', 'success');
+            addLog('صرف من التجميعة', `${currentUser.name} صرف ${formatCurrency(amount)} من التجميعة`);
+        } else {
+            addSavings(amount, desc || 'إضافة للتجميعة');
+            showToast('تمت الإضافة للتجميعة', 'success');
+            addLog('إضافة للتجميعة', `${currentUser.name} أضاف ${formatCurrency(amount)} للتجميعة`);
+        }
+        closeModal('savingsModal');
+        e.target.reset();
+        renderPersonal();
+        updateDashboard();
+    }
+
+    function renderPersonal() {
+        const debts = getPersonalDebts().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const container = document.getElementById('personalDebtsList');
+        const empty = document.getElementById('personalEmpty');
+        const totalDebt = debts.reduce((s, d) => s + d.amount, 0);
+        const totalPaid = debts.reduce((s, d) => s + (d.amount - d.remaining), 0);
+        const activeCount = debts.filter(d => d.status === 'active').length;
+        document.getElementById('personalTotalDebt').textContent = formatCurrency(totalDebt);
+        document.getElementById('personalTotalPaid').textContent = formatCurrency(totalPaid);
+        document.getElementById('personalActiveCount').textContent = activeCount;
+        if (debts.length === 0) {
+            container.innerHTML = '';
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+        container.innerHTML = debts.map(d => {
+            const pct = d.amount > 0 ? Math.round(((d.amount - d.remaining) / d.amount) * 100) : 0;
+            return `
+            <div class="loan-card glass" style="border-color:${d.status === 'active' ? 'var(--danger)' : 'var(--success)'}">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+                    <div>
+                        <div style="font-weight:800;font-size:14px">${d.title}</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-top:3px">${d.dueDate ? 'الاستحقاق: ' + formatDate(d.dueDate) : 'بدون تاريخ استحقاق'}</div>
+                        ${d.notes ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px">${d.notes}</div>` : ''}
+                    </div>
+                    <div style="text-align:left">
+                        <div style="font-weight:900;font-size:16px;color:${d.status === 'active' ? 'var(--danger)' : 'var(--success)'}">${formatCurrency(d.remaining)}</div>
+                        <div style="font-size:10px;color:var(--text-muted)">من أصل ${formatCurrency(d.amount)}</div>
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.05);border-radius:8px;height:6px;margin-top:12px;overflow:hidden">
+                    <div style="background:var(--success);height:100%;width:${pct}%"></div>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
+                    ${d.status === 'active' ? `<button class="btn btn-success btn-sm" onclick="openPayPersonalDebt('${d.id}')"><i class="fas fa-check"></i> سداد</button>` : '<span class="badge badge-success">مسدد بالكامل</span>'}
+                    <button class="btn btn-secondary btn-sm" onclick="openPersonalDebtModal('${d.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm" onclick="deletePersonalDebt('${d.id}')"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ==================== OPEN LEDGER ACCOUNTS ====================
+    function openAddLedgerCategory() {
+        document.getElementById('ledgerCategoryModal').querySelector('form').reset();
+        openModal('ledgerCategoryModal');
+    }
+    function saveLedgerCategory(e) {
+        e.preventDefault();
+        const name = document.getElementById('lcName').value.trim();
+        let icon = document.getElementById('lcIcon').value;
+        const customIcon = document.getElementById('lcCustomIcon').value.trim();
+        if (customIcon) icon = customIcon;
+        if (!icon) icon = 'fa-receipt';
+        let accs = getLedgerAccounts();
+        accs.push({ id: generateId(), name, icon, balance: 0 });
+        setLedgerAccounts(accs);
+        closeModal('ledgerCategoryModal');
+        showToast('تمت إضافة الفئة', 'success');
+        renderLedgerAccounts();
+        updateDashboard();
+    }
+    function deleteLedgerCategory() {
+        const id = document.getElementById('ledgerDetailId').value;
+        if (!confirm('حذف هذه الفئة سيحذف كل الفواتير. متأكد؟')) return;
+        setLedgerAccounts(getLedgerAccounts().filter(a => a.id !== id));
+        setLedgerTxs(getLedgerTxs().filter(t => t.accountId !== id));
+        closeModal('ledgerDetailModal');
+        showToast('تم الحذف', 'success');
+        renderLedgerAccounts();
+        updateDashboard();
+    }
+    function renderLedgerAccounts() {
+        const accs = getLedgerAccounts();
+        const grid = document.getElementById('ledgerGrid');
+        grid.innerHTML = accs.map(a => {
+            const emoji = LEDGER_ICONS[a.icon] || '🧾';
+            return `
+            <div class="ledger-card glass glass-hover" onclick="openLedgerDetail('${a.id}')">
+                <div class="ledger-card-icon"><i class="fas ${a.icon}"></i></div>
+                <div class="ledger-card-name">${emoji} ${a.name}</div>
+                <div class="ledger-card-label">المستحق حالياً</div>
+                <div class="ledger-card-balance">${formatCurrency(a.balance)}</div>
+            </div>
+        `}).join('') + `
+            <div class="glass add-ledger-card" onclick="openAddLedgerCategory()">
+                <i class="fas fa-plus"></i>
+                <span>فئة جديدة</span>
+            </div>`;
+    }
+    function openLedgerDetail(accountId) {
+        const acc = getLedgerAccounts().find(a => a.id === accountId);
+        if (!acc) return;
+        document.getElementById('ledgerDetailId').value = accountId;
+        const emoji = LEDGER_ICONS[acc.icon] || '🧾';
+        document.getElementById('ledgerDetailName').innerHTML = `<i class="fas ${acc.icon}" style="margin-left:6px;color:var(--primary-light)"></i>${emoji} ${acc.name}`;
+        document.getElementById('ledgerDetailBalance').textContent = formatCurrency(acc.balance);
+        renderLedgerTxList(accountId);
+        openModal('ledgerDetailModal');
+    }
+    function renderLedgerTxList(accountId) {
+        const txs = getLedgerTxs().filter(t => t.accountId === accountId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const container = document.getElementById('ledgerDetailTxList');
+        if (txs.length === 0) {
+            container.innerHTML = '<div class="empty-state" style="padding:24px"><i class="fas fa-receipt"></i><h3>لا توجد عمليات بعد</h3><p>أضف أول فاتورة أو تسديد</p></div>';
+            return;
+        }
+        container.innerHTML = txs.map(t => {
+            const isInvoice = t.type === 'invoice';
+            const receipt = t.receipt ? `<img src="${t.receipt}" class="receipt-thumb" onclick="event.stopPropagation();openLightbox('${t.receipt}')">` : '';
+            return `
+            <div class="ledger-tx-item" style="flex-direction:column;align-items:stretch">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <div class="ledger-tx-icon" style="background:${isInvoice ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.15)'};color:${isInvoice ? 'var(--danger)' : 'var(--success)'}">
+                        <i class="fas ${isInvoice ? 'fa-plus' : 'fa-check'}"></i>
+                    </div>
+                    <div style="flex:1">
+                        <div style="font-weight:800;font-size:13px">${t.desc || (isInvoice ? 'فاتورة' : 'تسديد')}</div>
+                        <div style="font-size:11px;color:var(--text-muted)">${formatDate(t.date)}</div>
+                    </div>
+                    <div style="font-weight:800;font-size:14px;color:${isInvoice ? 'var(--danger)' : 'var(--success)'}">${isInvoice ? '+' : '-'}${formatCurrency(t.amount)}</div>
+                </div>
+                ${receipt}
+            </div>`;
+        }).join('');
+    }
+    function openLedgerTx(type) {
+        document.getElementById('ltAccountId').value = document.getElementById('ledgerDetailId').value;
+        document.getElementById('ltType').value = type;
+        document.getElementById('ledgerTxTitle').textContent = type === 'invoice' ? 'إضافة فاتورة' : 'تسديد من الحساب';
+        document.getElementById('ltAmount').value = '';
+        document.getElementById('ltDesc').value = '';
+        document.getElementById('ltDate').value = new Date().toISOString().split('T')[0];
+        clearLtReceiptPhoto();
+        document.getElementById('ltReceiptGroup').classList.toggle('hidden', type !== 'invoice');
+        openModal('ledgerTxModal');
+    }
+    function handleLtReceiptPhoto(e) {
+        const file = e.target.files[0];
+        readImageAsBase64(file, data => {
+            document.getElementById('ltReceipt').value = data;
+            document.getElementById('ltReceiptPreview').innerHTML = `<img src="${data}">`;
+        });
+    }
+    function clearLtReceiptPhoto() {
+        document.getElementById('ltReceipt').value = '';
+        document.getElementById('ltReceiptPreview').innerHTML = '<i class="fas fa-receipt"></i>';
+    }
+    function saveLedgerTx(e) {
+        e.preventDefault();
+        const accountId = document.getElementById('ltAccountId').value;
+        const type = document.getElementById('ltType').value;
+        const amount = parseFloat(document.getElementById('ltAmount').value);
+        let accs = getLedgerAccounts();
+        const acc = accs.find(a => a.id === accountId);
+        if (!acc) return;
+        if (type === 'payment' && amount > acc.balance + 0.001) { showToast('مبلغ التسديد أكبر من المستحق', 'error'); return; }
+        acc.balance = Math.round((type === 'invoice' ? acc.balance + amount : acc.balance - amount) * 100) / 100;
+        setLedgerAccounts(accs);
+        let txs = getLedgerTxs();
+        txs.push({
+            id: generateId(), accountId, type, amount,
+            desc: document.getElementById('ltDesc').value.trim(),
+            date: document.getElementById('ltDate').value,
+            receipt: document.getElementById('ltReceipt').value,
+            userId: currentUser.id, createdAt: new Date().toISOString()
+        });
+        setLedgerTxs(txs);
+        closeModal('ledgerTxModal');
+        e.target.reset();
+        clearLtReceiptPhoto();
+        showToast('تم الحفظ', 'success');
+        addLog(type === 'invoice' ? 'فاتورة جديدة' : 'تسديد حساب', `${currentUser.name}: ${acc.name} — ${formatCurrency(amount)}`);
+        renderLedgerAccounts();
+        openLedgerDetail(accountId);
+        updateDashboard();
+    }
+
+    // ==================== REMINDERS ====================
+    function saveReminder(e) {
+        e.preventDefault();
+        const rem = {
+            id: generateId(), title: document.getElementById('remTitle').value.trim(),
+            amount: parseFloat(document.getElementById('remAmount').value) || 0,
+            date: document.getElementById('remDate').value,
+            repeat: document.getElementById('remRepeat').value,
+            notes: document.getElementById('remNotes').value.trim(),
+            completed: false, userId: currentUser.id, createdAt: new Date().toISOString()
+        };
+        let rems = getReminders(); rems.push(rem); setReminders(rems);
+        closeModal('reminderModal');
+        e.target.reset();
+        document.getElementById('remDate').valueAsDate = new Date();
+        showToast('تم إضافة التذكير', 'success');
+        renderReminders();
+        updateNotifBadge();
+    }
+    function completeReminder(id) {
+        let rems = getReminders();
+        const r = rems.find(x => x.id === id);
+        if (!r) return;
+        if (r.repeat !== 'none') {
+            const next = new Date(r.date);
+            if (r.repeat === 'daily') next.setDate(next.getDate() + 1);
+            else if (r.repeat === 'weekly') next.setDate(next.getDate() + 7);
+            else if (r.repeat === 'monthly') next.setMonth(next.getMonth() + 1);
+            else if (r.repeat === 'yearly') next.setFullYear(next.getFullYear() + 1);
+            rems.push({ ...r, id: generateId(), date: next.toISOString().split('T')[0], createdAt: new Date().toISOString() });
+        }
+        r.completed = true; r.completedAt = new Date().toISOString();
+        setReminders(rems);
+        showToast('تم إكمال التذكير', 'success');
+        renderReminders();
+        updateNotifBadge();
+    }
+    function deleteReminder(id) {
+        if (!confirm('هل أنت متأكد؟')) return;
+        setReminders(getReminders().filter(r => r.id !== id));
+        showToast('تم الحذف', 'success');
+        renderReminders();
+        updateNotifBadge();
+    }
+    function renderReminders() {
+        const rems = getReminders().filter(r => !r.completed).sort((a, b) => new Date(a.date) - new Date(b.date));
+        const container = document.getElementById('remindersList');
+        const empty = document.getElementById('remindersEmpty');
+        if (rems.length === 0) { container.innerHTML = ''; empty.classList.remove('hidden'); return; }
+        empty.classList.add('hidden');
+        const now = new Date(); now.setHours(0,0,0,0);
+        container.innerHTML = rems.map(r => {
+            const d = new Date(r.date); d.setHours(0,0,0,0);
+            const diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+            let badge = '<span class="badge badge-info">قادم</span>';
+            if (diff < 0) badge = '<span class="badge badge-danger">متأخر</span>';
+            else if (diff === 0) badge = '<span class="badge badge-warning">اليوم</span>';
+            else if (diff <= 3) badge = '<span class="badge badge-warning">قريب</span>';
+            return `
+            <div class="loan-card glass" style="border-right-color:var(--warning)">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <h4 style="font-weight:800;font-size:14px">${r.title} ${badge}</h4>
+                        <p style="color:var(--text-muted);font-size:13px">${r.notes || ''}</p>
+                        <p style="font-size:11px;color:var(--text-muted)">${r.repeat !== 'none' ? 'تكرار: ' + r.repeat : ''} — ${formatDate(r.date)}</p>
+                    </div>
+                    <div style="text-align:left">
+                        ${r.amount ? `<div style="font-size:18px;font-weight:800">${formatCurrency(r.amount)}</div>` : ''}
+                        <div style="display:flex;gap:6px;margin-top:6px">
+                            <button class="btn btn-success btn-sm" onclick="completeReminder('${r.id}')"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteReminder('${r.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+    function updateNotifBadge() {
+        const pending = getReminders().filter(r => !r.completed);
+        const overdue = pending.filter(r => new Date(r.date) < new Date());
+        const badge = document.getElementById('sidebarNotifBadge');
+        if (overdue.length > 0) { badge.textContent = overdue.length; badge.classList.remove('hidden'); }
+        else { badge.classList.add('hidden'); }
+    }
+
+    // ==================== FAMILY ====================
+    function renderFamily() {
+        if (!currentFamily) {
+            document.getElementById('familyMembersGrid').innerHTML = `
+                <div class="empty-state" style="grid-column:1/-1;padding:30px">
+                    <i class="fas fa-user"></i>
+                    <h3>أنت في الوضع الفردي</h3>
+                    <p>اذهب للإعدادات لإنشاء عائلة أو الانضمام لواحدة</p>
+                </div>`;
+            document.getElementById('familyRequestsSection').classList.add('hidden');
+            return;
+        }
+        const grid = document.getElementById('familyMembersGrid');
+        grid.innerHTML = currentFamily.members.map(m => {
+            const roleColor = m.role === 'owner' ? '#fbbf24' : '#60a5fa';
+            return `
+            <div class="member-card glass">
+                <div class="member-avatar" style="background:linear-gradient(135deg,var(--primary),var(--secondary))">${m.name.charAt(0)}</div>
+                <div class="member-name">${m.name}</div>
+                <div class="member-role" style="color:${roleColor};text-transform:uppercase;font-size:10px">${m.role}</div>
+                <div style="font-size:11px;color:var(--text-muted)">${formatDate(m.joinedAt)}</div>
+            </div>`;
+        }).join('');
+        if (currentFamily.requests && currentFamily.requests.length > 0 && currentFamily.ownerId === currentUser.id) {
+            document.getElementById('familyRequestsSection').classList.remove('hidden');
+            document.getElementById('familyRequestsList').innerHTML = currentFamily.requests.map(r => `
+                <div class="activity-item glass">
+                    <div class="activity-icon" style="background:var(--glass);color:var(--primary-light)"><i class="fas fa-user-clock"></i></div>
+                    <div class="activity-content">
+                        <h4>${r.name} (@${r.username})</h4>
+                        <p>طلب الانضمام بتاريخ ${formatDate(r.requestedAt)}</p>
+                    </div>
+                    <div style="display:flex;gap:6px">
+                        <button class="btn btn-success btn-sm" onclick="approveRequest('${r.userId}')"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="rejectRequest('${r.userId}')"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            document.getElementById('familyRequestsSection').classList.add('hidden');
+        }
+    }
+    function copyInviteCode() {
+        if (!currentFamily) return;
+        navigator.clipboard.writeText(currentFamily.code).then(() => {
+            showToast('تم نسخ الكود: ' + currentFamily.code, 'success');
+        }).catch(() => { showToast('الكود: ' + currentFamily.code, 'info'); });
+    }
+    function switchToSolo() {
+        if (!confirm('هل أنت متأكد من التبديل للوضع الفردي؟ بيانات العائلة تبقى محفوظة.')) return;
+        currentUser.mode = 'solo';
+        currentUser.familyId = null;
+        let users = DB.get('users') || {};
+        users[currentUser.id] = currentUser;
+        DB.set('users', users);
+        DB.set('currentUser', currentUser);
+        currentFamily = null;
+        showApp();
+        showToast('تم التبديل للوضع الفردي', 'success');
+    }
+    function createFamilyFromSettings() {
+        const name = prompt('اسم العائلة الجديدة:');
+        if (!name) return;
+        const code = generateCode();
+        const family = {
+            id: generateId(), name, code, ownerId: currentUser.id,
+            members: [{ userId: currentUser.id, role: 'owner', name: currentUser.name, joinedAt: new Date().toISOString() }],
+            requests: [], createdAt: new Date().toISOString()
+        };
+        DB.set('family_' + family.id, family);
+        currentUser.familyId = family.id;
+        currentUser.mode = 'family';
+        currentUser.role = 'owner';
+        let users = DB.get('users') || {};
+        users[currentUser.id] = currentUser;
+        DB.set('users', users);
+        DB.set('currentUser', currentUser);
+        currentFamily = family;
+        showApp();
+        showToast('تم إنشاء العائلة! الكود: ' + code, 'success');
+    }
+    function joinFamilyFromSettings() {
+        document.getElementById('settingsJoinForm').classList.remove('hidden');
+    }
+    function submitJoinFromSettings() {
+        const code = document.getElementById('settingsJoinCode').value.trim().toUpperCase();
+        if (!code || code.length !== 6) { showToast('أدخل كود صحيح', 'error'); return; }
+        submitJoinRequest(code);
+        document.getElementById('settingsJoinForm').classList.add('hidden');
+        document.getElementById('settingsJoinCode').value = '';
+    }
+    function showJoinFromSettings() {
+        document.getElementById('settingsJoinForm').classList.remove('hidden');
+    }
+
+    // ==================== LOGS ====================
+    function addLog(title, desc, icon, color, iconColor) {
+        const logs = getLogs();
+        logs.unshift({
+            id: generateId(), title, desc,
+            icon: icon || 'fa-info-circle', color: color || 'var(--glass)',
+            iconColor: iconColor || 'var(--primary-light)', time: new Date().toISOString(), userId: currentUser.id
+        });
+        if (logs.length > 200) logs.pop();
+        setLogs(logs);
+        if (currentPage === 'logs') renderLogs();
+        if (currentPage === 'dashboard') renderActivity();
+    }
+    function renderLogs() {
+        const logs = getLogs();
+        const container = document.getElementById('logsList');
+        const empty = document.getElementById('logsEmpty');
+        if (logs.length === 0) { container.innerHTML = ''; empty.classList.remove('hidden'); return; }
+        empty.classList.add('hidden');
+        container.innerHTML = logs.map(log => `
+            <div class="activity-item">
+                <div class="activity-icon" style="background:${log.color};color:${log.iconColor}"><i class="fas ${log.icon}"></i></div>
+                <div class="activity-content"><h4>${log.title}</h4><p>${log.desc}</p></div>
+                <div class="activity-time">${timeAgo(log.time)}</div>
+            </div>
+        `).join('');
+    }
+
+    // ==================== SETTINGS ====================
+    function exportData() {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('fw_')) data[key] = localStorage.getItem(key);
+        }
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'makeen-backup-' + new Date().toISOString().split('T')[0] + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('تم تصدير البيانات', 'success');
+    }
+    function importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (!confirm('هذا سيستبدل جميع بياناتك. متأكد؟')) return;
+                for (const key in data) localStorage.setItem(key, data[key]);
+                showToast('تم الاستيراد بنجاح', 'success');
+                location.reload();
+            } catch (err) { showToast('ملف غير صالح', 'error'); }
+        };
+        reader.readAsText(file);
+    }
+    function saveFirebaseConfig() {
+        const config = document.getElementById('firebaseConfig').value.trim();
+        if (!config) { showToast('أدخل الإعدادات أولاً', 'error'); return; }
+        try { JSON.parse(config); DB.set('firebaseConfig', config); showToast('تم الحفظ', 'success'); }
+        catch { showToast('JSON غير صالح', 'error'); }
+    }
+    function clearAllData() {
+        if (!confirm('⚠️ هل أنت متأكد؟ سيتم حذف ALL بياناتك بشكل نهائي!')) return;
+        if (!confirm('تأكيد نهائي: اضغط OK لمسح كل شيء')) return;
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('fw_')) keys.push(key);
+        }
+        keys.forEach(k => localStorage.removeItem(k));
+        showToast('تم مسح جميع البيانات', 'success');
+        setTimeout(() => location.reload(), 1500);
+    }
+
+    // ==================== QUICK ADD ====================
+    function openQuickAdd(type) {
+        document.getElementById('quickAddType').value = type;
+        const catSelect = document.getElementById('quickAddCategory');
+        const personGroup = document.getElementById('quickAddPersonGroup');
+        const actionGroup = document.getElementById('quickAddActionGroup');
+        const catGroup = document.getElementById('quickAddCategoryGroup');
+
+        personGroup.classList.add('hidden');
+        actionGroup.classList.add('hidden');
+        catGroup.classList.remove('hidden');
+
+        if (type === 'income') {
+            document.getElementById('quickAddTitle').textContent = 'إضافة دخل سريع';
+            catSelect.innerHTML = '<option value="">اختر الفئة</option>' + INCOME_CATS.map(c => `<option value="${c}">${c}</option>`).join('');
+        } else if (type === 'expense') {
+            document.getElementById('quickAddTitle').textContent = 'إضافة مصروف سريع';
+            catSelect.innerHTML = '<option value="">اختر الفئة</option>' + EXPENSE_CATS.map(c => `<option value="${c}">${c}</option>`).join('');
+        } else if (type === 'loan') {
+            document.getElementById('quickAddTitle').textContent = 'سلفة سريعة';
+            catGroup.classList.add('hidden');
+            personGroup.classList.remove('hidden');
+            actionGroup.classList.remove('hidden');
+            const psel = document.getElementById('quickAddPerson');
+            const people = getPeople();
+            psel.innerHTML = people.map(p => `<option value="${p.id}">${p.name}</option>`).join('') || '<option value="">لا يوجد أشخاص</option>';
+        } else if (type === 'trust') {
+            document.getElementById('quickAddTitle').textContent = 'أمانة سريعة';
+            catGroup.classList.add('hidden');
+            personGroup.classList.remove('hidden');
+            actionGroup.classList.remove('hidden');
+            const psel = document.getElementById('quickAddPerson');
+            const people = getPeople();
+            psel.innerHTML = people.map(p => `<option value="${p.id}">${p.name}</option>`).join('') || '<option value="">لا يوجد أشخاص</option>';
+            // Set default to trust options
+            const asel = document.getElementById('quickAddAction');
+            asel.innerHTML = '<option value="trust_given">أعطيته أمانة</option><option value="trust_received">أعطاني أمانة</option>';
+        } else if (type === 'saving') {
+            document.getElementById('quickAddTitle').textContent = 'إضافة للتجميعة';
+            catGroup.classList.add('hidden');
+        }
+        openModal('quickAddModal');
+    }
+
+    function saveQuickAdd(e) {
+        e.preventDefault();
+        const type = document.getElementById('quickAddType').value;
+        const amount = parseFloat(document.getElementById('quickAddAmount').value);
+        const desc = document.getElementById('quickAddDesc').value;
+
+        if (type === 'income' || type === 'expense') {
+            const category = document.getElementById('quickAddCategory').value;
+            if (!category) { showToast('اختر الفئة', 'error'); return; }
+            const tx = {
+                id: generateId(), type, amount, category, desc,
+                date: new Date().toISOString().split('T')[0],
+                userId: currentUser.id, userName: currentUser.name, createdAt: new Date().toISOString()
+            };
+            const txs = getTransactions(); txs.push(tx); setTransactions(txs);
+            addLog(type === 'income' ? 'دخل جديد' : 'مصروف جديد', `${currentUser.name}: ${category} — ${formatCurrency(amount)}`);
+        } else if (type === 'loan' || type === 'trust') {
+            const personId = document.getElementById('quickAddPerson').value;
+            const action = document.getElementById('quickAddAction').value;
+            if (!personId) { showToast('اختر الشخص', 'error'); return; }
+            const person = getPeople().find(p => p.id === personId);
+            let items = getPersonLedger();
+            const isMoney = action.startsWith('loan');
+            items.push({
+                id: generateId(), personId, personName: person.name, type: action,
+                item: desc || (isMoney ? 'سلفة' : 'أمانة'), amount: isMoney ? amount : 0,
+                remaining: isMoney ? amount : 0, status: 'active',
+                notes: 'إضافة سريعة', date: new Date().toISOString().split('T')[0],
+                userId: currentUser.id, createdAt: new Date().toISOString()
+            });
+            setPersonLedger(items);
+            addLog(PA_LABELS[action].title, `${currentUser.name}: ${PA_LABELS[action].title} — ${person.name}`);
+        } else if (type === 'saving') {
+            addSavings(amount, desc || 'إضافة سريعة');
+            addLog('إضافة للتجميعة', `${currentUser.name} أضاف ${formatCurrency(amount)} للتجميعة`);
+        }
+        closeModal('quickAddModal');
+        e.target.reset();
+        showToast('تم الحفظ بنجاح', 'success');
+        updateDashboard();
+        renderAccounts();
+        renderPeople();
+        renderPersonal();
+    }
+
+    // ==================== MODALS ====================
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+        m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+    });
+    function openLightbox(src) {
+        if (!src) return;
+        document.getElementById('imgLightboxSrc').src = src;
+        openModal('imgLightbox');
+    }
+
+    // ==================== DATA HELPERS ====================
+    function getTransactions() {
+        const key = currentUser && currentUser.familyId ? 'txs_family_' + currentUser.familyId : 'txs_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setTransactions(txs) {
+        const key = currentUser && currentUser.familyId ? 'txs_family_' + currentUser.familyId : 'txs_user_' + currentUser.id;
+        DB.set(key, txs);
+    }
+    function getPeople() {
+        const key = currentUser && currentUser.familyId ? 'people_family_' + currentUser.familyId : 'people_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setPeople(people) {
+        const key = currentUser && currentUser.familyId ? 'people_family_' + currentUser.familyId : 'people_user_' + currentUser.id;
+        DB.set(key, people);
+    }
+    function getPersonLedger() {
+        const key = currentUser && currentUser.familyId ? 'ledger_family_' + currentUser.familyId : 'ledger_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setPersonLedger(items) {
+        const key = currentUser && currentUser.familyId ? 'ledger_family_' + currentUser.familyId : 'ledger_user_' + currentUser.id;
+        DB.set(key, items);
+    }
+    function getPersonalDebts() {
+        const key = currentUser && currentUser.familyId ? 'pdebts_family_' + currentUser.familyId : 'pdebts_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setPersonalDebts(items) {
+        const key = currentUser && currentUser.familyId ? 'pdebts_family_' + currentUser.familyId : 'pdebts_user_' + currentUser.id;
+        DB.set(key, items);
+    }
+    function getSavings() {
+        const key = currentUser && currentUser.familyId ? 'savings_family_' + currentUser.familyId : 'savings_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || 0;
+    }
+    function setSavings(val) {
+        const key = currentUser && currentUser.familyId ? 'savings_family_' + currentUser.familyId : 'savings_user_' + currentUser.id;
+        DB.set(key, val);
+    }
+    function addSavings(amount, desc) {
+        const current = getSavings();
+        setSavings(Math.round((current + amount) * 100) / 100);
+        // Also log as a savings transaction
+        let stxs = getSavingsTxs();
+        stxs.push({ id: generateId(), amount, desc, date: new Date().toISOString().split('T')[0], createdAt: new Date().toISOString() });
+        setSavingsTxs(stxs);
+    }
+    function getSavingsTxs() {
+        const key = currentUser && currentUser.familyId ? 'stxs_family_' + currentUser.familyId : 'stxs_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setSavingsTxs(txs) {
+        const key = currentUser && currentUser.familyId ? 'stxs_family_' + currentUser.familyId : 'stxs_user_' + currentUser.id;
+        DB.set(key, txs);
+    }
+    function getLedgerAccounts() {
+        const key = currentUser && currentUser.familyId ? 'ledgeracc_family_' + currentUser.familyId : 'ledgeracc_user_' + (currentUser ? currentUser.id : '');
+        let accs = DB.get(key);
+        if (!accs) {
+            accs = [
+                { id: generateId(), name: 'بقالة', icon: 'fa-basket-shopping', balance: 0 },
+                { id: generateId(), name: 'إنترنت', icon: 'fa-wifi', balance: 0 },
+                { id: generateId(), name: 'كهرباء', icon: 'fa-bolt', balance: 0 }
+            ];
+            DB.set(key, accs);
+        }
+        return accs;
+    }
+    function setLedgerAccounts(accs) {
+        const key = currentUser && currentUser.familyId ? 'ledgeracc_family_' + currentUser.familyId : 'ledgeracc_user_' + currentUser.id;
+        DB.set(key, accs);
+    }
+    function getLedgerTxs() {
+        const key = currentUser && currentUser.familyId ? 'ledgertx_family_' + currentUser.familyId : 'ledgertx_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setLedgerTxs(txs) {
+        const key = currentUser && currentUser.familyId ? 'ledgertx_family_' + currentUser.familyId : 'ledgertx_user_' + currentUser.id;
+        DB.set(key, txs);
+    }
+    function getReminders() {
+        const key = currentUser && currentUser.familyId ? 'rems_family_' + currentUser.familyId : 'rems_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setReminders(rems) {
+        const key = currentUser && currentUser.familyId ? 'rems_family_' + currentUser.familyId : 'rems_user_' + currentUser.id;
+        DB.set(key, rems);
+    }
+    function getLogs() {
+        const key = currentUser && currentUser.familyId ? 'logs_family_' + currentUser.familyId : 'logs_user_' + (currentUser ? currentUser.id : '');
+        return DB.get(key) || [];
+    }
+    function setLogs(logs) {
+        const key = currentUser && currentUser.familyId ? 'logs_family_' + currentUser.familyId : 'logs_user_' + currentUser.id;
+        DB.set(key, logs);
+    }
+
+    function populateSelects() {
+        // Populated on-demand in modals
+    }
+    function readImageAsBase64(file, callback) {
+        if (!file) return;
+        if (file.size > 4 * 1024 * 1024) { showToast('حجم الصورة كبير (الحد 4MB)', 'error'); return; }
+        const reader = new FileReader();
+        reader.onload = e => callback(e.target.result);
+        reader.readAsDataURL(file);
+    }
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
+    function generateCode() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(amount || 0);
+    }
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function timeAgo(dateStr) {
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const mins = Math.floor(diff / 60000);
+        const hrs = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+        if (mins < 1) return 'الآن';
+        if (mins < 60) return `منذ ${mins} دقيقة`;
+        if (hrs < 24) return `منذ ${hrs} ساعة`;
+        if (days < 30) return `منذ ${days} يوم`;
+        return formatDate(dateStr);
+    }
+    function showToast(message, type) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
+        toast.innerHTML = `<i class="fas ${icon} toast-icon"></i><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(-16px)'; setTimeout(() => toast.remove(), 300); }, 4000);
+    }
+
+    // Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('data:text/javascript,' + encodeURIComponent(`
+            self.addEventListener('install', e => self.skipWaiting());
+            self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+            self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));
+        `)).catch(() => {});
+    }
+    </script>
+</body>
+</html>
