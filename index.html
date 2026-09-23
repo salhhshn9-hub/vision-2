@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مهامي الأسطورية</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#0e1116; --sub:#5a6472;
+  --accent:#1e63e0; --accent2:#0e1116; --line:#dfe3e9; --done:#1e63e0; --undone:#e4e7ec;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b0c0f; --card:#16181d; --ink:#f2f3f5; --sub:#9aa2ad;
+    --accent:#4d8dff; --accent2:#f2f3f5; --line:#2a2d34; --done:#4d8dff; --undone:#23262c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b0c0f; --card:#16181d; --ink:#f2f3f5; --sub:#9aa2ad;
+  --accent:#4d8dff; --accent2:#f2f3f5; --line:#2a2d34; --done:#4d8dff; --undone:#23262c;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+*{box-sizing:border-box;}
+body{
+  margin:0; min-height:100%; background:var(--bg); color:var(--ink);
+  font-family:'Tahoma','Segoe UI',system-ui,sans-serif;
+}
+.wrap{max-width:900px; margin:0 auto; padding:20px 16px 40px;}
+h1{font-size:22px; margin:4px 0 2px;}
+.sub{color:var(--sub); font-size:13px; margin:0 0 18px;}
+.card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:18px;}
+.card h2{font-size:15px; margin:0 0 12px; color:var(--accent2);}
+.addrow{display:flex; gap:8px; margin-bottom:14px;}
+.addrow input{flex:1; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); font-size:14px;}
+.addrow button, .actionbtn{padding:10px 16px; border-radius:10px; border:none; background:var(--accent); color:#ffffff; font-weight:bold; cursor:pointer; font-size:13px;}
+.actionbtn.secondary{background:transparent; border:1px solid var(--accent2); color:var(--accent2);}
+.scrollx{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:900px;}
+th,td{padding:4px; text-align:center; font-size:11px; border-bottom:1px solid var(--line);}
+th.taskcol, td.taskcol{position:sticky; right:0; background:var(--card); text-align:right; padding:6px 10px; min-width:140px; font-size:13px; z-index:1;}
+th.daynum{color:var(--sub); font-weight:normal; min-width:26px;}
+.cell{width:22px; height:22px; border-radius:6px; border:1px solid var(--line); background:var(--undone); cursor:pointer; margin:auto;}
+.cell.done{background:var(--done); border-color:var(--done);}
+.delbtn{background:none; border:none; color:var(--sub); cursor:pointer; font-size:15px; padding:0 4px;}
+.chartwrap{overflow-x:auto;}
+svg{display:block; min-width:700px;}
+.axis{fill:var(--sub); font-size:10px;}
+.bar{fill:var(--accent2);}
+.histitem{border-top:1px solid var(--line); padding:12px 0;}
+.histitem:first-child{border-top:none; padding-top:0;}
+.histhead{display:flex; justify-content:space-between; align-items:center; font-size:13px; cursor:pointer;}
+.histhead b{color:var(--accent);}
+.histdetail{display:none; margin-top:10px; font-size:12px; color:var(--sub);}
+.histdetail.open{display:block;}
+.histdetail div{display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed var(--line);}
+.empty{color:var(--sub); font-size:13px; text-align:center; padding:10px 0;}
+.toast{position:fixed; bottom:calc(16px + env(safe-area-inset-bottom,0px)); right:16px; background:var(--ink); color:var(--bg); padding:8px 14px; border-radius:8px; font-size:12px; opacity:0; transition:opacity .3s; pointer-events:none;}
+.toast.show{opacity:1;}
+</style>
+</head><body><script id="state-data" type="application/json">{"tasks":[{"id":"t1","name":"قراءة"},{"id":"t2","name":"رياضة"},{"id":"t3","name":"شرب ماء كافي"}],"totalDays":30,"checks":{},"monthLabel":"سبتمبر 2026","history":[{"monthLabel":"سبتمبر 2026","tasks":[{"id":"t1","name":"قراءة"},{"id":"t2","name":"رياضة"},{"id":"t3","name":"شرب ماء كافي"}],"checks":{},"totalDays":30,"completionRate":0,"savedAt":"2026-09-21T16:36:48.934Z"},{"monthLabel":"سبتمبر 2026","tasks":[{"id":"t1","name":"قراءة"},{"id":"t2","name":"رياضة"},{"id":"t3","name":"شرب ماء كافي"}],"checks":{"t1_1":true,"t1_2":true,"t1_4":true,"t1_28":true,"t1_3":true,"t3_1":true,"t3_2":true},"totalDays":30,"completionRate":8,"savedAt":"2026-09-21T16:36:47.021Z"}]}</script><div class="wrap" id="app"></div><div class="toast" id="toast"></div><script id="main-script">
+(function(){
+  const stateEl = document.getElementById('state-data');
+  let state = JSON.parse(stateEl.textContent);
+  let artifactCap = null;
+  let editingCap = true;
+
+  claude?.use && claude.use('artifact').then(cap=>{
+    artifactCap = cap;
+    if(!cap) editingCap = false; // read-only or unavailable: still allow local view
+    render();
+  });
+
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 1800);
+  }
+
+  function scriptSrc(){ return document.getElementById('main-script').textContent; }
+
+  function buildDoc(s){
+    const head = document.head.outerHTML;
+    return '<!DOCTYPE html><html lang="ar" dir="rtl">' + head +
+      '<body><script id="state-data" type="application/json">' +
+      JSON.stringify(s) +
+      '<\/script><div class="wrap" id="app"></div><div class="toast" id="toast"></div>' +
+      '<script id="main-script">' + scriptSrc() + '<\/script></body></html>';
+  }
+
+  async function commit(newState){
+    state = newState;
+    render();
+    if(!artifactCap){ return; }
+    try{
+      await artifactCap.publish(buildDoc(newState));
+    }catch(e){
+      if(e && e.code === 'conflict'){ /* view will reload to winner */ }
+      else { toast('تعذر الحفظ، حاول مرة أخرى'); }
+    }
+  }
+
+  function uid(){ return 't' + Math.random().toString(36).slice(2,9); }
+
+  function toggle(taskId, day){
+    const key = taskId+'_'+day;
+    const checks = {...state.checks};
+    if(checks[key]) delete checks[key]; else checks[key] = true;
+    commit({...state, checks});
+  }
+
+  function addTask(name){
+    name = (name||'').trim();
+    if(!name) return;
+    const tasks = [...state.tasks, {id:uid(), name}];
+    commit({...state, tasks});
+  }
+
+  function deleteTask(id){
+    const tasks = state.tasks.filter(t=>t.id!==id);
+    const checks = {...state.checks};
+    Object.keys(checks).forEach(k=>{ if(k.startsWith(id+'_')) delete checks[k]; });
+    commit({...state, tasks, checks});
+  }
+
+  function dailyPct(s, day){
+    if(s.tasks.length===0) return 0;
+    let done=0;
+    s.tasks.forEach(t=>{ if(s.checks[t.id+'_'+day]) done++; });
+    return Math.round(done / s.tasks.length * 100);
+  }
+
+  function monthPct(s){
+    if(s.tasks.length===0) return 0;
+    let total = s.tasks.length * s.totalDays, done=0;
+    Object.keys(s.checks).forEach(k=>{ if(s.checks[k]) done++; });
+    return Math.round(done/total*100);
+  }
+
+  function saveMonth(){
+    const label = prompt('اسم الشهر المحفوظ:', state.monthLabel) || state.monthLabel;
+    const snapshot = {
+      monthLabel: label,
+      tasks: state.tasks.map(t=>({...t})),
+      checks: {...state.checks},
+      totalDays: state.totalDays,
+      completionRate: monthPct(state),
+      savedAt: new Date().toISOString()
+    };
+    const history = [snapshot, ...state.history];
+    commit({...state, checks:{}, history});
+    toast('تم حفظ تقدم الشهر ✅');
+  }
+
+  function buildChart(s){
+    const w=900,h=140,pad=20, barW=(w-2*pad)/s.totalDays;
+    let bars='', labels='';
+    for(let d=1; d<=s.totalDays; d++){
+      const pct = dailyPct(s,d);
+      const bh = (h-30)*pct/100;
+      const x = pad + (d-1)*barW;
+      bars += `<rect class="bar" x="${x+1}" y="${h-30-bh}" width="${barW-2}" height="${bh}" rx="2"></rect>`;
+      if(d%5===0 || d===1) labels += `<text class="axis" x="${x+barW/2}" y="${h-14}" text-anchor="middle">${d}</text>`;
+    }
+    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${bars}${labels}
+      <line x1="${pad}" y1="${h-30}" x2="${w-pad}" y2="${h-30}" stroke="var(--line)"></line></svg>`;
+  }
+
+  function el(html){ const d=document.createElement('div'); d.innerHTML=html; return d.firstElementChild; }
+
+  function render(){
+    const app = document.getElementById('app');
+    app.innerHTML = '';
+
+    app.appendChild(el(`<div>
+      <h1>مهامي الأسطورية 🏆</h1>
+      <p class="sub">${state.monthLabel} — إنجاز الشهر: <b style="color:var(--accent)">${monthPct(state)}%</b></p>
+    </div>`));
+
+    // add task card
+    const addCard = el(`<div class="card">
+      <h2>المهام اليومية</h2>
+      <div class="addrow">
+        <input id="newTaskInput" placeholder="اسم مهمة جديدة (مثال: قراءة، رياضة)">
+        <button class="actionbtn" id="addBtn">إضافة</button>
+      </div>
+      <div class="scrollx"><table id="gridTable"></table></div>
+    </div>`);
+    app.appendChild(addCard);
+    addCard.querySelector('#addBtn').onclick = ()=>{
+      const inp = addCard.querySelector('#newTaskInput');
+      addTask(inp.value); inp.value='';
+    };
+    addCard.querySelector('#newTaskInput').addEventListener('keydown', e=>{
+      if(e.key==='Enter'){ addTask(e.target.value); e.target.value=''; }
+    });
+
+    const table = addCard.querySelector('#gridTable');
+    if(state.tasks.length===0){
+      table.outerHTML = '<p class="empty">أضف أول مهمة روتينية عشان تبدأ التتبع</p>';
+    } else {
+      let head = '<tr><th class="taskcol">المهمة</th>';
+      for(let d=1; d<=state.totalDays; d++) head += `<th class="daynum">${d}</th>`;
+      head += '</tr>';
+      let rows='';
+      state.tasks.forEach(t=>{
+        rows += `<tr><td class="taskcol">${t.name} <button class="delbtn" data-del="${t.id}">✕</button></td>`;
+        for(let d=1; d<=state.totalDays; d++){
+          const checked = !!state.checks[t.id+'_'+d];
+          rows += `<td><div class="cell ${checked?'done':''}" data-tid="${t.id}" data-day="${d}"></div></td>`;
+        }
+        rows += '</tr>';
+      });
+      table.innerHTML = head + rows;
+      table.querySelectorAll('.cell').forEach(c=>{
+        c.onclick = ()=> toggle(c.dataset.tid, +c.dataset.day);
+      });
+      table.querySelectorAll('[data-del]').forEach(b=>{
+        b.onclick = ()=>{ if(confirm('حذف هذي المهمة؟')) deleteTask(b.dataset.del); };
+      });
+    }
+
+    // chart card
+    const chartCard = el(`<div class="card">
+      <h2>تقدمك اليومي عبر ${state.totalDays} يوم</h2>
+      <div class="chartwrap">${buildChart(state)}</div>
+    </div>`);
+    app.appendChild(chartCard);
+
+    // save month card
+    app.appendChild(el(`<div class="card">
+      <h2>حفظ الشهر</h2>
+      <p class="sub" style="margin-top:0">إذا خلصت شهرك، احفظ تقدمك وابدأ شهر جديد بنفس المهام.</p>
+      <button class="actionbtn" id="saveMonthBtn">💾 حفظ التقدم الشهري وبدء شهر جديد</button>
+    </div>`));
+    document.getElementById('saveMonthBtn').onclick = saveMonth;
+
+    // history card
+    const histCard = el(`<div class="card"><h2>سجل الشهور السابقة</h2><div id="histList"></div></div>`);
+    app.appendChild(histCard);
+    const histList = histCard.querySelector('#histList');
+    if(state.history.length===0){
+      histList.innerHTML = '<p class="empty">لا يوجد سجل محفوظ بعد</p>';
+    } else {
+      state.history.forEach((h, idx)=>{
+        const item = el(`<div class="histitem">
+          <div class="histhead"><span>${h.monthLabel}</span><span><b>${h.completionRate}%</b></span></div>
+          <div class="histdetail" id="hd${idx}"></div>
+        </div>`);
+        item.querySelector('.histhead').onclick = ()=>{
+          item.querySelector('.histdetail').classList.toggle('open');
+        };
+        const detail = item.querySelector('.histdetail');
+        let rowsHtml='';
+        h.tasks.forEach(t=>{
+          let done=0;
+          for(let d=1; d<=h.totalDays; d++){ if(h.checks[t.id+'_'+d]) done++; }
+          rowsHtml += `<div><span>${t.name}</span><span>${done}/${h.totalDays}</span></div>`;
+        });
+        detail.innerHTML = rowsHtml || '<div>لا توجد مهام</div>';
+        histList.appendChild(item);
+      });
+    }
+  }
+
+  render();
+})();
+</script></body></html>
